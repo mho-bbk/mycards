@@ -25,10 +25,13 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class FlashcardDisplayInstrumentalTest {
+
+    //Do I need this?
     @Rule
     public ActivityScenarioRule<MainActivity> activityRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
+    //Passes if text is displayed, but does not assess whether text is displayed in particular Fragment
     @Test
     public void testSideADisplay() {
         onView(withText("Side A")).check(matches(isDisplayed()));

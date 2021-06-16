@@ -1,0 +1,7 @@
+06/06/21 - 13/06/21: Various tutorials on creating 'first apps' / introduction to UI components 
+15/06/21: UI Testing on Android using Espresso, Fragments 
+16/06/21: ViewModel and Fragment videos, Android Architecture Components Beginner Video. 
+Started trying to write unit tests for app but many issues: 
+*Using Fragment > Activity to build UI as Fragment has shorter/easier to control life cycle + works with ViewModel, which we want to be 'UI Manager' in future
+*But examples given by android doc for Activity class or if for Fragment, written in Kotlin. Can't work out why FragmentScenario class won't run...
+*Written a not v good large instrumental test, but wanted to write small, precise unit test --TODO
