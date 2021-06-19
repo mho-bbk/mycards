@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.example.mycards.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
@@ -29,11 +31,11 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        // TODO: Use the ViewModel
-    }
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+//        // TODO: Use the ViewModel
+//    }
 
 }
