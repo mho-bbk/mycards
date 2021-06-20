@@ -2,6 +2,7 @@ package com.example.mycards;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mycards.ui.main.MainFragment;
+import com.example.mycards.ui.main.MainViewModel;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button displayBBtn;

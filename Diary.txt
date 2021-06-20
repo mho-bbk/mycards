@@ -5,3 +5,13 @@ Started trying to write unit tests for app but many issues:
 *Using Fragment > Activity to build UI as Fragment has shorter/easier to control life cycle + works with ViewModel, which we want to be 'UI Manager' in future
 *But examples given by android doc for Activity class or if for Fragment, written in Kotlin. Can't work out why FragmentScenario class won't run...
 *Written a not v good large instrumental test, but wanted to write small, precise unit test --TODO
+20/06/21: Android is written in Java 8 - some backwards compatibility adjustments. Put @RequiresApi annotation in ViewModel first iteration.
+
+
+
+
+Q&A
+
+Q: What is the difference between FragmentManager and ViewModel?
+A: FM is built-in to the Android Framework and doesn't need dev implementation. 
+VM is a 'helper class' that looks after the <i>lifecycle</i> of UI components. 
