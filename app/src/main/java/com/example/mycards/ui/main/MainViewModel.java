@@ -1,16 +1,12 @@
 package com.example.mycards.ui.main;
 
 import android.os.Build;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 
-import com.example.mycards.R;
-
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
@@ -19,8 +15,12 @@ public class MainViewModel extends ViewModel {
     private final Map<String, String> testDictionary =
             Map.of("apple", "りんご", "orange", "オレンジ", "watermelon", "スイカ");
     private Map<String, Boolean> shownWords = new HashMap<>();
+    private Iterator<String> keyIterator = testDictionary.keySet().iterator();
+    private String lastDisplayed;
 
     {
+        //shownWords is a map of flags indicating whether a key value has been displayed or not
+        //ASSUMPTION: shownWords contains exactly the same keys as testDictionary and its values are false initially
         testDictionary.entrySet().forEach(entry -> shownWords.put(entry.getKey(), false));
     }
 
@@ -28,20 +28,19 @@ public class MainViewModel extends ViewModel {
         return testDictionary;
     }
 
-    public void toggleVisibility(View view) {
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.INVISIBLE);
-        } else {
-            view.setVisibility(View.VISIBLE);
-        }
+    public Map<String, Boolean> getShownWords() {
+        return shownWords;
     }
 
-    public void setFirstCard(Fragment flashcardDisplay) {
-        TextView sideA = flashcardDisplay.getView().findViewById(R.id.side_a);
-        TextView sideB = flashcardDisplay.getView().findViewById(R.id.side_b);
-        String testKey = "apple";
+    public Iterator<String> getKeyIterator() {
+        return keyIterator;
+    }
 
-        sideA.setText(testKey);
-        sideB.setText(testDictionary.get(testKey));
+    public void setLastDisplayed(String str) {
+        lastDisplayed = str;
+    }
+
+    public String getLastDisplayed() {
+        return lastDisplayed;
     }
 }

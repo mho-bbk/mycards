@@ -15,8 +15,10 @@ import android.widget.TextView;
 import com.example.mycards.ui.main.MainFragment;
 import com.example.mycards.ui.main.MainViewModel;
 
+@RequiresApi(api = Build.VERSION_CODES.R)
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button displayBBtn;
+    private Button nextBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +33,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         displayBBtn = findViewById(R.id.displayToggle);
         displayBBtn.setOnClickListener(this);
+        nextBtn = findViewById(R.id.nextFlashcard);
+        nextBtn.setOnClickListener(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
+
     @Override
     public void onClick(View v) {
         //Retrieve flashcard display Fragment
@@ -44,8 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.displayToggle:
                 flashcardDisplay.toggleVisibility(findViewById(R.id.side_b));
                 break;
-//            case R.id.nextFlashcard:
-//                break;
+            case R.id.nextFlashcard:
+                flashcardDisplay.nextCard();
+                break;
             default:
                 break;
         }
