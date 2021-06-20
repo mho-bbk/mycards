@@ -6,7 +6,7 @@ Started trying to write unit tests for app but many issues:
 *But examples given by android doc for Activity class or if for Fragment, written in Kotlin. Can't work out why FragmentScenario class won't run...
 *Written a not v good large instrumental test, but wanted to write small, precise unit test --TODO
 20/06/21: Android is written in Java 8 - some backwards compatibility adjustments. Put @RequiresApi annotation in ViewModel first iteration.
-
+Connected static map data to fragment view using ViewModel.
 
 
 

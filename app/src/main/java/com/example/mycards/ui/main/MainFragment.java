@@ -19,8 +19,13 @@ import com.example.mycards.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
+@RequiresApi(api = Build.VERSION_CODES.R)
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
@@ -36,11 +41,19 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mViewModel.setFirstCard(this);
+    }
+
+    public void toggleVisibility(View view) {
+        mViewModel.toggleVisibility(view);
+    }
+
+    public void moveToNextCard() {
+        //Random int to access random key and set random flashcard value?
         Map<String, String> dictionary = mViewModel.getTestDictionary();
         TextView sideA = getView().findViewById(R.id.side_a);
         TextView sideB = getView().findViewById(R.id.side_b);
@@ -49,10 +62,6 @@ public class MainFragment extends Fragment {
             sideA.setText(entry.getKey());
             sideB.setText(entry.getValue());
         }
-    }
-
-    public void getTextView(String viewName) {
-        //
     }
 
 }
