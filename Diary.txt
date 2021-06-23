@@ -10,9 +10,18 @@ Implemented ViewModel, where the data for the UI will be stored so if the activi
 state is preserved. Used simple static list to test with emulator & real device. 
 
 
-
 Q&A
 
 Q: What is the difference between FragmentManager and ViewModel?
 A: FM is built-in to the Android Framework and doesn't need dev implementation. 
-VM is a 'helper class' that looks after the <i>lifecycle</i> of UI components. 
+VM is a 'helper class' that helps manage the <i>lifecycle</i> of UI components and changes the way UI data is managed in an app.
+VM encourages good architectural design (data is separated from UI code - good for modularity, simplifies testing). 
+
+Q: Is ViewModel the same as onSaveInstanceState()? - No. 
+Both address UI data BUT:
+*onSaveInstanceState() is a lifecycle callback. 
+**Is designed to save a small amount of transient data, not complex objs eg lists.
+**Is called during confis changes and when activity goes into the bg.
+*VM fundamentally changes the way UI data is managed in the app. 
+**Can delegate loading complex data and also acts as temp storage once data is loaded.
+**Do not need to reload or process data kept in a VM during config changes or when activiity goes into the bg.
