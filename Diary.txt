@@ -8,6 +8,9 @@ Started trying to write unit tests for app but many issues:
 20/06/21: Android is written in Java 8 - some backwards compatibility adjustments. Put @RequiresApi annotation in ViewModel first iteration.
 Implemented ViewModel, where the data for the UI will be stored so if the activity/fragment is destroyed (eg screen rotation), 
 state is preserved. Used simple static list to test with emulator & real device. 
+25-29/6/21: Watched YT videos about TDD in Android (Philipp Lackner). Current MainViewModel class only contains getters/setters.
+Doesn't need testing atm as no formal business logic. Will move on to implementing stack for user req: provide basic way for user
+to repeat same flashcards. 
 
 
 Q&A
