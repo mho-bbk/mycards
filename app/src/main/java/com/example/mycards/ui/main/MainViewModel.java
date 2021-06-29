@@ -12,6 +12,7 @@ import java.util.Map;
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class MainViewModel extends ViewModel {
 
+    //TODO - Replace Map with List of type Card
     private final Map<String, String> testDictionary =
             Map.of("apple", "りんご", "orange", "オレンジ", "watermelon", "スイカ");
     private Map<String, Boolean> shownWords = new HashMap<>();
