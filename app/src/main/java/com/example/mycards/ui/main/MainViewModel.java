@@ -5,43 +5,48 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModel;
 
+import com.example.mycards.Card;
+
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class MainViewModel extends ViewModel {
 
-    //TODO - Replace Map with List of type Card
-    private final Map<String, String> testDictionary =
-            Map.of("apple", "りんご", "orange", "オレンジ", "watermelon", "スイカ");
-    private Map<String, Boolean> shownWords = new HashMap<>();
-    private Iterator<String> keyIterator = testDictionary.keySet().iterator();
-    private String lastDisplayed;
+    //TODO - Rename testDictionary and keyIterator to something more appropriate now Card class exists
+    private final List<Card> testDictionary =
+            List.of(new Card("apple", "りんご"),
+                    new Card("orange", "オレンジ"),
+                    new Card("watermelon", "スイカ"));
+    private Map<Card, Boolean> shownWords = new HashMap<>();
+    private Iterator<Card> keyIterator = testDictionary.iterator();
+    private Card lastDisplayed;
 
     {
         //shownWords is a map of flags indicating whether a key value has been displayed or not
         //ASSUMPTION: shownWords contains exactly the same keys as testDictionary and its values are false initially
-        testDictionary.entrySet().forEach(entry -> shownWords.put(entry.getKey(), false));
+        testDictionary.forEach(card -> shownWords.put(card, false));
     }
 
-    public Map<String, String> getTestDictionary() {
+    public List<Card> getTestDictionary() {
         return testDictionary;
     }
 
-    public Map<String, Boolean> getShownWords() {
+    public Map<Card, Boolean> getShownWords() {
         return shownWords;
     }
 
-    public Iterator<String> getKeyIterator() {
+    public Iterator<Card> getKeyIterator() {
         return keyIterator;
     }
 
-    public void setLastDisplayed(String str) {
-        lastDisplayed = str;
+    public void setLastDisplayed(Card card) {
+        lastDisplayed = card;
     }
 
-    public String getLastDisplayed() {
+    public Card getLastDisplayed() {
         return lastDisplayed;
     }
 }

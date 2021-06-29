@@ -11,7 +11,7 @@ state is preserved. Used simple static list to test with emulator & real device.
 25-29/6/21: Watched YT videos about TDD in Android (Philipp Lackner). Current MainViewModel class only contains getters/setters.
 Doesn't need testing atm as no formal business logic. Will move on to implementing stack for user req: provide basic way for user
 to repeat same flashcards. 
-
+29/6/21: TODO- resolve Button issue - how do I may text appear over two lines?
 
 Q&A
 

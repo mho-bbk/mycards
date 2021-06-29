@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.mycards.Card;
 import com.example.mycards.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class MainFragment extends Fragment {
+    //TODO - logic for repeating a card, linking to repeat button
 
     private MainViewModel mViewModel;
     private TextView sideA, sideB;
@@ -56,8 +58,8 @@ public class MainFragment extends Fragment {
         //if getLastDisplayed is not null then the user has started the deck
         if(mViewModel.getLastDisplayed() != null) {
             //we want the last displayed flashcard back
-            sideA.setText(mViewModel.getLastDisplayed());
-            sideB.setText(mViewModel.getTestDictionary().get(mViewModel.getLastDisplayed()));
+            sideA.setText(mViewModel.getLastDisplayed().getSideA());
+            sideB.setText(mViewModel.getLastDisplayed().getSideB());
         } else {
             //we want to initialise the deck
             initialiseDeck(mViewModel.getKeyIterator(), mViewModel.getTestDictionary(),
@@ -73,17 +75,18 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void initialiseDeck(Iterator<String> keyIterator, Map<String, String> dictionary,
-                             Map<String, Boolean> shownWords) {
-        //in case keyIterator is null for whatever reason...
-        if (keyIterator.hasNext()) {
-            String key = keyIterator.next();
-            sideA.setText(key);
-            sideB.setText(dictionary.get(key));
+    private void initialiseDeck(Iterator<Card> cardIterator, List<Card> dictionary,
+                                Map<Card, Boolean> shownWords) {
+        //in case cardIterator is null for whatever reason...
+        if (cardIterator.hasNext()) {
+            Card next = cardIterator.next();
+            sideA.setText(next.getSideA());
+            sideB.setText(next.getSideB());
 
-            //as the entry equiv to testKey has been shown, set its flag to true
-            shownWords.replace(key, true);
-            mViewModel.setLastDisplayed(key);
+            //as the card has been shown, set its flag to true
+            //then setLastDisplayed card to the card that has just been displayed
+            shownWords.replace(next, true);
+            mViewModel.setLastDisplayed(next);
         }
     }
 
@@ -91,22 +94,24 @@ public class MainFragment extends Fragment {
         goToNextCard(mViewModel.getKeyIterator(), mViewModel.getTestDictionary(), mViewModel.getShownWords());
     }
 
-    private void goToNextCard(Iterator<String> keyIterator, Map<String, String> dictionary,
-                             Map<String, Boolean> shownWords) {
-        if(keyIterator.hasNext()) {
-            String key = keyIterator.next();
+    private void goToNextCard(Iterator<Card> cardIterator, List<Card> dictionary,
+                             Map<Card, Boolean> shownWords) {
+        if(cardIterator.hasNext()) {
+            Card next = cardIterator.next();
             //if the word hasn't already been shown before
             //current assumption assumes no nullpointerexception
-            if(!shownWords.get(key)) {
-                sideA.setText(key);
-                sideB.setText(dictionary.get(key));
+            if(!shownWords.get(next)) {
+                sideA.setText(next.getSideA());
+                sideB.setText(next.getSideB());
 
                 //as the entry equiv to testKey has been shown, set its flag to true
-                shownWords.replace(key, true);
-                mViewModel.setLastDisplayed(key);
+                shownWords.replace(next, true);
+                mViewModel.setLastDisplayed(next);
             }
         } else {
             //Assuming there is no key for "Finished"
+            //TODO - this is a placeholder. Eventually when a deck finishes we want to replace
+            // with finished screen and button back to homepage
             sideA.setText("Finished");
             sideB.setText("Finished");
         }
