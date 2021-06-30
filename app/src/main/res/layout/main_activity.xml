@@ -12,19 +12,21 @@
         android:id="@+id/flashcardDisplayFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintBottom_toTopOf="@+id/layoutPortraitGuide"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/layoutPortraitGuide"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/displayToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show/Hide B side"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:text="@string/multipleLineDisplayToggle"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/nextFlashcard"
@@ -38,31 +40,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next"
+
         app:layout_constraintBottom_toTopOf="@+id/repeatFlashcard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/displayToggle"
+        app:layout_constraintLeft_toRightOf="@+id/displayToggle"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutPortraitGuide"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/repeatFlashcard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Repeat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/displayToggle"
-        app:layout_constraintTop_toBottomOf="@+id/nextFlashcard"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintLeft_toRightOf="@+id/displayToggle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nextFlashcard" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/layoutPortraitGuide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.65" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
