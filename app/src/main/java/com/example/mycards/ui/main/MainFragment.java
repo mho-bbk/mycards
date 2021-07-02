@@ -29,6 +29,7 @@ public class MainFragment extends Fragment {
     private MainViewModel mViewModel;
     private TextView sideA, sideB;
     private Card current;
+    private Iterator<Card> cardIterator;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -49,6 +50,7 @@ public class MainFragment extends Fragment {
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
         sideB = getView().findViewById(R.id.side_b);
+        cardIterator = mViewModel.getCardIterator();    //reference to the iterator stored in VM
 
         //**HANDLING if the Activity has been destroyed eg bc screen rotation**
         //if getLastDisplayed is not null then the user has started the deck
@@ -58,7 +60,7 @@ public class MainFragment extends Fragment {
             sideB.setText(mViewModel.getCurrentCard().getSideB());
         } else {
             //we want to initialise the deck
-            initialiseDeck(mViewModel.getCardIterator(), mViewModel.getTestDeck());
+            initialiseDeck();
         }
     }
 
@@ -70,36 +72,20 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void initialiseDeck(Iterator<Card> cardIterator, List<Card> dictionary) {
-        //in case cardIterator is null for whatever reason...
-        if (cardIterator.hasNext()) {
+    private void initialiseDeck() {
+        if(cardIterator.hasNext()) {
             current = cardIterator.next();
-            sideA.setText(current.getSideA());
-            sideB.setText(current.getSideB());
-
-            //as the card has been shown, set its flag to true
-            current.setShown(true);
-            //then setLastDisplayed card to the card that has just been displayed
-            mViewModel.setCurrentCard(current);
+            if(!current.isShown()) {
+                showCard(current);
+            }
         }
     }
 
     public void nextCard() {
-        goToNextCard(mViewModel.getCardIterator(), mViewModel.getTestDeck());
-    }
-
-    private void goToNextCard(Iterator<Card> cardIterator, List<Card> dictionary) {
         if(cardIterator.hasNext()) {
             current = cardIterator.next();
-            //if the word hasn't already been shown before
-            //current assumption assumes no nullpointerexception
             if(!current.isShown()) {
-                sideA.setText(current.getSideA());
-                sideB.setText(current.getSideB());
-
-                //as the entry equiv to testKey has been shown, set its flag to true
-                current.setShown(true);
-                mViewModel.setCurrentCard(current);
+                showCard(current);
             }
         } else {
             //Assuming there is no key for "Finished"
@@ -109,6 +95,16 @@ public class MainFragment extends Fragment {
             sideB.setText("Finished Deck");
             sideB.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void showCard(Card card) {
+        sideA.setText(card.getSideA());
+        sideB.setText(card.getSideB());
+
+        //as the card has been shown, set its flag to true
+        card.setShown(true);
+        //save the current card in the View Model (handle Activity destroyed)
+        mViewModel.setCurrentCard(card);
     }
 
     public void repeatCard() {
