@@ -19,6 +19,7 @@ import com.example.mycards.ui.main.MainViewModel;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button displayBBtn;
     private Button nextBtn;
+    private Button repeatBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         displayBBtn.setOnClickListener(this);
         nextBtn = findViewById(R.id.nextFlashcard);
         nextBtn.setOnClickListener(this);
+        repeatBtn = findViewById(R.id.repeatFlashcard);
+        repeatBtn.setOnClickListener(this);
     }
 
 
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.nextFlashcard:
                 flashcardDisplay.nextCard();
+                break;
+            case R.id.repeatFlashcard:
+                flashcardDisplay.repeatCard();
                 break;
             default:
                 break;

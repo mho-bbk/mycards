@@ -8,8 +8,6 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-    <!--    TODO - add repeat button; will need to redo frame layout-->
-
     <FrameLayout
         android:id="@+id/flashcardDisplayFrame"
         android:layout_width="0dp"

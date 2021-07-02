@@ -15,10 +15,12 @@ public class Card {
 
     private final String sideA;
     private final String sideB;
+    private boolean shown;
 
     public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
+        this.shown = false; //when a card is initialised, its default behaviour is that it hasn't been shown
     }
 
     @Override
@@ -52,5 +54,13 @@ public class Card {
 
     public String getSideB() {
         return sideB;
+    }
+
+    public boolean isShown() {
+        return shown;
+    }
+
+    public void setShown(boolean shown) {
+        this.shown = shown;
     }
 }

@@ -18,14 +18,9 @@ import android.widget.TextView;
 import com.example.mycards.Card;
 import com.example.mycards.R;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class MainFragment extends Fragment {
@@ -33,6 +28,7 @@ public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
     private TextView sideA, sideB;
+    private Card current;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -56,14 +52,13 @@ public class MainFragment extends Fragment {
 
         //**HANDLING if the Activity has been destroyed eg bc screen rotation**
         //if getLastDisplayed is not null then the user has started the deck
-        if(mViewModel.getLastDisplayed() != null) {
+        if(mViewModel.getCurrentCard() != null) {
             //we want the last displayed flashcard back
-            sideA.setText(mViewModel.getLastDisplayed().getSideA());
-            sideB.setText(mViewModel.getLastDisplayed().getSideB());
+            sideA.setText(mViewModel.getCurrentCard().getSideA());
+            sideB.setText(mViewModel.getCurrentCard().getSideB());
         } else {
             //we want to initialise the deck
-            initialiseDeck(mViewModel.getKeyIterator(), mViewModel.getTestDictionary(),
-                    mViewModel.getShownWords());
+            initialiseDeck(mViewModel.getCardIterator(), mViewModel.getTestDeck());
         }
     }
 
@@ -75,46 +70,52 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void initialiseDeck(Iterator<Card> cardIterator, List<Card> dictionary,
-                                Map<Card, Boolean> shownWords) {
+    private void initialiseDeck(Iterator<Card> cardIterator, List<Card> dictionary) {
         //in case cardIterator is null for whatever reason...
         if (cardIterator.hasNext()) {
-            Card next = cardIterator.next();
-            sideA.setText(next.getSideA());
-            sideB.setText(next.getSideB());
+            current = cardIterator.next();
+            sideA.setText(current.getSideA());
+            sideB.setText(current.getSideB());
 
             //as the card has been shown, set its flag to true
+            current.setShown(true);
             //then setLastDisplayed card to the card that has just been displayed
-            shownWords.replace(next, true);
-            mViewModel.setLastDisplayed(next);
+            mViewModel.setCurrentCard(current);
         }
     }
 
     public void nextCard() {
-        goToNextCard(mViewModel.getKeyIterator(), mViewModel.getTestDictionary(), mViewModel.getShownWords());
+        goToNextCard(mViewModel.getCardIterator(), mViewModel.getTestDeck());
     }
 
-    private void goToNextCard(Iterator<Card> cardIterator, List<Card> dictionary,
-                             Map<Card, Boolean> shownWords) {
+    private void goToNextCard(Iterator<Card> cardIterator, List<Card> dictionary) {
         if(cardIterator.hasNext()) {
-            Card next = cardIterator.next();
+            current = cardIterator.next();
             //if the word hasn't already been shown before
             //current assumption assumes no nullpointerexception
-            if(!shownWords.get(next)) {
-                sideA.setText(next.getSideA());
-                sideB.setText(next.getSideB());
+            if(!current.isShown()) {
+                sideA.setText(current.getSideA());
+                sideB.setText(current.getSideB());
 
                 //as the entry equiv to testKey has been shown, set its flag to true
-                shownWords.replace(next, true);
-                mViewModel.setLastDisplayed(next);
+                current.setShown(true);
+                mViewModel.setCurrentCard(current);
             }
         } else {
             //Assuming there is no key for "Finished"
             //TODO - this is a placeholder. Eventually when a deck finishes we want to replace
             // with finished screen and button back to homepage
-            sideA.setText("Finished");
-            sideB.setText("Finished");
+            sideA.setText("Finished Deck");
+            sideB.setText("Finished Deck");
+            sideB.setVisibility(View.VISIBLE);
         }
     }
 
+    public void repeatCard() {
+        //set card in shownwords to flag false
+        if(current != null) {
+            current.setShown(false);
+        }
+        //ensure that iterator goes back around the list - don't have iterator?
+    }
 }
