@@ -24,7 +24,6 @@ import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class MainFragment extends Fragment {
-    //TODO - logic for repeating a card, linking to repeat button
 
     private MainViewModel mViewModel;
     private TextView sideA, sideB;
@@ -86,14 +85,27 @@ public class MainFragment extends Fragment {
             current = cardIterator.next();
             if(!current.isShown()) {
                 showCard(current);
+            } else {
+                //TODO - placeholder, see below
+                sideA.setText("Finished Deck - no repeats (bp1)");
+                sideB.setText("Finished Deck - no repeats (bp1)");
+                sideB.setVisibility(View.VISIBLE);
             }
         } else {
-            //Assuming there is no key for "Finished"
-            //TODO - this is a placeholder. Eventually when a deck finishes we want to replace
-            // with finished screen and button back to homepage
-            sideA.setText("Finished Deck");
-            sideB.setText("Finished Deck");
-            sideB.setVisibility(View.VISIBLE);
+            //cardIterator has finished which means original deck has finished
+            //check for cards that user has said they want to repeat
+            if(!checkIfRepeatDeckIsEmpty()) {
+                mViewModel.setCardIteratorToRepeatDeck();
+                cardIterator = mViewModel.getCardIterator();
+                nextCard();
+            } else {
+                //Assuming there is no key for "Finished"
+                //TODO - this is a placeholder. Eventually when a deck finishes we want to replace
+                // with finished screen and button back to homepage
+                sideA.setText("Finished Deck - no repeats (bp2)");
+                sideB.setText("Finished Deck - no repeats (bp2)");
+                sideB.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -108,10 +120,42 @@ public class MainFragment extends Fragment {
     }
 
     public void repeatCard() {
-        //set card in shownwords to flag false
+        //set card shown flag false
         if(current != null) {
             current.setShown(false);
         }
-        //ensure that iterator goes back around the list - don't have iterator?
+
+        //TODO - unexpected behaviour with placeholder - when go to 'Finish' state,
+        // pressing repeat means 'current' card (last shown card) will reshow on screen
+    }
+
+    private boolean checkIfRepeatDeckIsEmpty() {
+
+        //initialise repeatDeck - TODO: consider moving to separate method; or move to VM sep meth
+        mViewModel.getTestDeck().forEach(card -> {
+            if(!card.isShown()) {
+                mViewModel.addToRepeatDeck(card);
+            }
+        });
+
+        boolean empty = false;
+        //**TEST IF REPEAT DECK IS EMPTY**
+        //repeatDeck is empty if it doesn't contain any Card
+        if(mViewModel.getRepeatDeck().isEmpty()) {
+            empty = true;
+        } else {
+            //it is also empty if all Cards in the repeatDeck have been shown
+            //aka it is NOT EMPTY if there is any Card in the deck where isShown is FALSE
+            for (Card c : mViewModel.getRepeatDeck()) {
+                if(!c.isShown()) {
+                    empty = false;
+                    break;
+                } else {
+                    empty = true;
+                }
+            }
+        }
+
+        return empty;
     }
 }
