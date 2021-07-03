@@ -1,7 +1,5 @@
 package com.example.mycards;
 
-import com.example.mycards.ui.main.MainFragment;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

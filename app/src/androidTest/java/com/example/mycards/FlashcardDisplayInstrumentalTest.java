@@ -1,11 +1,8 @@
 package com.example.mycards;
 
-import android.content.Context;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,8 +25,8 @@ public class FlashcardDisplayInstrumentalTest {
 
     //Do I need this?
     @Rule
-    public ActivityScenarioRule<MainActivity> activityRule =
-            new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<CardDisplayActivity> activityRule =
+            new ActivityScenarioRule<>(CardDisplayActivity.class);
 
     //Passes if text is displayed, but does not assess whether text is displayed in particular Fragment
     @Test

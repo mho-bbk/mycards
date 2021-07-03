@@ -1,4 +1,4 @@
-package com.example.mycards.ui.main;
+package com.example.mycards.ui.carddisplay;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,32 +19,30 @@ import com.example.mycards.Card;
 import com.example.mycards.R;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
-public class MainFragment extends Fragment {
+public class CardDisplayFragment extends Fragment {
 
-    private MainViewModel mViewModel;
+    private CardDisplayViewModel mViewModel;
     private TextView sideA, sideB;
     private Card current;
     private Iterator<Card> cardIterator;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static CardDisplayFragment newInstance() {
+        return new CardDisplayFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.main_fragment, container, false);
+        return inflater.inflate(R.layout.card_display_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(CardDisplayViewModel.class);
 
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
@@ -131,7 +129,8 @@ public class MainFragment extends Fragment {
 
     private boolean checkIfRepeatDeckIsEmpty() {
 
-        //initialise repeatDeck - TODO: consider moving to separate method; or move to VM sep meth
+        //initialise repeatDeck - TODO: do I need this bit?
+        // TODO - if this is needed, consider moving to separate method; or move to VM sep meth
         mViewModel.getTestDeck().forEach(card -> {
             if(!card.isShown()) {
                 mViewModel.addToRepeatDeck(card);
