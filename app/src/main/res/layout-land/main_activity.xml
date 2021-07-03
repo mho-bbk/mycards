@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
+    android:padding="10dp"
     tools:context=".MainActivity">
 
     <TextView
@@ -37,11 +37,11 @@
         android:text="Make MyCards"
         android:onClick="createCards"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/endPromptGuideline"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/endPromptGuideline"
