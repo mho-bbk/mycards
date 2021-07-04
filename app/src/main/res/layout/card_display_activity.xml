@@ -22,41 +22,59 @@
 
     <Button
         android:id="@+id/displayToggle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        app:layout_constraintHorizontal_weight="0.5"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+
         android:text="@string/multipleLineDisplayToggle"
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/nextFlashcard"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/backToHome"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/nextFlashcard"
         app:layout_constraintTop_toBottomOf="@+id/layoutPortraitGuide"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintHorizontal_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/backToHome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="0.5"
+        android:layout_marginRight="20dp"
+        android:text="Back to Home"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/repeatFlashcard"
+        app:layout_constraintTop_toBottomOf="@+id/displayToggle"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
 
     <Button
         android:id="@+id/nextFlashcard"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Next"
+        app:layout_constraintHorizontal_weight="0.5"
+        android:layout_marginBottom="20dp"
 
+        android:text="Next"
         app:layout_constraintBottom_toTopOf="@+id/repeatFlashcard"
         app:layout_constraintLeft_toRightOf="@+id/displayToggle"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutPortraitGuide"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:layout_marginBottom="20dp"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/repeatFlashcard"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="0.5"
         android:text="Repeat"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toRightOf="@+id/displayToggle"
+        app:layout_constraintLeft_toRightOf="@+id/backToHome"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nextFlashcard" />
 

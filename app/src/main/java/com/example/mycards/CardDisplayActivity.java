@@ -15,6 +15,7 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
     private Button displayBBtn;
     private Button nextBtn;
     private Button repeatBtn;
+    private Button backToHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,8 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
         nextBtn.setOnClickListener(this);
         repeatBtn = findViewById(R.id.repeatFlashcard);
         repeatBtn.setOnClickListener(this);
+        backToHome = findViewById(R.id.backToHome);
+        backToHome.setOnClickListener(this);
     }
 
 
@@ -51,6 +54,9 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.repeatFlashcard:
                 flashcardDisplay.repeatCard();
+                break;
+            case R.id.backToHome:
+                finish();   //clears activity from the stack
                 break;
             default:
                 break;
