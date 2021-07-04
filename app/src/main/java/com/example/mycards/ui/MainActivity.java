@@ -1,4 +1,4 @@
-package com.example.mycards;
+package com.example.mycards.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.mycards.R;
 import com.example.mycards.ui.main.MainPromptFragment;
 
 public class MainActivity extends AppCompatActivity {

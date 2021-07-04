@@ -33,6 +33,7 @@ public class MainPromptFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(MainPromptViewModel.class);
         // TODO: Use the ViewModel
+        //TODO: Coding In Flow tutorial impl observe on allNotes item but not sure we need it here
     }
 
 }

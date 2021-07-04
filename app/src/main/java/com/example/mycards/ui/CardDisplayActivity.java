@@ -1,4 +1,4 @@
-package com.example.mycards;
+package com.example.mycards.ui;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.mycards.R;
 import com.example.mycards.ui.carddisplay.CardDisplayFragment;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
