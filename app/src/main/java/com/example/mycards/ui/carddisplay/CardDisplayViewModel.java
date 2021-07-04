@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.Card;
+import com.example.mycards.data.repositories.AnswerRepository;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +15,12 @@ import java.util.Queue;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayViewModel extends ViewModel {
+
+//    private AnswerRepository answerRepository;
+//
+//    public CardDisplayViewModel(AnswerRepository answerRepository) {
+//        this.answerRepository = answerRepository;
+//    }
 
     //test deck for the timebeing - real deck will be injected in when link to db
     private final List<Card> testDeck =
