@@ -14,10 +14,6 @@ import com.example.mycards.ui.carddisplay.CardDisplayFragment;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button displayBBtn;
-    private Button nextBtn;
-    private Button repeatBtn;
-    private Button backToHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +26,13 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
                     .commitNow();
         }
 
-        displayBBtn = findViewById(R.id.displayToggle);
+        Button displayBBtn = findViewById(R.id.displayToggle);
         displayBBtn.setOnClickListener(this);
-        nextBtn = findViewById(R.id.nextFlashcard);
+        Button nextBtn = findViewById(R.id.nextFlashcard);
         nextBtn.setOnClickListener(this);
-        repeatBtn = findViewById(R.id.repeatFlashcard);
+        Button repeatBtn = findViewById(R.id.repeatFlashcard);
         repeatBtn.setOnClickListener(this);
-        backToHome = findViewById(R.id.backToHome);
+        Button backToHome = findViewById(R.id.backToHome);
         backToHome.setOnClickListener(this);
     }
 

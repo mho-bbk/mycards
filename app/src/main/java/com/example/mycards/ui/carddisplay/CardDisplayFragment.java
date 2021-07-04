@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.mycards.Card;
 import com.example.mycards.R;
+import com.example.mycards.data.repositories.AnswerRepository;
+import com.example.mycards.ui.main.MainPromptVMFactory;
 
 import java.util.Iterator;
 
@@ -42,7 +44,12 @@ public class CardDisplayFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(CardDisplayViewModel.class);
+
+        //This is to implement the Factory - TODO: replace with dependency injection
+        AnswerRepository repository = new AnswerRepository(requireActivity().getApplication());
+        CardDisplayVMFactory cardFactory = new CardDisplayVMFactory(repository);
+
+        mViewModel = new ViewModelProvider(this, cardFactory).get(CardDisplayViewModel.class);
 
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
