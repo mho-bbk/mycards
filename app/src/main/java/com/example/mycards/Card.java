@@ -45,7 +45,7 @@ public class Card {
     @NotNull
     @Override
     public String toString() {
-        return "Side A: " + sideA + ", Side B: " + sideB;
+        return sideA + ", " + sideB;
     }
 
     public String getSideA() {

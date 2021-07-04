@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.mycards.ui.carddisplay.CardDisplayFragment;
 
@@ -54,6 +55,9 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.repeatFlashcard:
                 flashcardDisplay.repeatCard();
+                Toast.makeText(this,
+                        flashcardDisplay.getCurrentCardAsString() + " will repeat at end of deck",
+                        Toast.LENGTH_SHORT).show();
                 break;
             case R.id.backToHome:
                 finish();   //clears activity from the stack

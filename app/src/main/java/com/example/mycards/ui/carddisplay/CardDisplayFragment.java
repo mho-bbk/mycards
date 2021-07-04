@@ -157,4 +157,8 @@ public class CardDisplayFragment extends Fragment {
 
         return empty;
     }
+
+    public String getCurrentCardAsString() {
+        return current.toString();
+    }
 }
