@@ -1,7 +1,9 @@
-package com.example.mycards.ui;
+package com.example.mycards.ui.carddisplay;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ public class CardDisplayActivity extends AppCompatActivity implements View.OnCli
                     .commitNow();
         }
 
+        //Set buttons
         Button displayBBtn = findViewById(R.id.displayToggle);
         displayBBtn.setOnClickListener(this);
         Button nextBtn = findViewById(R.id.nextFlashcard);

@@ -15,7 +15,9 @@ to repeat same flashcards.
 03/07/21: Need new home screen to take user input. Will need new Activity and to use Intent. 
 There is also option to use Android Navigation Library instead of Intent but for now, impl bog standard Intent.
 04/7/21: NEW FUNCTION not in original spec (1-2 work units) - added back to home button. Android has built-in finish() function
-which destroys activity - no need to use stack for manual undo (unless back is to preserve some state *within* the activity)
+which destroys activity - no need to use stack for manual undo (unless back is to preserve some state *within* the activity).
+TODO - Attempted to impl the CardDisplayAdapter but can't work out how to connect this to RecycleView and Fragment (not Activity)...
+
 
 Q&A
 

@@ -49,6 +49,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
 
+    //RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+
     //Room
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"

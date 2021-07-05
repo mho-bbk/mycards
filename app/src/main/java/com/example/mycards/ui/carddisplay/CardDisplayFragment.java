@@ -1,6 +1,7 @@
 package com.example.mycards.ui.carddisplay;
 
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Build;
@@ -9,23 +10,27 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mycards.Card;
 import com.example.mycards.R;
+import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
-import com.example.mycards.ui.main.MainPromptVMFactory;
 
 import java.util.Iterator;
+import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment {
 
-    private CardDisplayViewModel mViewModel;
+    private CardDisplayViewModel cardDisplayViewModel;
     private TextView sideA, sideB;
     private Card current;
     private Iterator<Card> cardIterator;
@@ -49,23 +54,38 @@ public class CardDisplayFragment extends Fragment {
         AnswerRepository repository = new AnswerRepository(requireActivity().getApplication());
         CardDisplayVMFactory cardFactory = new CardDisplayVMFactory(repository);
 
-        mViewModel = new ViewModelProvider(this, cardFactory).get(CardDisplayViewModel.class);
+        //Implement RecyclerView
+        RecyclerView cardRecyclerView = getView().findViewById(R.id.recycleViewCard);
+        cardRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        cardRecyclerView.setHasFixedSize(true);
+
+        CardDisplayAdapter cardDisplayAdapter = new CardDisplayAdapter();
+        cardRecyclerView.setAdapter(cardDisplayAdapter);
+
+        cardDisplayViewModel = new ViewModelProvider(this, cardFactory).get(CardDisplayViewModel.class);
+//        cardDisplayViewModel.getAllAnswers().observe(getActivity(), new Observer<List<UserAnswer>>() {
+//            @Override
+//            public void onChanged(List<UserAnswer> userAnswers) {
+//                cardDisplayAdapter.setUserAnswers(userAnswers);
+//            }
+//        });
 
         //other set-up code
-        sideA = getView().findViewById(R.id.side_a);
-        sideB = getView().findViewById(R.id.side_b);
-        cardIterator = mViewModel.getCardIterator();    //reference to the iterator stored in VM
-
-        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
-        //if getLastDisplayed is not null then the user has started the deck
-        if(mViewModel.getCurrentCard() != null) {
-            //we want the last displayed flashcard back
-            sideA.setText(mViewModel.getCurrentCard().getSideA());
-            sideB.setText(mViewModel.getCurrentCard().getSideB());
-        } else {
-            //we want to initialise the deck
-            initialiseDeck();
-        }
+//        sideA = getView().findViewById(R.id.side_a);
+//        sideB = getView().findViewById(R.id.side_b);
+//        cardIterator = cardDisplayViewModel.getCardIterator();    //reference to the iterator stored in VM
+//
+//        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
+//        //if getLastDisplayed is not null then the user has started the deck
+//        if(cardDisplayViewModel.getCurrentCard() != null) {
+//            //we want the last displayed flashcard back
+//            sideA.setText(cardDisplayViewModel.getCurrentCard().getSideA());
+//            sideB.setText(cardDisplayViewModel.getCurrentCard().getSideB());
+//        } else {
+//            //we want to initialise the deck
+//            initialiseDeck();
+//        }
     }
 
     public void toggleVisibility(View view) {
@@ -100,8 +120,8 @@ public class CardDisplayFragment extends Fragment {
             //cardIterator has finished which means original deck has finished
             //check for cards that user has said they want to repeat
             if(!checkIfRepeatDeckIsEmpty()) {
-                mViewModel.setCardIteratorToRepeatDeck();
-                cardIterator = mViewModel.getCardIterator();
+                cardDisplayViewModel.setCardIteratorToRepeatDeck();
+                cardIterator = cardDisplayViewModel.getCardIterator();
                 nextCard();
             } else {
                 //Assuming there is no key for "Finished"
@@ -121,7 +141,7 @@ public class CardDisplayFragment extends Fragment {
         //as the card has been shown, set its flag to true
         card.setShown(true);
         //save the current card in the View Model (handle Activity destroyed)
-        mViewModel.setCurrentCard(card);
+        cardDisplayViewModel.setCurrentCard(card);
     }
 
     public void repeatCard() {
@@ -138,21 +158,21 @@ public class CardDisplayFragment extends Fragment {
 
         //initialise repeatDeck - TODO: do I need this bit?
         // TODO - if this is needed, consider moving to separate method; or move to VM sep meth
-        mViewModel.getTestDeck().forEach(card -> {
+        cardDisplayViewModel.getTestDeck().forEach(card -> {
             if(!card.isShown()) {
-                mViewModel.addToRepeatDeck(card);
+                cardDisplayViewModel.addToRepeatDeck(card);
             }
         });
 
         boolean empty = false;
         //**TEST IF REPEAT DECK IS EMPTY**
         //repeatDeck is empty if it doesn't contain any Card
-        if(mViewModel.getRepeatDeck().isEmpty()) {
+        if(cardDisplayViewModel.getRepeatDeck().isEmpty()) {
             empty = true;
         } else {
             //it is also empty if all Cards in the repeatDeck have been shown
             //aka it is NOT EMPTY if there is any Card in the deck where isShown is FALSE
-            for (Card c : mViewModel.getRepeatDeck()) {
+            for (Card c : cardDisplayViewModel.getRepeatDeck()) {
                 if(!c.isShown()) {
                     empty = false;
                     break;
