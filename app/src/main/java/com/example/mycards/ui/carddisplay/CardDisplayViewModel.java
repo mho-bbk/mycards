@@ -1,6 +1,7 @@
 package com.example.mycards.ui.carddisplay;
 
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
@@ -13,6 +14,7 @@ import com.example.mycards.data.repositories.AnswerRepository;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
@@ -20,21 +22,30 @@ public class CardDisplayViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
     private LiveData<List<UserAnswer>> userAnswers;
+//    private List<Card> testDeck;
+
+    private Iterator<Card> cardIterator;
+    private Card currentCard;
+    private Queue<Card> repeatDeck = new LinkedList<>();
 
     public CardDisplayViewModel(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
         userAnswers = getAllAnswers();
-    }
 
-    //test deck for the timebeing - real deck will be injected in when link to db
+//        List<UserAnswer> answersUnboxed = userAnswers.getValue();
+//
+//        for (UserAnswer ans : answersUnboxed) {
+//            testDeck.add(new Card(ans.getAnswer(), ans.getAnswer() + " in Japanese"));
+//        }
+
+        cardIterator = testDeck.iterator();
+    }
+//    test deck for the timebeing - real deck will be injected in when link to db
     private final List<Card> testDeck =
             List.of(new Card("apple", "りんご (ringo)"),
                     new Card("orange", "オレンジ (orenji)"),
                     new Card("watermelon", "スイカ (suika)"));
 
-    private Iterator<Card> cardIterator = testDeck.iterator();
-    private Card currentCard;
-    private Queue<Card> repeatDeck = new LinkedList<>();
 
     public List<Card> getTestDeck() {
         return testDeck;

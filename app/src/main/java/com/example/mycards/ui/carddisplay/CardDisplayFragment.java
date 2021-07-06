@@ -54,38 +54,31 @@ public class CardDisplayFragment extends Fragment {
         AnswerRepository repository = new AnswerRepository(requireActivity().getApplication());
         CardDisplayVMFactory cardFactory = new CardDisplayVMFactory(repository);
 
-        //Implement RecyclerView
-        RecyclerView cardRecyclerView = getView().findViewById(R.id.recycleViewCard);
-        cardRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-        cardRecyclerView.setHasFixedSize(true);
-
-        CardDisplayAdapter cardDisplayAdapter = new CardDisplayAdapter();
-        cardRecyclerView.setAdapter(cardDisplayAdapter);
 
         cardDisplayViewModel = new ViewModelProvider(this, cardFactory).get(CardDisplayViewModel.class);
-//        cardDisplayViewModel.getAllAnswers().observe(getActivity(), new Observer<List<UserAnswer>>() {
-//            @Override
-//            public void onChanged(List<UserAnswer> userAnswers) {
+        cardDisplayViewModel.getAllAnswers().observe(getViewLifecycleOwner(), new Observer<List<UserAnswer>>() {
+            @Override
+            public void onChanged(List<UserAnswer> userAnswers) {
 //                cardDisplayAdapter.setUserAnswers(userAnswers);
-//            }
-//        });
+                //this runs
+            }
+        });
 
         //other set-up code
-//        sideA = getView().findViewById(R.id.side_a);
-//        sideB = getView().findViewById(R.id.side_b);
-//        cardIterator = cardDisplayViewModel.getCardIterator();    //reference to the iterator stored in VM
-//
-//        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
-//        //if getLastDisplayed is not null then the user has started the deck
-//        if(cardDisplayViewModel.getCurrentCard() != null) {
-//            //we want the last displayed flashcard back
-//            sideA.setText(cardDisplayViewModel.getCurrentCard().getSideA());
-//            sideB.setText(cardDisplayViewModel.getCurrentCard().getSideB());
-//        } else {
-//            //we want to initialise the deck
-//            initialiseDeck();
-//        }
+        sideA = getView().findViewById(R.id.side_a);
+        sideB = getView().findViewById(R.id.side_b);
+        cardIterator = cardDisplayViewModel.getCardIterator();    //reference to the iterator stored in VM
+
+        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
+        //if getLastDisplayed is not null then the user has started the deck
+        if(cardDisplayViewModel.getCurrentCard() != null) {
+            //we want the last displayed flashcard back
+            sideA.setText(cardDisplayViewModel.getCurrentCard().getSideA());
+            sideB.setText(cardDisplayViewModel.getCurrentCard().getSideB());
+        } else {
+            //we want to initialise the deck
+            initialiseDeck();
+        }
     }
 
     public void toggleVisibility(View view) {

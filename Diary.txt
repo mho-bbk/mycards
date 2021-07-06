@@ -16,7 +16,11 @@ to repeat same flashcards.
 There is also option to use Android Navigation Library instead of Intent but for now, impl bog standard Intent.
 04/7/21: NEW FUNCTION not in original spec (1-2 work units) - added back to home button. Android has built-in finish() function
 which destroys activity - no need to use stack for manual undo (unless back is to preserve some state *within* the activity).
-TODO - Attempted to impl the CardDisplayAdapter but can't work out how to connect this to RecycleView and Fragment (not Activity)...
+05/7/21: Implemented RecyclerView/Adapter (to an extent) but it doesn't work well for MyCards - used for endless scroll function.
+Thought it could help 'refresh' cards and could come back to it if want to implement swipe > button for moving to next card. 
+Conclusion for now - not appropriate!
+6/7/21: TODO - figure out how to pass data input from MainActivity into shared VM.
+
 
 
 Q&A
