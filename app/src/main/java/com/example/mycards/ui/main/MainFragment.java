@@ -1,34 +1,27 @@
 package com.example.mycards.ui.main;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.mycards.R;
-import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
-import com.example.mycards.ui.carddisplay.CardDisplayFragment;
 import com.example.mycards.ui.carddisplay.CardDisplayVMFactory;
-import com.example.mycards.ui.carddisplay.CardDisplayViewModel;
+import com.example.mycards.SharedViewModel;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
 
-    private CardDisplayViewModel mainPromptViewModel;
+    private SharedViewModel mainPromptViewModel;
     private Button makeCards;
 
     private EditText jobEditTxt;
@@ -54,7 +47,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         AnswerRepository repository = new AnswerRepository(getActivity().getApplication());
         CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
 
-        mainPromptViewModel = new ViewModelProvider(this, factory).get(CardDisplayViewModel.class);
+        mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 
 //        jobEditTxt = getView().findViewById(R.id.jobEditTxt);
 //        hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);
@@ -69,18 +62,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
 ////
-    public void createCards(View v) {
-
+    public void createCards() {
         NavDirections goToCardDisplayFragment = MainFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
-        Navigation.findNavController(v).navigate(goToCardDisplayFragment);
+        NavHostFragment.findNavController(this).navigate(goToCardDisplayFragment);
 
-//        if (passOnDataSuccessful()) {
-//            Intent intent = new Intent(getActivity(), CardDisplayFragment.class);
-//            startActivity(intent);
-//        } else {
-//            Toast.makeText(this, "Ya didn't enter an answer did ya", Toast.LENGTH_LONG).show();
-//        }
-
+        //TODO - ensure data is passed onto CardDisplayViewModel
     }
 
 //    public boolean passOnDataSuccessful() {
@@ -103,14 +89,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-//        switch(v.getId()) {
-//            case R.id.makeCardsBtn:
-//                createCards(v);
-//                break;
-//            default:
-//                break;
-//        }
-
-        NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment2_to_cardDisplayFragment2);
+        createCards();
     }
 }

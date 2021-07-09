@@ -1,4 +1,4 @@
-package com.example.mycards.ui.carddisplay;
+package com.example.mycards;
 
 import android.app.Application;
 import android.os.Build;
@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.Card;
@@ -22,13 +23,13 @@ import java.util.Objects;
 import java.util.Queue;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
-public class CardDisplayViewModel extends ViewModel {
+public class SharedViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
-    private LiveData<List<UserAnswer>> userAnswers;
+    private MutableLiveData<List<UserAnswer>> userAnswers;
 //    private List<Card> testDeck;
 
-    public CardDisplayViewModel(AnswerRepository answerRepository) {
+    public SharedViewModel(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
     }
 
@@ -81,10 +82,9 @@ public class CardDisplayViewModel extends ViewModel {
         this.cardIterator = repeatDeck.iterator();
     }
 
+    //**REPOSITORY/DAO METHODS**
     public LiveData<List<UserAnswer>> getAllAnswers() { return answerRepository.getAllAnswers(); }
 
-    //TODO - don't believe the below is needed as this VM will only display results,
-    // maybe need delete for garbage collection?
     public void upsert(UserAnswer answer) {
         answerRepository.upsert(answer);
     }

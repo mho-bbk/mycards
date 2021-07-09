@@ -9,16 +9,16 @@
         android:id="@+id/mainFragment2"
         android:name="com.example.mycards.ui.main.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment" >
+        tools:layout="@layout/main_fragment">
         <action
             android:id="@+id/action_mainFragment2_to_cardDisplayFragment2"
             app:destination="@id/cardDisplayFragment2" />
     </fragment>
-
     <fragment
         android:id="@+id/cardDisplayFragment2"
         android:name="com.example.mycards.ui.carddisplay.CardDisplayFragment"
         android:label="card_display_fragment"
         tools:layout="@layout/card_display_fragment" />
+
 
 </navigation>

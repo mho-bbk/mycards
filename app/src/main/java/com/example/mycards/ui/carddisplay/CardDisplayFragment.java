@@ -13,20 +13,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.mycards.Card;
 import com.example.mycards.R;
+import com.example.mycards.SharedViewModel;
 import com.example.mycards.data.repositories.AnswerRepository;
-
-import java.util.Iterator;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
-//    private CardDisplayViewModel cardDisplayViewModel;
+    private SharedViewModel cardDisplayViewModel;
 //    private TextView sideA, sideB;
 //    private Card current;
 //    private Iterator<Card> cardIterator;
@@ -46,11 +41,11 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        //TODO - use dependency injection
-//        AnswerRepository repository = new AnswerRepository(getActivity().getApplication());
-//        CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
-//
-//        cardDisplayViewModel = new ViewModelProvider(this, factory).get(CardDisplayViewModel.class);
+        //TODO - use dependency injection
+        AnswerRepository repository = new AnswerRepository(getActivity().getApplication());
+        CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
+
+        cardDisplayViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 
 //        //other set-up code
 //        sideA = getView().findViewById(R.id.side_a);
@@ -200,6 +195,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //                break;
 //            default:
 //                break;
-        }
-//    }
+//        }
+    }
 }
