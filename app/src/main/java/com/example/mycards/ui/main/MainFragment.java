@@ -5,6 +5,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +22,6 @@ import android.widget.Toast;
 import com.example.mycards.R;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
-import com.example.mycards.ui.carddisplay.CardDisplayActivity;
 import com.example.mycards.ui.carddisplay.CardDisplayFragment;
 import com.example.mycards.ui.carddisplay.CardDisplayVMFactory;
 import com.example.mycards.ui.carddisplay.CardDisplayViewModel;
@@ -57,8 +60,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 //        hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);
 //        subjectEditTxt = getView().findViewById(R.id.subjectEditTxt);
 //
-//        makeCards = getView().findViewById(R.id.makeCardsBtn);
-//        makeCards.setOnClickListener(this::onClick);
+        makeCards = getView().findViewById(R.id.makeCardsBtn);
+        makeCards.setOnClickListener(this::onClick);
 
         //Leftover code - This is to implement the Factory - TODO: replace with dependency injection
 //        AnswerRepository repository = new AnswerRepository(this.getApplication());
@@ -66,7 +69,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
 ////
-    public void createCards() {
+    public void createCards(View v) {
+
+        NavDirections goToCardDisplayFragment = MainFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
+        Navigation.findNavController(v).navigate(goToCardDisplayFragment);
 
 //        if (passOnDataSuccessful()) {
 //            Intent intent = new Intent(getActivity(), CardDisplayFragment.class);
@@ -97,12 +103,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.makeCardsBtn:
-                createCards();
-                break;
-            default:
-                break;
-        }
+//        switch(v.getId()) {
+//            case R.id.makeCardsBtn:
+//                createCards(v);
+//                break;
+//            default:
+//                break;
+//        }
+
+        NavHostFragment.findNavController(this).navigate(R.id.action_mainFragment2_to_cardDisplayFragment2);
     }
 }

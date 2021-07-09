@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment2">
+
+    <fragment
+        android:id="@+id/mainFragment2"
+        android:name="com.example.mycards.ui.main.MainFragment"
+        android:label="main_fragment"
+        tools:layout="@layout/main_fragment" >
+        <action
+            android:id="@+id/action_mainFragment2_to_cardDisplayFragment2"
+            app:destination="@id/cardDisplayFragment2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cardDisplayFragment2"
+        android:name="com.example.mycards.ui.carddisplay.CardDisplayFragment"
+        android:label="card_display_fragment"
+        tools:layout="@layout/card_display_fragment" />
+
+</navigation>
