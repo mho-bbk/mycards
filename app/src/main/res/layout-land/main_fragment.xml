@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    tools:context=".ui.main.MainActivity">
+    android:padding="10dp"
+    tools:context=".ui.main.MainFragment">
 
     <TextView
         android:id="@+id/intro"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/startPromptGuideline"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:id="@+id/mainPromptFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -28,8 +28,12 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/startPromptGuideline"
-        app:layout_constraintBottom_toTopOf="@id/endPromptGuideline"
-        android:padding="15dp">
+        app:layout_constraintBottom_toTopOf="@id/endPromptGuideline">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/jobPrompt"
@@ -53,8 +57,7 @@
                 app:layout_constraintHorizontal_bias="0.15"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/jobPrompt"
-                android:inputType="text"/>
+                app:layout_constraintTop_toBottomOf="@+id/jobPrompt" />
 
             <TextView
                 android:id="@+id/hobbyPrompt"
@@ -78,8 +81,7 @@
                 app:layout_constraintHorizontal_bias="0.15"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hobbyPrompt"
-                android:inputType="text"/>
+                app:layout_constraintTop_toBottomOf="@+id/hobbyPrompt" />
 
             <TextView
                 android:id="@+id/subjectPrompt"
@@ -102,11 +104,11 @@
                 app:layout_constraintHorizontal_bias="0.15"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subjectPrompt"
-                android:inputType="text"/>
+                app:layout_constraintTop_toBottomOf="@+id/subjectPrompt" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </ScrollView>
 
     <Button
         android:id="@+id/makeCardsBtn"
@@ -115,11 +117,11 @@
         android:text="Make MyCards"
         android:onClick="createCards"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/endPromptGuideline"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/endPromptGuideline"

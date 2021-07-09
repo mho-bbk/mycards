@@ -26,9 +26,10 @@ import com.example.mycards.data.repositories.AnswerRepository;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
-public class CardDisplayFragment extends Fragment {
+public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
     private CardDisplayViewModel cardDisplayViewModel;
     private TextView sideA, sideB;
@@ -43,26 +44,13 @@ public class CardDisplayFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.card_display_fragment, container, false);
+        return inflater.inflate(R.layout.card_display_activity, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //This is to implement the Factory - TODO: replace with dependency injection
-        AnswerRepository repository = new AnswerRepository(requireActivity().getApplication());
-        CardDisplayVMFactory cardFactory = new CardDisplayVMFactory(repository);
-
-
-        cardDisplayViewModel = new ViewModelProvider(this, cardFactory).get(CardDisplayViewModel.class);
-        cardDisplayViewModel.getAllAnswers().observe(getViewLifecycleOwner(), new Observer<List<UserAnswer>>() {
-            @Override
-            public void onChanged(List<UserAnswer> userAnswers) {
-//                cardDisplayAdapter.setUserAnswers(userAnswers);
-                //this runs
-            }
-        });
+        cardDisplayViewModel = new ViewModelProvider(this).get(CardDisplayViewModel.class);
 
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
@@ -180,5 +168,28 @@ public class CardDisplayFragment extends Fragment {
 
     public String getCurrentCardAsString() {
         return current.toString();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.displayToggle:
+                toggleVisibility(sideB);
+                break;
+            case R.id.nextFlashcard:
+                nextCard();
+                break;
+            case R.id.repeatFlashcard:
+                repeatCard();
+                Toast.makeText(getActivity(),
+                        getCurrentCardAsString() + " will repeat at end of deck",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.backToHome:
+//                finish();   //clears activity from the stack
+                break;
+            default:
+                break;
+        }
     }
 }

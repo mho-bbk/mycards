@@ -20,6 +20,8 @@ which destroys activity - no need to use stack for manual undo (unless back is t
 Thought it could help 'refresh' cards and could come back to it if want to implement swipe > button for moving to next card. 
 Conclusion for now - not appropriate!
 6/7/21: TODO - figure out how to pass data input from MainActivity into shared VM.
+9/7/21: Complications - going to try Single Activity structure and Navigation library (post-2018 Android)
+
 
 
 

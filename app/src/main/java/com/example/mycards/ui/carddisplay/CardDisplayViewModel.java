@@ -1,8 +1,10 @@
 package com.example.mycards.ui.carddisplay;
 
+import android.app.Application;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,6 +12,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.mycards.Card;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,28 +28,30 @@ public class CardDisplayViewModel extends ViewModel {
     private LiveData<List<UserAnswer>> userAnswers;
 //    private List<Card> testDeck;
 
-    private Iterator<Card> cardIterator;
+    public CardDisplayViewModel(AnswerRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
+
+//    test deck for the timebeing - real deck will be injected in when link to db
+    private final List<Card> testDeck =
+        List.of(new Card("apple", "りんご (ringo)"),
+                new Card("orange", "オレンジ (orenji)"),
+                new Card("watermelon", "スイカ (suika)"));
+
+    private Iterator<Card> cardIterator = testDeck.iterator();
     private Card currentCard;
     private Queue<Card> repeatDeck = new LinkedList<>();
 
-    public CardDisplayViewModel(AnswerRepository answerRepository) {
-        this.answerRepository = answerRepository;
-        userAnswers = getAllAnswers();
+//    public CardDisplayViewModel(@NonNull @NotNull Application application) {
+//        this.answerRepository = new AnswerRepository(application);
+//        userAnswers = getAllAnswers();
 
 //        List<UserAnswer> answersUnboxed = userAnswers.getValue();
 //
 //        for (UserAnswer ans : answersUnboxed) {
 //            testDeck.add(new Card(ans.getAnswer(), ans.getAnswer() + " in Japanese"));
 //        }
-
-        cardIterator = testDeck.iterator();
-    }
-//    test deck for the timebeing - real deck will be injected in when link to db
-    private final List<Card> testDeck =
-            List.of(new Card("apple", "りんご (ringo)"),
-                    new Card("orange", "オレンジ (orenji)"),
-                    new Card("watermelon", "スイカ (suika)"));
-
+//    }
 
     public List<Card> getTestDeck() {
         return testDeck;
@@ -79,15 +85,15 @@ public class CardDisplayViewModel extends ViewModel {
 
     //TODO - don't believe the below is needed as this VM will only display results,
     // maybe need delete for garbage collection?
-//    public void upsert(UserAnswer answer) {
-//        answerRepository.upsert(answer);
-//    }
-//
-//    public void delete(UserAnswer answer) {
-//        answerRepository.delete(answer);
-//    }
-//
-//    public void deleteAllAnswers() {
-//        answerRepository.deleteAllAnswers();
-//    }
+    public void upsert(UserAnswer answer) {
+        answerRepository.upsert(answer);
+    }
+
+    public void delete(UserAnswer answer) {
+        answerRepository.delete(answer);
+    }
+
+    public void deleteAllAnswers() {
+        answerRepository.deleteAllAnswers();
+    }
 }
