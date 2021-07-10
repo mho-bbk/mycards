@@ -26,22 +26,23 @@ import java.util.Queue;
 public class SharedViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
-    private MutableLiveData<List<UserAnswer>> userAnswers;
+    private LiveData<List<UserAnswer>> userAnswers;
 //    private List<Card> testDeck;
 
     public SharedViewModel(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
+        this.userAnswers = getAllAnswers();
     }
 
 //    test deck for the timebeing - real deck will be injected in when link to db
-    private final List<Card> testDeck =
-        List.of(new Card("apple", "りんご (ringo)"),
-                new Card("orange", "オレンジ (orenji)"),
-                new Card("watermelon", "スイカ (suika)"));
-
-    private Iterator<Card> cardIterator = testDeck.iterator();
-    private Card currentCard;
-    private Queue<Card> repeatDeck = new LinkedList<>();
+//    private final List<Card> testDeck =
+//        List.of(new Card("apple", "りんご (ringo)"),
+//                new Card("orange", "オレンジ (orenji)"),
+//                new Card("watermelon", "スイカ (suika)"));
+//
+//    private Iterator<Card> cardIterator = testDeck.iterator();
+//    private Card currentCard;
+//    private Queue<Card> repeatDeck = new LinkedList<>();
 
 //    public CardDisplayViewModel(@NonNull @NotNull Application application) {
 //        this.answerRepository = new AnswerRepository(application);
@@ -53,34 +54,34 @@ public class SharedViewModel extends ViewModel {
 //            testDeck.add(new Card(ans.getAnswer(), ans.getAnswer() + " in Japanese"));
 //        }
 //    }
-
-    public List<Card> getTestDeck() {
-        return testDeck;
-    }
-
-    public Iterator<Card> getCardIterator() {
-        return cardIterator;
-    }
-
-    public void setCurrentCard(Card card) {
-        currentCard = card;
-    }
-
-    public Card getCurrentCard() {
-        return currentCard;
-    }
-
-    public Queue<Card> getRepeatDeck() {
-        return repeatDeck;
-    }
-
-    public void addToRepeatDeck(Card card) {
-        this.repeatDeck.add(card);
-    }
-
-    public void setCardIteratorToRepeatDeck() {
-        this.cardIterator = repeatDeck.iterator();
-    }
+//
+//    public List<Card> getTestDeck() {
+//        return testDeck;
+//    }
+//
+//    public Iterator<Card> getCardIterator() {
+//        return cardIterator;
+//    }
+//
+//    public void setCurrentCard(Card card) {
+//        currentCard = card;
+//    }
+//
+//    public Card getCurrentCard() {
+//        return currentCard;
+//    }
+//
+//    public Queue<Card> getRepeatDeck() {
+//        return repeatDeck;
+//    }
+//
+//    public void addToRepeatDeck(Card card) {
+//        this.repeatDeck.add(card);
+//    }
+//
+//    public void setCardIteratorToRepeatDeck() {
+//        this.cardIterator = repeatDeck.iterator();
+//    }
 
     //**REPOSITORY/DAO METHODS**
     public LiveData<List<UserAnswer>> getAllAnswers() { return answerRepository.getAllAnswers(); }

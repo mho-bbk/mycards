@@ -19,8 +19,20 @@ which destroys activity - no need to use stack for manual undo (unless back is t
 05/7/21: Implemented RecyclerView/Adapter (to an extent) but it doesn't work well for MyCards - used for endless scroll function.
 Thought it could help 'refresh' cards and could come back to it if want to implement swipe > button for moving to next card. 
 Conclusion for now - not appropriate!
-6/7/21: TODO - figure out how to pass data input from MainActivity into shared VM.
-9/7/21: Complications - going to try Single Activity structure and Navigation library (post-2018 Android)
+6/7/21: Figured out how to pass data input from MainActivity into shared VM -> best practice requires major restructure 
+9/7/21: Implemented Single Activity structure using Navigation library (post-2018 Android) whilst retaining MVVM. Major refactoring.
+App architecture is much better and we are able to use SafeArgs, which should make life easier later.
+Have lost 'back' functionality but Navigation should make this a lot simpler.
+TODO - implement tests for DB/Room
+10/7/21: Researching difficulties in testing LiveData (LD is 'lazy' so always returns null unless observed?)
+Implemented helper class available via Android Open Source - uses observeForever() methods, which can only be deployed on main thread
+Test: testUpdateOnInsert() has uncovered undesired behaviour. I defined PK as the id, which is right, but this does not prevent users giving same answer
+and creating duplicate entries of the same string in the db but with diff ids. 
+Eg if user ignores prompt and uses all 3 input fields to put their occupation 3 times, there would be 3 rows in the db with the same string but diff id.
+This could cause issues down the line eg 3 x duplicate flashcard sets in one deck, which is not desired. 
+User answer is now also defined as unique in the dao to prevent this. 
+
+ 
 
 
 
