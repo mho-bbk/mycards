@@ -1,6 +1,7 @@
 package com.example.mycards.ui.carddisplay;
 
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Build;
@@ -13,10 +14,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.mycards.Card;
 import com.example.mycards.R;
 import com.example.mycards.SharedViewModel;
+import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
@@ -46,6 +53,17 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
 
         cardDisplayViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
+
+        // Create the observer which updates the UI.
+        final Observer<List<UserAnswer>> observer = new Observer<List<UserAnswer>>() {
+            @Override
+            public void onChanged(List<UserAnswer> userAnswers) {
+                initialiseDeck(userAnswers);
+            }
+        };
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        cardDisplayViewModel.getAllAnswers().observe(getViewLifecycleOwner(), observer);
 
 //        //other set-up code
 //        sideA = getView().findViewById(R.id.side_a);
@@ -82,14 +100,29 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         }
     }
 
-//    private void initialiseDeck() {
+    private void initialiseDeck(List<UserAnswer> userAnswers) {
 //        if(cardIterator.hasNext()) {
 //            current = cardIterator.next();
 //            if(!current.isShown()) {
 //                showCard(current);
 //            }
 //        }
-//    }
+        List<Card> deck = new ArrayList<>();
+        //Get the user answers
+        //Turn them into Cards
+        for (UserAnswer answer: userAnswers) {
+            deck.add(new Card(answer.getAnswer(), answer.getAnswer() + "in Japanese"));
+        }
+        //Store the cards in VM
+        cardDisplayViewModel.setDeck(deck);
+        //Show first card on screen
+        showFirstCard();
+    }
+
+    private void showFirstCard() {
+        //show first card, taking data from VM - TODO
+        Toast.makeText(getActivity(), "showFirstCard()", Toast.LENGTH_SHORT).show();
+    }
 
 //    public void nextCard() {
 //        if(cardIterator.hasNext()) {

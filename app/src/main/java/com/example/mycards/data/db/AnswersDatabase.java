@@ -30,7 +30,6 @@ public abstract class AnswersDatabase extends RoomDatabase {
             //Can extract below to own method eg createDatabase to keep separate if desired
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     AnswersDatabase.class, "answer_database")
-                    .fallbackToDestructiveMigration()   //TODO - what does this do?
                     .build();
         }
         return instance;

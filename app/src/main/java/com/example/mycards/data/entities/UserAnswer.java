@@ -14,9 +14,7 @@ public class UserAnswer {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-//    @PrimaryKey
-//    @NonNull
-    private String answer;
+    private final String answer;
 
     //TODO - we need the below columns in the final db but maybe not this one...
 //    @ColumnInfo(name = "related_word")

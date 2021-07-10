@@ -39,7 +39,7 @@ public class UserAnswerDaoTest {
         answerDao = database.getUserAnswerDao();
     }
 
-    @After
+    @After  //executed after every test case
     public void tearDown() {
         database.close();
     }

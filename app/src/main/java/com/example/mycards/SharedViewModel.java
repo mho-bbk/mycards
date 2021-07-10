@@ -27,11 +27,11 @@ public class SharedViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
     private LiveData<List<UserAnswer>> userAnswers;
-//    private List<Card> testDeck;
+    private List<Card> deck;
 
     public SharedViewModel(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
-        this.userAnswers = getAllAnswers();
+        this.userAnswers = answerRepository.getAllAnswers();
     }
 
 //    test deck for the timebeing - real deck will be injected in when link to db
@@ -44,21 +44,15 @@ public class SharedViewModel extends ViewModel {
 //    private Card currentCard;
 //    private Queue<Card> repeatDeck = new LinkedList<>();
 
-//    public CardDisplayViewModel(@NonNull @NotNull Application application) {
-//        this.answerRepository = new AnswerRepository(application);
-//        userAnswers = getAllAnswers();
 
-//        List<UserAnswer> answersUnboxed = userAnswers.getValue();
-//
-//        for (UserAnswer ans : answersUnboxed) {
-//            testDeck.add(new Card(ans.getAnswer(), ans.getAnswer() + " in Japanese"));
-//        }
-//    }
-//
-//    public List<Card> getTestDeck() {
-//        return testDeck;
-//    }
-//
+    public void setDeck(List<Card> deck) {
+        this.deck = deck;
+    }
+
+    public List<Card> getDeck() {
+        return deck;
+    }
+
 //    public Iterator<Card> getCardIterator() {
 //        return cardIterator;
 //    }
@@ -84,7 +78,7 @@ public class SharedViewModel extends ViewModel {
 //    }
 
     //**REPOSITORY/DAO METHODS**
-    public LiveData<List<UserAnswer>> getAllAnswers() { return answerRepository.getAllAnswers(); }
+    public LiveData<List<UserAnswer>> getAllAnswers() { return userAnswers; }
 
     public void upsert(UserAnswer answer) {
         answerRepository.upsert(answer);

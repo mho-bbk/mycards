@@ -56,7 +56,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         jobEditTxt = getView().findViewById(R.id.jobEditTxt);
         hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);
         subjectEditTxt = getView().findViewById(R.id.subjectEditTxt);
-//
+
         makeCards = getView().findViewById(R.id.makeCardsBtn);
         makeCards.setOnClickListener(this::onClick);
 
@@ -70,8 +70,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         } else {
             Toast.makeText(getContext(), "passOnData unsuccessful", Toast.LENGTH_SHORT).show();
         }
-
-        //TODO - ensure data is passed onto CardDisplayViewModel
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)

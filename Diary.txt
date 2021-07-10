@@ -31,7 +31,7 @@ and creating duplicate entries of the same string in the db but with diff ids.
 Eg if user ignores prompt and uses all 3 input fields to put their occupation 3 times, there would be 3 rows in the db with the same string but diff id.
 This could cause issues down the line eg 3 x duplicate flashcard sets in one deck, which is not desired. 
 User answer is now also defined as unique in the dao to prevent this. 
-
+NEXT - testing the repository class; testing the VM.
  
 
 
