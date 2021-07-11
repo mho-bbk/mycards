@@ -13,12 +13,20 @@
         <action
             android:id="@+id/action_mainFragment2_to_cardDisplayFragment2"
             app:destination="@id/cardDisplayFragment2" />
+        <action
+            android:id="@+id/action_mainFragment2_to_maintenance"
+            app:destination="@id/maintenance" />
     </fragment>
     <fragment
         android:id="@+id/cardDisplayFragment2"
         android:name="com.example.mycards.ui.carddisplay.CardDisplayFragment"
         android:label="card_display_fragment"
         tools:layout="@layout/card_display_fragment" />
+    <fragment
+        android:id="@+id/maintenance"
+        android:name="com.example.mycards.ui.main.Maintenance"
+        android:label="fragment_maintenance"
+        tools:layout="@layout/fragment_maintenance" />
 
 
 </navigation>

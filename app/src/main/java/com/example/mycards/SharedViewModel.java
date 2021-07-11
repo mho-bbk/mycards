@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
-import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class SharedViewModel extends ViewModel {
 
     public SharedViewModel(AnswerRepository respository) {
         this.answerRepository = respository;
-//        this.userAnswers = respository.getAllAnswers();
+//        this.userAnswers = repository.getAllAnswers();
     }
 
 //    test deck for the timebeing - real deck will be injected in when link to db
@@ -80,5 +79,10 @@ public class SharedViewModel extends ViewModel {
 
     public void deleteAllAnswers() {
         answerRepository.deleteAllAnswers();
+    }
+
+    public int getAnswerDatabaseSize() {
+        //TODO - implement. How does VM interact with LiveData to get the answers on the repo?
+        return 0;
     }
 }

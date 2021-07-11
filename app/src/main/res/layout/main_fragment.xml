@@ -121,6 +121,18 @@
         app:layout_constraintTop_toBottomOf="@+id/endPromptGuideline"
         app:layout_constraintVertical_bias="0.25" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/openMaintenance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_engineering"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endPromptGuideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.1"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/endPromptGuideline"
         android:layout_width="wrap_content"

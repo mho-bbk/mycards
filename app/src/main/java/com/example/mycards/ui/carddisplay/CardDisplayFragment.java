@@ -50,7 +50,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 
         //TODO - use dependency injection
         DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
-        CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
+        SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         cardDisplayViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 

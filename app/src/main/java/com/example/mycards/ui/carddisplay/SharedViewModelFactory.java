@@ -12,11 +12,11 @@ import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
 import org.jetbrains.annotations.NotNull;
 
-public class CardDisplayVMFactory extends ViewModelProvider.NewInstanceFactory {
+public class SharedViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final DefaultAnswerRepository repository;
 
-    public CardDisplayVMFactory(DefaultAnswerRepository repository) {
+    public SharedViewModelFactory(DefaultAnswerRepository repository) {
         this.repository = repository;
     }
 

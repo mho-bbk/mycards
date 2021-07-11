@@ -20,13 +20,15 @@ import android.widget.Toast;
 import com.example.mycards.R;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
-import com.example.mycards.ui.carddisplay.CardDisplayVMFactory;
+import com.example.mycards.ui.carddisplay.SharedViewModelFactory;
 import com.example.mycards.SharedViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
 
     private SharedViewModel mainPromptViewModel;
     private Button makeCards;
+    private FloatingActionButton openMaintenanceButton;
 
     private EditText jobEditTxt;
     private EditText hobbyEditTxt;
@@ -49,7 +51,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         //TODO - use dependency injection
         DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
-        CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
+        SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 
@@ -58,7 +60,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         subjectEditTxt = getView().findViewById(R.id.subjectEditTxt);
 
         makeCards = getView().findViewById(R.id.makeCardsBtn);
-        makeCards.setOnClickListener(this::onClick);
+        makeCards.setOnClickListener(this);
+
+        openMaintenanceButton = getView().findViewById(R.id.openMaintenance);
+        openMaintenanceButton.setOnClickListener(this);
 
     }
 
@@ -94,6 +99,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onClick(View v) {
-        createCards();
+        switch(v.getId()) {
+            case R.id.makeCardsBtn:
+                createCards();
+                break;
+            case R.id.openMaintenance:
+                NavDirections goToMaintenanceFragment = MainFragmentDirections.actionMainFragment2ToMaintenance();
+                NavHostFragment.findNavController(this).navigate(goToMaintenanceFragment);
+                break;
+            default:
+                break;
+        }
     }
 }
