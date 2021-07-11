@@ -18,11 +18,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mycards.R;
-import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
 import com.example.mycards.ui.carddisplay.SharedViewModelFactory;
 import com.example.mycards.SharedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
 
@@ -80,19 +82,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @RequiresApi(api = Build.VERSION_CODES.R)
     public boolean passOnDataSuccessful() {
         //TODO - pass the string entered by the user into a data object to be stored in MainVM
-        UserAnswer job = new UserAnswer(jobEditTxt.getText().toString());
-        UserAnswer hobby = new UserAnswer(hobbyEditTxt.getText().toString());
-        UserAnswer subject = new UserAnswer(subjectEditTxt.getText().toString());
-//
-//        if(job.getAnswer().trim().isEmpty() || hobby.getAnswer().trim().isEmpty() ||
-//                subject.getAnswer().trim().isEmpty()) {
-//            Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
+        String job = jobEditTxt.getText().toString();
+        String hobby = hobbyEditTxt.getText().toString();
+        String subject = subjectEditTxt.getText().toString();
 
-        mainPromptViewModel.upsert(job);
-        mainPromptViewModel.upsert(hobby);
-        mainPromptViewModel.upsert(subject);
+        List<String> allUserInput = new ArrayList<>();
+        allUserInput.add(job);
+        allUserInput.add(hobby);
+        allUserInput.add(subject);
+////
+////        if(job.getAnswer().trim().isEmpty() || hobby.getAnswer().trim().isEmpty() ||
+////                subject.getAnswer().trim().isEmpty()) {
+////            Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
+////            return false;
+////        }
+//
+//        mainPromptViewModel.upsert(job);
+//        mainPromptViewModel.upsert(hobby);
+//        mainPromptViewModel.upsert(subject);
+        mainPromptViewModel.setUserInputs(allUserInput);
         return true;
     }
 

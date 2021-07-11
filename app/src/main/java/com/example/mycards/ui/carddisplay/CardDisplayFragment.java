@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mycards.Card;
@@ -22,14 +24,14 @@ import com.example.mycards.SharedViewModel;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
     private SharedViewModel cardDisplayViewModel;
-//    private TextView sideA, sideB;
+    private List<Card> deck;
+    private TextView sideA, sideB;
 //    private Card current;
 //    private Iterator<Card> cardIterator;
 
@@ -58,37 +60,35 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         final Observer<List<UserAnswer>> observer = new Observer<List<UserAnswer>>() {
             @Override
             public void onChanged(List<UserAnswer> userAnswers) {
-                initialiseDeck(userAnswers);
+                startDeck(userAnswers);
             }
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        cardDisplayViewModel.getAllAnswers().observe(getViewLifecycleOwner(), observer);
+        cardDisplayViewModel.userAnswers.observe(getViewLifecycleOwner(), observer);
 
-//        //other set-up code
-//        sideA = getView().findViewById(R.id.side_a);
-//        sideB = getView().findViewById(R.id.side_b);
-//        cardIterator = cardDisplayViewModel.getCardIterator();    //reference to the iterator stored in VM
-//
-//        //Set buttons
-//        Button displayBBtn = getView().findViewById(R.id.displayToggle);
-//        displayBBtn.setOnClickListener(this);
-//        Button nextBtn = getView().findViewById(R.id.nextFlashcard);
-//        nextBtn.setOnClickListener(this);
+        //other set-up code
+        sideA = getView().findViewById(R.id.side_a);
+        sideB = getView().findViewById(R.id.side_b);
+
+        //Set buttons
+        Button displayBBtn = getView().findViewById(R.id.displayToggle);
+        displayBBtn.setOnClickListener(this);
+        Button nextBtn = getView().findViewById(R.id.nextFlashcard);
+        nextBtn.setOnClickListener(this);
 //        Button repeatBtn = getView().findViewById(R.id.repeatFlashcard);
 //        repeatBtn.setOnClickListener(this);
 //        Button backToHome = getView().findViewById(R.id.backToHome);
 //        backToHome.setOnClickListener(this);
 //
-//        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
-//        //if getLastDisplayed is not null then the user has started the deck
+        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
+        //if getLastDisplayed is not null then the user has started the deck
 //        if(cardDisplayViewModel.getCurrentCard() != null) {
 //            //we want the last displayed flashcard back
-//            sideA.setText(cardDisplayViewModel.getCurrentCard().getSideA());
-//            sideB.setText(cardDisplayViewModel.getCurrentCard().getSideB());
+//            showCard(cardDisplayViewModel.getCurrentCard());
 //        } else {
 //            //we want to initialise the deck
-//            initialiseDeck();
+//            Toast.makeText(getActivity(), "currentCard is null", Toast.LENGTH_SHORT).show();
 //        }
     }
 
@@ -100,31 +100,15 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void initialiseDeck(List<UserAnswer> userAnswers) {
-//        if(cardIterator.hasNext()) {
-//            current = cardIterator.next();
-//            if(!current.isShown()) {
-//                showCard(current);
-//            }
-//        }
-        List<Card> deck = new ArrayList<>();
-        //Get the user answers
-        //Turn them into Cards
-        for (UserAnswer answer: userAnswers) {
-            deck.add(new Card(answer.getAnswer(), answer.getAnswer() + "in Japanese"));
-        }
-        //Store the cards in VM
-        cardDisplayViewModel.setDeck(deck);
-        //Show first card on screen
-        showFirstCard();
+    private void startDeck(List<UserAnswer> userAnswers) {
+        //TODO - rename these...
+        cardDisplayViewModel.transformUserAnswerListToDeck(userAnswers);
+        showCard(cardDisplayViewModel.getCurrentCard());
     }
 
-    private void showFirstCard() {
-        //show first card, taking data from VM - TODO
-        Toast.makeText(getActivity(), "showFirstCard()", Toast.LENGTH_SHORT).show();
-    }
 
-//    public void nextCard() {
+    public void goToNextCard() {
+        showCard(cardDisplayViewModel.getNextCard());
 //        if(cardIterator.hasNext()) {
 //            current = cardIterator.next();
 //            if(!current.isShown()) {
@@ -151,17 +135,22 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //                sideB.setVisibility(View.VISIBLE);
 //            }
 //        }
-//    }
+    }
 
-//    private void showCard(Card card) {
-//        sideA.setText(card.getSideA());
-//        sideB.setText(card.getSideB());
-//
-//        //as the card has been shown, set its flag to true
-//        card.setShown(true);
+    private void showCard(Card card) {
+        sideA.setText(card.getSideA());
+        sideB.setText(card.getSideB());
+
+        //By default, sideB should not be visible
+        if(sideB.getVisibility() == View.VISIBLE) {
+            toggleVisibility(sideB);
+        }
+
+        //as the card has been shown, set its flag to true
+        card.setShown(true);
 //        //save the current card in the View Model (handle Activity destroyed)
 //        cardDisplayViewModel.setCurrentCard(card);
-//    }
+    }
 
 //    public void repeatCard() {
 //        //set card shown flag false
@@ -210,13 +199,13 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-//        switch(v.getId()) {
-//            case R.id.displayToggle:
-//                toggleVisibility(sideB);
-//                break;
-//            case R.id.nextFlashcard:
-//                nextCard();
-//                break;
+        switch(v.getId()) {
+            case R.id.displayToggle:
+                toggleVisibility(sideB);
+                break;
+            case R.id.nextFlashcard:
+                goToNextCard();
+                break;
 //            case R.id.repeatFlashcard:
 //                repeatCard();
 //                Toast.makeText(getActivity(),
@@ -226,8 +215,8 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //            case R.id.backToHome:
 ////                finish();   //clears activity from the stack
 //                break;
-//            default:
-//                break;
-//        }
+            default:
+                break;
+        }
     }
 }
