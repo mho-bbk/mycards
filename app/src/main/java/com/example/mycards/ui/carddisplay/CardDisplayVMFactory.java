@@ -8,15 +8,15 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mycards.SharedViewModel;
-import com.example.mycards.data.repositories.AnswerRepository;
+import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
 import org.jetbrains.annotations.NotNull;
 
 public class CardDisplayVMFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private final AnswerRepository repository;
+    private final DefaultAnswerRepository repository;
 
-    public CardDisplayVMFactory(AnswerRepository repository) {
+    public CardDisplayVMFactory(DefaultAnswerRepository repository) {
         this.repository = repository;
     }
 

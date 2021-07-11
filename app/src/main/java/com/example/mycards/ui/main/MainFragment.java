@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.UserAnswer;
-import com.example.mycards.data.repositories.AnswerRepository;
+import com.example.mycards.data.repositories.DefaultAnswerRepository;
 import com.example.mycards.ui.carddisplay.CardDisplayVMFactory;
 import com.example.mycards.SharedViewModel;
 
@@ -48,7 +48,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         //TODO - use dependency injection
-        AnswerRepository repository = new AnswerRepository(getActivity().getApplication());
+        DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
         CardDisplayVMFactory factory = new CardDisplayVMFactory(repository);
 
         mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);

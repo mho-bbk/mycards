@@ -1,37 +1,27 @@
 package com.example.mycards;
 
-import android.app.Application;
 import android.os.Build;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.mycards.Card;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.AnswerRepository;
+import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
-    private LiveData<List<UserAnswer>> userAnswers;
+//    public final LiveData<List<UserAnswer>> userAnswers;
     private List<Card> deck;
 
-    public SharedViewModel(AnswerRepository answerRepository) {
-        this.answerRepository = answerRepository;
-        this.userAnswers = answerRepository.getAllAnswers();
+    public SharedViewModel(AnswerRepository respository) {
+        this.answerRepository = respository;
+//        this.userAnswers = respository.getAllAnswers();
     }
 
 //    test deck for the timebeing - real deck will be injected in when link to db
@@ -78,7 +68,7 @@ public class SharedViewModel extends ViewModel {
 //    }
 
     //**REPOSITORY/DAO METHODS**
-    public LiveData<List<UserAnswer>> getAllAnswers() { return userAnswers; }
+    public LiveData<List<UserAnswer>> getAllAnswers() { return answerRepository.getAllAnswers(); }
 
     public void upsert(UserAnswer answer) {
         answerRepository.upsert(answer);
