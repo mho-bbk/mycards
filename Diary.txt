@@ -32,6 +32,8 @@ Eg if user ignores prompt and uses all 3 input fields to put their occupation 3 
 This could cause issues down the line eg 3 x duplicate flashcard sets in one deck, which is not desired. 
 User answer is now also defined as unique in the dao to prevent this. 
 NEXT - testing the repository class; testing the VM.
+11/7/21: Reimplemented some button features and put more business logic in the VM, but now doesn't survive config changes.
+NEXT - investigate. Something to do with the observer/livedata
  
 
 

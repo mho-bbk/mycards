@@ -25,15 +25,13 @@ import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
     private SharedViewModel cardDisplayViewModel;
-    private List<Card> deck;
     private TextView sideA, sideB;
-//    private Card current;
-//    private Iterator<Card> cardIterator;
 
     public static CardDisplayFragment newInstance() {
         return new CardDisplayFragment();
@@ -81,15 +79,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //        Button backToHome = getView().findViewById(R.id.backToHome);
 //        backToHome.setOnClickListener(this);
 //
-        //**HANDLING if the Activity has been destroyed eg bc screen rotation**
-        //if getLastDisplayed is not null then the user has started the deck
-//        if(cardDisplayViewModel.getCurrentCard() != null) {
-//            //we want the last displayed flashcard back
-//            showCard(cardDisplayViewModel.getCurrentCard());
-//        } else {
-//            //we want to initialise the deck
-//            Toast.makeText(getActivity(), "currentCard is null", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     public void toggleVisibility(View view) {
@@ -102,39 +91,12 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 
     private void startDeck(List<UserAnswer> userAnswers) {
         //TODO - rename these...
-        cardDisplayViewModel.transformUserAnswerListToDeck(userAnswers);
         showCard(cardDisplayViewModel.getCurrentCard());
     }
 
 
     public void goToNextCard() {
         showCard(cardDisplayViewModel.getNextCard());
-//        if(cardIterator.hasNext()) {
-//            current = cardIterator.next();
-//            if(!current.isShown()) {
-//                showCard(current);
-//            } else {
-//                //TODO - placeholder, see below
-//                sideA.setText("Finished Deck - no repeats (bp1)");
-//                sideB.setText("Finished Deck - no repeats (bp1)");
-//                sideB.setVisibility(View.VISIBLE);
-//            }
-//        } else {
-//            //cardIterator has finished which means original deck has finished
-//            //check for cards that user has said they want to repeat
-//            if(!checkIfRepeatDeckIsEmpty()) {
-//                cardDisplayViewModel.setCardIteratorToRepeatDeck();
-//                cardIterator = cardDisplayViewModel.getCardIterator();
-//                nextCard();
-//            } else {
-//                //Assuming there is no key for "Finished"
-//                //TODO - this is a placeholder. Eventually when a deck finishes we want to replace
-//                // with finished screen and button back to homepage
-//                sideA.setText("Finished Deck - no repeats (bp2)");
-//                sideB.setText("Finished Deck - no repeats (bp2)");
-//                sideB.setVisibility(View.VISIBLE);
-//            }
-//        }
     }
 
     private void showCard(Card card) {
@@ -148,8 +110,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 
         //as the card has been shown, set its flag to true
         card.setShown(true);
-//        //save the current card in the View Model (handle Activity destroyed)
-//        cardDisplayViewModel.setCurrentCard(card);
     }
 
 //    public void repeatCard() {

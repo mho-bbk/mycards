@@ -86,17 +86,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         String hobby = hobbyEditTxt.getText().toString();
         String subject = subjectEditTxt.getText().toString();
 
+        //Manual way to stop blank entries
+        if(job.trim().isEmpty() || hobby.trim().isEmpty() || subject.trim().isEmpty()) {
+            Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         List<String> allUserInput = new ArrayList<>();
         allUserInput.add(job);
         allUserInput.add(hobby);
         allUserInput.add(subject);
-////
-////        if(job.getAnswer().trim().isEmpty() || hobby.getAnswer().trim().isEmpty() ||
-////                subject.getAnswer().trim().isEmpty()) {
-////            Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
-////            return false;
-////        }
-//
+
 //        mainPromptViewModel.upsert(job);
 //        mainPromptViewModel.upsert(hobby);
 //        mainPromptViewModel.upsert(subject);

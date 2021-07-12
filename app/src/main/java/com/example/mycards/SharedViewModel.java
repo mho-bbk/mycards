@@ -20,16 +20,22 @@ public class SharedViewModel extends ViewModel {
 
     private AnswerRepository answerRepository;
 
-    private List<Card> deck;
+    private List<Card> deck = new ArrayList<>();
     private Iterator<Card> deckIterator;
-    private Card currentCard;
+    private Card currentCard = new Card();
 
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<UserAnswer>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Convert input String to UserAnswer class here
         //Temporary: convert UserAnswer to Card here and set deck
         for (String s: inputList) {
-            answerRepository.upsert(new UserAnswer(s));
+            UserAnswer input = new UserAnswer(s);
+            deck.add(new Card(input));  //TODO - this bypasses the checks put on the repository and creates duplicate cards...
+            answerRepository.upsert(input);
+        }
+        deckIterator = deck.iterator();
+        if(deckIterator.hasNext()) {
+            currentCard = deckIterator.next();
         }
         return answerRepository.getAllAnswers();
     });
@@ -48,18 +54,6 @@ public class SharedViewModel extends ViewModel {
 //                new Card("watermelon", "スイカ (suika)"));
 
 //    private Queue<Card> repeatDeck = new LinkedList<>();
-
-    public void transformUserAnswerListToDeck(List<UserAnswer> userAnswers) {
-        List<Card> deck = new ArrayList<>();
-        //Get the user answers
-        //Turn them into Cards
-        for (UserAnswer answer: userAnswers) {
-            deck.add(new Card(answer.getAnswer(), answer.getAnswer() + " in Japanese"));
-        }
-        //Store the cards in VM
-        //TODO - move this out? Violates single responsibility? Builder pattern to compose deck and set cards?
-        setDeck(deck);
-    }
 
     //TODO - rename
     public void setDeck(List<Card> deck) {
@@ -84,7 +78,7 @@ public class SharedViewModel extends ViewModel {
 //    }
 //
     public Card getCurrentCard() {
-        return currentCard;
+        return this.currentCard;
     }
 //
 //    public Queue<Card> getRepeatDeck() {

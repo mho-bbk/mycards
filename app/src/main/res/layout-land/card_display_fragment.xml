@@ -18,7 +18,38 @@
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@+id/guidelineRight"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.5" >
+
+        <LinearLayout
+            android:id="@+id/cardDisplayFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".ui.carddisplay.CardDisplayFragment">
+
+            <TextView
+                android:id="@+id/side_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Side A"
+                android:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/side_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Side B"
+                android:visibility="invisible" />
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/displayToggle"

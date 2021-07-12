@@ -3,6 +3,8 @@ package com.example.mycards;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.mycards.data.entities.UserAnswer;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -15,12 +17,21 @@ public class Card {
 
     private final String sideA;
     private final String sideB;
-    private boolean shown;
+    private boolean shown = false;  //when a card is initialised, its default behaviour is that it hasn't been shown
+
+    public Card() {
+        this.sideA = "default A";
+        this.sideB = "default B";
+    }
 
     public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
-        this.shown = false; //when a card is initialised, its default behaviour is that it hasn't been shown
+    }
+
+    public Card(UserAnswer userAnswer) {
+        this.sideA = userAnswer.getAnswer();
+        this.sideB = userAnswer.getAnswer() + " in Japanese";
     }
 
     @Override
