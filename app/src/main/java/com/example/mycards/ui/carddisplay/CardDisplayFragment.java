@@ -16,16 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mycards.Card;
 import com.example.mycards.R;
 import com.example.mycards.SharedViewModel;
+import com.example.mycards.data.entities.CardEntity;
 import com.example.mycards.data.entities.UserAnswer;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
+import com.example.mycards.SharedViewModelFactory;
+import com.example.mycards.data.repositories.DefaultCardRepository;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
@@ -49,16 +50,16 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         super.onViewCreated(view, savedInstanceState);
 
         //TODO - use dependency injection
-        DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
+        DefaultCardRepository repository = new DefaultCardRepository(getActivity().getApplication());
         SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         cardDisplayViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 
         // Create the observer which updates the UI.
-        final Observer<List<UserAnswer>> observer = new Observer<List<UserAnswer>>() {
+        final Observer<List<CardEntity>> observer = new Observer<List<CardEntity>>() {
             @Override
-            public void onChanged(List<UserAnswer> userAnswers) {
-                startDeck(userAnswers);
+            public void onChanged(List<CardEntity> cards) {
+                startDeck(cards);
             }
         };
 
@@ -89,7 +90,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void startDeck(List<UserAnswer> userAnswers) {
+    private void startDeck(List<CardEntity> cards) {
         //TODO - rename these...
         showCard(cardDisplayViewModel.getCurrentCard());
     }
@@ -99,7 +100,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         showCard(cardDisplayViewModel.getNextCard());
     }
 
-    private void showCard(Card card) {
+    private void showCard(CardEntity card) {
         sideA.setText(card.getSideA());
         sideB.setText(card.getSideB());
 

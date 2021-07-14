@@ -18,7 +18,8 @@ import android.widget.Toast;
 import com.example.mycards.R;
 import com.example.mycards.SharedViewModel;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
-import com.example.mycards.ui.carddisplay.SharedViewModelFactory;
+import com.example.mycards.SharedViewModelFactory;
+import com.example.mycards.data.repositories.DefaultCardRepository;
 
 public class Maintenance extends Fragment {
 
@@ -40,7 +41,7 @@ public class Maintenance extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //TODO - use dependency injection
-        DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
+        DefaultCardRepository repository = new DefaultCardRepository(getActivity().getApplication());
         SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         viewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
@@ -50,8 +51,8 @@ public class Maintenance extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
-                viewModel.deleteAllAnswers();
-                Toast.makeText(getActivity(), "AnswerDatabase has been cleared", Toast.LENGTH_SHORT).show();
+                viewModel.deleteAllCards();
+                Toast.makeText(getActivity(), "Database has been cleared", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -19,8 +19,9 @@ import android.widget.Toast;
 
 import com.example.mycards.R;
 import com.example.mycards.data.repositories.DefaultAnswerRepository;
-import com.example.mycards.ui.carddisplay.SharedViewModelFactory;
+import com.example.mycards.SharedViewModelFactory;
 import com.example.mycards.SharedViewModel;
+import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         //TODO - use dependency injection
-        DefaultAnswerRepository repository = new DefaultAnswerRepository(getActivity().getApplication());
+        DefaultCardRepository repository = new DefaultCardRepository(getActivity().getApplication());
         SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
