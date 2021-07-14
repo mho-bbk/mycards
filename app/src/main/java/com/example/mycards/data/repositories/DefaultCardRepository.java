@@ -4,12 +4,9 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.mycards.data.db.AnswersDatabase;
 import com.example.mycards.data.db.CardEntityDao;
 import com.example.mycards.data.db.CardEntityDatabase;
-import com.example.mycards.data.db.UserAnswerDao;
-import com.example.mycards.data.entities.CardEntity;
-import com.example.mycards.data.entities.UserAnswer;
+import com.example.mycards.data.entities.Card;
 
 import java.util.List;
 
@@ -25,19 +22,19 @@ public class DefaultCardRepository implements CardRepository {
     //These are the methods exposed to the ViewModel
     //This is how we create the abstraction layer
     //Use executor to try and avoid memory leak
-    public void upsert(CardEntity card) {
+    public void upsert(Card card) {
         CardEntityDatabase.databaseWriteExecutor.execute( () -> {
             cardEntityDao.upsert(card);
         });
     }
 
-    public void delete(CardEntity card) {
+    public void delete(Card card) {
         CardEntityDatabase.databaseWriteExecutor.execute( () -> {
             cardEntityDao.delete(card);
         });
     }
 
-    public LiveData<List<CardEntity>> getAllCards() { return cardEntityDao.getAllCards(); }
+    public LiveData<List<Card>> getAllCards() { return cardEntityDao.getAllCards(); }
 
     public void deleteAllCards() {
         CardEntityDatabase.databaseWriteExecutor.execute( () -> {

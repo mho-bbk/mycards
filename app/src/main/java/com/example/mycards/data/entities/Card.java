@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 @Entity(tableName = "cards", indices = {@Index(value = {"side_a", "side_b"}, unique = true)})
-public class CardEntity {
+public class Card {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -24,7 +24,7 @@ public class CardEntity {
     @ColumnInfo(name = "is_shown")
     private boolean isShown;
 
-    public CardEntity(String sideA, String sideB) {
+    public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
         this.isShown = false;   //may not work...
@@ -69,7 +69,7 @@ public class CardEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CardEntity that = (CardEntity) o;
+        Card that = (Card) o;
         return sideA.equals(that.getSideA()) &&
                 sideB.equals(that.getSideB());
     }

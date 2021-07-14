@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.mycards.data.entities.CardEntity;
+import com.example.mycards.data.entities.Card;
 
 import java.util.List;
 
@@ -15,13 +15,13 @@ import java.util.List;
 public interface CardEntityDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void upsert(CardEntity cardEntity); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
+    void upsert(Card card); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
 
     @Delete
-    void delete(CardEntity cardEntity); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
+    void delete(Card card); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
 
     @Query("SELECT * FROM cards ORDER BY id")
-    LiveData<List<CardEntity>> getAllCards();
+    LiveData<List<Card>> getAllCards();
 
     @Query("DELETE FROM cards")
     void deleteAllCards();

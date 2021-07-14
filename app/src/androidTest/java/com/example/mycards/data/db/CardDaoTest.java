@@ -7,8 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.example.mycards.LiveDataTestUtil;
-import com.example.mycards.data.entities.CardEntity;
-import com.example.mycards.data.entities.UserAnswer;
+import com.example.mycards.data.entities.Card;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
-public class CardEntityDaoTest {
+public class CardDaoTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -46,12 +45,12 @@ public class CardEntityDaoTest {
 
     @Test
     public void testUpsert() {
-        CardEntity test = new CardEntity("chef", "チェフ");
+        Card test = new Card("chef", "チェフ");
         test.setId(1);   //When testAns is entered into dao, Room will autoset id to 1 as it's the first object
 
         cardEntityDao.upsert(test);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.get(0), test);
@@ -62,18 +61,18 @@ public class CardEntityDaoTest {
 
     @Test
     public void testMultipleUpsert() {
-        CardEntity testCard1 = new CardEntity("chef", "チェフ");
+        Card testCard1 = new Card("chef", "チェフ");
         testCard1.setId(1);
-        CardEntity testCard2 = new CardEntity("baker", "パン屋さん");
+        Card testCard2 = new Card("baker", "パン屋さん");
         testCard2.setId(2);
-        CardEntity testCard3 = new CardEntity("musician", "音楽家");
+        Card testCard3 = new Card("musician", "音楽家");
         testCard3.setId(3);
 
         cardEntityDao.upsert(testCard1);
         cardEntityDao.upsert(testCard2);
         cardEntityDao.upsert(testCard3);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.get(0), testCard1);
@@ -87,13 +86,13 @@ public class CardEntityDaoTest {
 
     @Test
     public void testUpdateOnInsertNoId() {
-        CardEntity testCard1 = new CardEntity("chef", "チェフ");
-        CardEntity testCard2 = new CardEntity("chef", "チェフ");
+        Card testCard1 = new Card("chef", "チェフ");
+        Card testCard2 = new Card("chef", "チェフ");
 
         cardEntityDao.upsert(testCard1);
         cardEntityDao.upsert(testCard2);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.size(), 1);
@@ -104,15 +103,15 @@ public class CardEntityDaoTest {
 
     @Test
     public void testUpdateOnInsertSameId() {
-        CardEntity testCard1 = new CardEntity("chef", "チェフ");
+        Card testCard1 = new Card("chef", "チェフ");
         testCard1.setId(1);
-        CardEntity testCard2 = new CardEntity("chef", "チェフ");
+        Card testCard2 = new Card("chef", "チェフ");
         testCard2.setId(1);
 
         cardEntityDao.upsert(testCard1);
         cardEntityDao.upsert(testCard2);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.size(), 1);
@@ -123,15 +122,15 @@ public class CardEntityDaoTest {
 
     @Test
     public void testUpdateOnInsertDiffId() {
-        CardEntity testCard1 = new CardEntity("chef", "チェフ");
+        Card testCard1 = new Card("chef", "チェフ");
         testCard1.setId(1);
-        CardEntity testCard2 = new CardEntity("chef", "チェフ");
+        Card testCard2 = new Card("chef", "チェフ");
         testCard2.setId(2);
 
         cardEntityDao.upsert(testCard1);
         cardEntityDao.upsert(testCard2);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.size(), 1);
@@ -143,7 +142,7 @@ public class CardEntityDaoTest {
     @Test
     public void testDelete() {
         //Recreate db from previous test
-        CardEntity testCard = new CardEntity("chef", "チェフ");
+        Card testCard = new Card("chef", "チェフ");
         testCard.setId(1);
 
         cardEntityDao.upsert(testCard);
@@ -151,7 +150,7 @@ public class CardEntityDaoTest {
         //Test delete() method
         cardEntityDao.delete(testCard);
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertTrue(allCards.isEmpty());
@@ -163,11 +162,11 @@ public class CardEntityDaoTest {
     @Test
     public void testDeleteAllAnswers() {
         //Recreate db from previous test
-        CardEntity testCard1 = new CardEntity("chef", "チェフ");
+        Card testCard1 = new Card("chef", "チェフ");
         testCard1.setId(1);
-        CardEntity testCard2 = new CardEntity("baker", "パン屋さん");
+        Card testCard2 = new Card("baker", "パン屋さん");
         testCard2.setId(2);
-        CardEntity testCard3 = new CardEntity("musician", "音楽家");
+        Card testCard3 = new Card("musician", "音楽家");
         testCard3.setId(3);
 
         cardEntityDao.upsert(testCard1);
@@ -177,7 +176,7 @@ public class CardEntityDaoTest {
         //Test method deleteAllAnswers()
         cardEntityDao.deleteAllCards();
 
-        List<CardEntity> allCards;
+        List<Card> allCards;
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertTrue(allCards.isEmpty());

@@ -17,12 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.mycards.Card;
 import com.example.mycards.R;
 import com.example.mycards.SharedViewModel;
-import com.example.mycards.data.entities.CardEntity;
-import com.example.mycards.data.entities.UserAnswer;
-import com.example.mycards.data.repositories.DefaultAnswerRepository;
+import com.example.mycards.data.entities.Card;
 import com.example.mycards.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 
@@ -56,9 +53,9 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         cardDisplayViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
 
         // Create the observer which updates the UI.
-        final Observer<List<CardEntity>> observer = new Observer<List<CardEntity>>() {
+        final Observer<List<Card>> observer = new Observer<List<Card>>() {
             @Override
-            public void onChanged(List<CardEntity> cards) {
+            public void onChanged(List<Card> cards) {
                 startDeck(cards);
             }
         };
@@ -90,7 +87,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void startDeck(List<CardEntity> cards) {
+    private void startDeck(List<Card> cards) {
         //TODO - rename these...
         showCard(cardDisplayViewModel.getCurrentCard());
     }
@@ -100,7 +97,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         showCard(cardDisplayViewModel.getNextCard());
     }
 
-    private void showCard(CardEntity card) {
+    private void showCard(Card card) {
         sideA.setText(card.getSideA());
         sideB.setText(card.getSideB());
 

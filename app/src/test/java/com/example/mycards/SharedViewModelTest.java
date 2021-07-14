@@ -16,6 +16,11 @@ public class SharedViewModelTest {
         sharedViewModel = new SharedViewModel(new FakeCardRepository());
     }
 
+//    private final List<Card> testDeck =
+//        List.of(new Card("apple", "りんご (ringo)"),
+//                new Card("orange", "オレンジ (orenji)"),
+//                new Card("watermelon", "スイカ (suika)"));
+
     //Rules we could test for:
     //- Not accepting empty input/insertions to the db
     //- Not accepting String that are too long in length

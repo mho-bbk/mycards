@@ -3,8 +3,7 @@ package com.example.mycards.data.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.mycards.data.entities.CardEntity;
-import com.example.mycards.data.entities.UserAnswer;
+import com.example.mycards.data.entities.Card;
 
 import java.util.List;
 
@@ -13,11 +12,11 @@ import java.util.List;
 public class FakeCardRepository implements CardRepository {
 
     //Simulate the db
-    private final List<CardEntity> testCards = List.of(new CardEntity("chocolate", "チョコレート"),
-            new CardEntity("bread", "パン"),
-            new CardEntity("sweets", "おやつ"));
+    private final List<Card> testCards = List.of(new Card("chocolate", "チョコレート"),
+            new Card("bread", "パン"),
+            new Card("sweets", "おやつ"));
 
-    private final MutableLiveData<List<CardEntity>> observableTestCards = new MutableLiveData<>();
+    private final MutableLiveData<List<Card>> observableTestCards = new MutableLiveData<>();
 
     {
         observableTestCards.setValue(testCards);
@@ -34,19 +33,19 @@ public class FakeCardRepository implements CardRepository {
     }
 
     @Override
-    public void upsert(CardEntity card) {
+    public void upsert(Card card) {
         testCards.add(card);
         refreshObservableTestCards();
     }
 
     @Override
-    public void delete(CardEntity card) {
+    public void delete(Card card) {
         testCards.remove(card);
         refreshObservableTestCards();
     }
 
     @Override
-    public LiveData<List<CardEntity>> getAllCards() {
+    public LiveData<List<Card>> getAllCards() {
         return observableTestCards;
     }
 
