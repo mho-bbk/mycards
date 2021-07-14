@@ -1,6 +1,7 @@
 package com.example.mycards;
 
 import com.example.mycards.data.repositories.FakeAnswerRepository;
+import com.example.mycards.data.repositories.FakeCardRepository;
 
 import org.junit.Before;
 
@@ -12,7 +13,7 @@ public class SharedViewModelTest {
 
     @Before
     private void setUp() {
-        sharedViewModel = new SharedViewModel(new FakeAnswerRepository());
+        sharedViewModel = new SharedViewModel(new FakeCardRepository());
     }
 
     //Rules we could test for:
