@@ -7,8 +7,6 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mycards.SharedViewModel;
-import com.example.mycards.data.repositories.DefaultAnswerRepository;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 
 import org.jetbrains.annotations.NotNull;

@@ -1,13 +1,5 @@
 package com.example.mycards.ui.main;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.mycards.R;
-import com.example.mycards.data.repositories.DefaultAnswerRepository;
-import com.example.mycards.SharedViewModelFactory;
 import com.example.mycards.SharedViewModel;
+import com.example.mycards.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
