@@ -4,6 +4,7 @@ import com.example.mycards.data.repositories.FakeCardRepository;
 
 import org.junit.Before;
 
+//Not testing getters and setters
 public class SharedViewModelTest {
 
     private SharedViewModel sharedViewModel;
@@ -21,6 +22,8 @@ public class SharedViewModelTest {
     //Rules we could test for:
     //- Not accepting empty input/insertions to the db
     //- Not accepting String that are too long in length
-    //- Not accepting words that are misspelled (don't appear in Datamuse API)
+    //- Not accepting words that are misspelled (don't appear in Datamuse API)...
+
+
 
 }

@@ -34,6 +34,22 @@ User answer is now also defined as unique in the dao to prevent this.
 NEXT - testing the repository class; testing the VM.
 11/7/21: Reimplemented some button features and put more business logic in the VM, but now doesn't survive config changes.
 NEXT - investigate. Something to do with the observer/livedata
+16/7/21: Past week - on rec from StackOverflow, have impl observer not on getAllX() method but on livedata field variable
+using Transformations.switchmap(). When the field var is instantiated, it calls getAllX() method.
+There are two observers: 1 in the CardDisplayFragment (flashcard screen), which gets the updated data and puts it into UI containers (views).
+1 other in the VM itself - which sets up the deck iterator and a 'current card' so that the Fragment can advance from one card to the next.
+Keeping a reference to the current card should help us act on the card object later - eg when I reimplement the REPEAT function.
+Now that the VM and observers are correctly set up, the data survives config changes eg screen rotation.
+Why is this? Guess: delegated management of state to the VM so that the 'current state' is maintained by the JVM in the form of savedInstanceState Bundle.
+TODO - Look up how ViewModels are able to automate (?) savedState so that UI and data link survives config changes...
+In other news, I have also refactored 'UserAnswer' class to 'CardEntity' (then simply 'Card') entity class, which makes more sense
+in terms of what object needs to be passed from the db up the architectural levels to the UI layer. 'UserAnswer' was meant to be simple
+for dev simplicity, but it was too simple to the extent that it was unuseful. (It was just a String and id, which made transformation into a 'deck' of cards
+that had an interator far too complex...)
+Looked at writing unit tests for VM but unsure whether VM will expand beyond getters and setters. If plan is to expand VM to eg data validation functions
+then will write tests. Atm, move onto XML database insertion.
+NEXT - how to parse XML file as db that can be queried. 
+
  
 
 

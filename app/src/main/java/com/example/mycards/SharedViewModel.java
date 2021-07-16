@@ -36,11 +36,22 @@ public class SharedViewModel extends ViewModel {
         //Convert input String to CardEntity class here
         for (String s: inputList) {
             Card input = new Card(s, s + " in Japanese");
-            cardRepository.upsert(input);
+            upsert(input);
         }
-        return cardRepository.getAllCards();
+        return getAllCards();
     });
 
+    public SharedViewModel(CardRepository repository) {
+        this.cardRepository = repository;
+
+        // Observe the LiveData, passing in the global observer.
+        userAnswers.observeForever(observer);
+    }
+
+    /**
+     * Helper method. Sets up deckIterator and currentCard fields when user input is received.
+     * @param allCards List of Card based on user input
+     */
     private void setUpDeck(List<Card> allCards) {
         try {
             deckIterator = allCards.iterator();
@@ -52,23 +63,28 @@ public class SharedViewModel extends ViewModel {
         }
     }
 
-    public SharedViewModel(CardRepository repository) {
-        this.cardRepository = repository;
-
-        // Observe the LiveData, passing in the global observer.
-        userAnswers.observeForever(observer);
-    }
-
+    /**
+     * Public method used by MainFragment to pass user input to this ViewModel.
+     * @param allUserInput List of user input received as String
+     */
     public void setUserInputs(List<String> allUserInput) {
         userInputs.setValue(allUserInput);
     }
 
+    /**
+     * Public method used by CardDisplayFragment to get the card that needs to be displayed on the UI.
+     * @return currentCard according to the deckIterator
+     */
     public Card getCurrentCard() {
         return this.currentCard;
     }
 
+    /**
+     * Public method used by CardDisplayFragment to move to the next Card.
+     * Iterates the deckIterator and resets currentCard.
+     * @return currentCard according to deckIterator
+     */
     public Card getNextCard() {
-        //TODO - separation of concerns, this needs to be setCurrentCard...
         if(deckIterator.hasNext()) {
             currentCard = deckIterator.next();
         } else {
@@ -110,7 +126,7 @@ public class SharedViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         userAnswers.removeObserver(observer);
-        deleteAllCards();   //TODO - this doesn't seem to work. Why? Related to repositories and persistence?
+        this.deleteAllCards();   //TODO - this doesn't seem to work. Why? Related to repositories and persistence?
         super.onCleared();
     }
 }
