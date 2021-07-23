@@ -1,4 +1,4 @@
-package com.example.mycards.ui.main;
+package com.example.mycards.ui;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mycards.R;
-import com.example.mycards.SharedViewModel;
-import com.example.mycards.SharedViewModelFactory;
+import com.example.mycards.main.SharedViewModel;
+import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 
 public class Maintenance extends Fragment {

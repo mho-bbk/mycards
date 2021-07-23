@@ -26,6 +26,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    //Avoid dup licence file error with Jackson
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -80,5 +85,10 @@ dependencies {
 
     // Navigation safe args
     apply plugin: "androidx.navigation.safeargs"
+
+    //Jackson JSON parser
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0-rc1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0-rc1'
 
 }

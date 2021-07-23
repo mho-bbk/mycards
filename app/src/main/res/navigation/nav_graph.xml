@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment2"
-        android:name="com.example.mycards.ui.main.MainFragment"
+        android:name="com.example.mycards.ui.InputFragment"
         android:label="main_fragment"
         tools:layout="@layout/main_fragment">
         <action
@@ -24,7 +24,7 @@
         tools:layout="@layout/card_display_fragment" />
     <fragment
         android:id="@+id/maintenance"
-        android:name="com.example.mycards.ui.main.Maintenance"
+        android:name="com.example.mycards.ui.Maintenance"
         android:label="fragment_maintenance"
         tools:layout="@layout/fragment_maintenance" />
 

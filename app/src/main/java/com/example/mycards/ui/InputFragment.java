@@ -1,4 +1,4 @@
-package com.example.mycards.ui.main;
+package com.example.mycards.ui;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -18,15 +18,15 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mycards.R;
-import com.example.mycards.SharedViewModel;
-import com.example.mycards.SharedViewModelFactory;
+import com.example.mycards.main.SharedViewModel;
+import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragment extends Fragment implements View.OnClickListener {
+public class InputFragment extends Fragment implements View.OnClickListener {
 
     private SharedViewModel mainPromptViewModel;
     private Button makeCards;
@@ -36,8 +36,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private EditText hobbyEditTxt;
     private EditText subjectEditTxt;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static InputFragment newInstance() {
+        return new InputFragment();
     }
 
     @Nullable
@@ -72,7 +72,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void createCards() {
         if(passOnDataSuccessful()) {
-            NavDirections goToCardDisplayFragment = MainFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
+            NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
             NavHostFragment.findNavController(this).navigate(goToCardDisplayFragment);
         } else {
             Toast.makeText(getContext(), "passOnData unsuccessful", Toast.LENGTH_SHORT).show();
@@ -112,7 +112,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 createCards();
                 break;
             case R.id.openMaintenance:
-                NavDirections goToMaintenanceFragment = MainFragmentDirections.actionMainFragment2ToMaintenance();
+                NavDirections goToMaintenanceFragment = InputFragmentDirections.actionMainFragment2ToMaintenance();
                 NavHostFragment.findNavController(this).navigate(goToMaintenanceFragment);
                 break;
             default:

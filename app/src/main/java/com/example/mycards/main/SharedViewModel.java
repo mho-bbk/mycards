@@ -1,4 +1,4 @@
-package com.example.mycards;
+package com.example.mycards.main;
 
 import android.os.Build;
 

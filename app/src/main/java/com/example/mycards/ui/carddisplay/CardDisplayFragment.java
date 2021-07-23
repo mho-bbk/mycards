@@ -18,9 +18,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mycards.R;
-import com.example.mycards.SharedViewModel;
+import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.SharedViewModelFactory;
+import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 
 import java.util.List;

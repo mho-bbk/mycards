@@ -49,7 +49,12 @@ that had an interator far too complex...)
 Looked at writing unit tests for VM but unsure whether VM will expand beyond getters and setters. If plan is to expand VM to eg data validation functions
 then will write tests. Atm, move onto XML database insertion.
 NEXT - how to parse XML file as db that can be queried. 
-
+17/7/21: As per Android dev guide, 1) analyse data. 2) initiate the parser. 
+JMDict.xml is too big? Read-only - which is fine, but probably not good practice to have 50MB file stored on app, much of which isn't in use most of the time.
+NEXT - How to clean/minimise? If I edit the xml file, I have to share it bc of the licence. 
+NEXT - investigate use of dummy dictionary to try and get it to work. There is also option of using a smaller JSON file (open source).
+Also, see whether there's perhaps a web API can use instead of JMDict after all...
+20/7/21: JSON vs xml investigation. If JSON, what's best way to parse/impl in Android. 
  
 
 
