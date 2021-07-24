@@ -7,6 +7,7 @@ import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.jmdict.pojo.Gloss;
 import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
+import com.example.mycards.jmdict.pojo.Sense;
 import com.example.mycards.jmdict.pojo.Word;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,26 +48,29 @@ public class JMDictEntryBuilder {
         List<JMDictEntry> possibleMatches = new ArrayList<>();
 
         for (Word word: words) {
-            List<Gloss> glosses = word.getSense().get(0).getGloss();
-            for (Gloss gloss: glosses) {
-                if(input.equals(gloss.getText())) {
-                    //if match, get the kanji, kana and wordID
-                    JMDictEntry entry = new JMDictEntry();
-                    entry.setEngDef(input);
-                    entry.setWordID(word.getId());
-                    //find the common kana
-                    for (Kana kana: word.getKana()) {
-                        if(kana.isCommon()) {
-                            entry.setKana(kana);
+            List<Sense> senses = word.getSense();
+            for (Sense s: senses) {
+                List<Gloss> glosses = s.getGloss();
+                for (Gloss gloss : glosses) {
+                    if (input.equals(gloss.getText())) {
+                        //if match, get the kanji, kana and wordID
+                        JMDictEntry entry = new JMDictEntry();
+                        entry.setEngDef(input);
+                        entry.setWordID(word.getId());
+                        //find the common kana
+                        for (Kana kana : word.getKana()) {
+                            if (kana.isCommon()) {
+                                entry.setKana(kana);
+                            }
                         }
-                    }
-                    //find the common kanji
-                    for (Kanji kanji: word.getKanji()) {
-                        if(kanji.isCommon()) {
-                            entry.setKanji(kanji);
+                        //find the common kanji
+                        for (Kanji kanji : word.getKanji()) {
+                            if (kanji.isCommon()) {
+                                entry.setKanji(kanji);
+                            }
                         }
+                        dictEntries.add(entry);
                     }
-                    dictEntries.add(entry);
                 }
             }
         }
