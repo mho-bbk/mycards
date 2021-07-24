@@ -272,62 +272,6 @@
       ]
     },
     {
-      "id":"1000160",
-      "kanji":[
-        {
-          "common":true,
-          "text":"Ｔシャツ",
-          "tags":[
-          ]
-        }
-      ],
-      "kana":[
-        {
-          "common":true,
-          "text":"ティーシャツ",
-          "tags":[
-          ],
-          "appliesToKanji":[
-            "*"
-          ]
-        }
-      ],
-      "sense":[
-        {
-          "partOfSpeech":[
-            "n"
-          ],
-          "appliesToKanji":[
-            "*"
-          ],
-          "appliesToKana":[
-            "*"
-          ],
-          "related":[
-          ],
-          "antonym":[
-          ],
-          "field":[
-          ],
-          "dialect":[
-          ],
-          "misc":[
-          ],
-          "info":[
-          ],
-          "languageSource":[
-          ],
-          "gloss":[
-            {
-              "type":null,
-              "lang":"eng",
-              "text":"T-shirt"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id":"1000170",
       "kanji":[
         {

@@ -55,6 +55,7 @@ NEXT - How to clean/minimise? If I edit the xml file, I have to share it bc of t
 NEXT - investigate use of dummy dictionary to try and get it to work. There is also option of using a smaller JSON file (open source).
 Also, see whether there's perhaps a web API can use instead of JMDict after all...
 20/7/21: JSON vs xml investigation. If JSON, what's best way to parse/impl in Android. 
+23/7/21: TODO - write more test code, remove extraneous classes
  
 
 
