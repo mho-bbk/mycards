@@ -5,6 +5,7 @@ import com.example.mycards.jmdict.JMDictEntryBuilder;
 import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +18,19 @@ import static org.junit.Assert.*;
 // Do we want to return J words with only exact string matches? 'Contains' could widen pool too much?
 
 public class JMDictEntryBuilderTest {
+    private InputStream input;
     private JMDictEntryBuilder entryBuilder;
 
     @Before
     public void setUp() throws Exception {
-        InputStream input = getClass()
+        input = getClass()
                 .getResourceAsStream("jmdict_eng_common_3_1_0_sample.json");
         entryBuilder = new JMDictEntryBuilder(input);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        input.close();
     }
 
     @Test

@@ -85,6 +85,57 @@ public class CardDaoTest {
     }
 
     @Test
+    public void testMultipleUpsertSameADiffB() {
+        //TODO - This is 'correct' behaviour atm but question this.
+        // Do we want to display diff Jwords for the same Eword as diff cards?
+        // Should we use production code to decide how to display multi Jwords for same Eword?
+        Card testCard1 = new Card("chef", "チェフ");
+        testCard1.setId(1);
+        Card testCard2 = new Card("chef", "コック");
+        testCard2.setId(2);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+
+        List<Card> allCards;
+        try {
+            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
+            assertEquals(allCards.get(0), testCard1);
+            assertEquals(allCards.get(1), testCard2);
+            assertEquals(2, allCards.size());
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
+
+    @Test
+    public void testMultipleUpsertDiffASameB() {
+        //TODO - This is 'correct' behaviour atm but question this.
+        // Do we want to diff Ewords to have same Jword on Bside? (Instinct: no, not useful)
+        // Should we use production code to decide how to handle Ewords that are too similar
+        // to avoid having to handle the same Jwords?
+        // NB: JMDictEntry holds ref to unique wordID from JSON file & uses this as basis for equality
+        // (so sideB here should have the same wordID)
+        Card testCard1 = new Card("cook", "チェフ");
+        testCard1.setId(1);
+        Card testCard2 = new Card("chef", "チェフ");
+        testCard2.setId(2);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+
+        List<Card> allCards;
+        try {
+            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
+            assertEquals(allCards.get(0), testCard1);
+            assertEquals(allCards.get(1), testCard2);
+            assertEquals(2, allCards.size());
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
+
+    @Test
     public void testUpdateOnInsertNoId() {
         Card testCard1 = new Card("chef", "チェフ");
         Card testCard2 = new Card("chef", "チェフ");
