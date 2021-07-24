@@ -50,6 +50,8 @@ public class JMDictEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JMDictEntry that = (JMDictEntry) o;
+
+        //equality is based on wordID to avoid the same Japanese term appearing for diff glosses
         return wordID.equals(that.wordID);
     }
 

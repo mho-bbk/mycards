@@ -59,12 +59,18 @@ public class JMDictEntryBuilder {
                         entry.setWordID(word.getId());
                         //find the common kana
                         for (Kana kana : word.getKana()) {
+                            //assumes only one common kana
+                            //or if more than one, take whichever common spelling is last
+                            //(earlier results overwritten)
                             if (kana.isCommon()) {
                                 entry.setKana(kana);
                             }
                         }
                         //find the common kanji
                         for (Kanji kanji : word.getKanji()) {
+                            //assumes only one common kanji
+                            //or if more than one, take whichever common spelling is last
+                            //(earlier results overwritten)
                             if (kanji.isCommon()) {
                                 entry.setKanji(kanji);
                             }

@@ -4,9 +4,17 @@ import java.util.List;
 
 public class Kana {
     private boolean common;
-    private String text = "";    //NEEDED
+    private String text;    //NEEDED
     private List<String> tags;
     private List<String> appliesToKanji;
+
+    public Kana() {
+        this.text = "";
+    }
+
+    public Kana(String kana) {
+        this.text = kana;
+    }
 
     public boolean isCommon() {
         return common;
