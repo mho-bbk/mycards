@@ -75,4 +75,21 @@ public class JMDictEntryBuilderTest {
         assertEquals(entry.getKanji().getText(), "彼処");
         assertEquals(entry.getWordID(), "1000320");
     }
+
+    @Test
+    public void nullKanjiSingleCommonKana_getWordTest() {
+        List<JMDictEntry> eligibleEntries = entryBuilder.getJMDictEntries("plainly");
+
+        //Reflects num of Japanese words with that definition, not num of Sense in the word
+        assertEquals(eligibleEntries.size(), 1);
+
+        JMDictEntry entry = eligibleEntries.get(0);
+
+        assertEquals(entry.getEngDef(), "plainly");
+        assertEquals(entry.getKana().getText(), "あっさり");
+        assertEquals(entry.getKanji().getText(), "");
+        assertEquals(entry.getWordID(), "1000360");
+    }
+
+    //Do we want to return J words with only exact string matches? 'Contains' could widen pool too much?
 }

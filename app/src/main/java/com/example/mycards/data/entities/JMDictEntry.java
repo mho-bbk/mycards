@@ -6,11 +6,11 @@ import com.example.mycards.jmdict.pojo.Kanji;
 
 import java.util.Objects;
 
-//TODO - turn this into Room Entity using annotations
+//TODO - turn this into Room Entity using annotations?
 public class JMDictEntry {
     private String engDef;  //this is referred to as gloss in the file
-    private Kanji kanji;
-    private Kana kana;
+    private Kanji kanji = new Kanji();
+    private Kana kana = new Kana();
     private String wordID;
 
     public String getEngDef() {

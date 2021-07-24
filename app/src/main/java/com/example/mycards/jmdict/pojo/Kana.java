@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Kana {
     private boolean common;
-    private String text;    //NEEDED
+    private String text = "";    //NEEDED
     private List<String> tags;
     private List<String> appliesToKanji;
 
