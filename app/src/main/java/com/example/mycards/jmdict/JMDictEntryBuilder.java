@@ -1,9 +1,8 @@
 package com.example.mycards.jmdict;
 
-import android.content.Context;
+import androidx.room.Room;
 
-import com.example.mycards.R;
-import com.example.mycards.data.entities.JMDictEntry;
+import com.example.mycards.data.db.CardEntityDatabase;
 import com.example.mycards.jmdict.pojo.Gloss;
 import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
@@ -16,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Helper class that stores the JMDict json file as a root, extracts the list of words,
@@ -23,22 +24,37 @@ import java.util.List;
  */
 public class JMDictEntryBuilder {
 
-    private final JMDictJSONRoot root;
-    private final List<Word> words;
+    private static JMDictEntryBuilder INSTANCE; //Singleton
 
-    // Do we want this class to be a Singleton?
-    // Should be only one per Activity (and this is a single activity app)
+    private JMDictJSONRoot root;
+    private List<Word> words;
+
     /**
      * Constructor populates root and List of words
      * @param jsonFileAsInputStream reference to the right json file in resources/raw
      * @throws IOException
      */
-    public JMDictEntryBuilder(InputStream jsonFileAsInputStream) throws IOException {
+    private JMDictEntryBuilder(InputStream jsonFileAsInputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.root = mapper.readValue(jsonFileAsInputStream, JMDictJSONRoot.class);
         this.words = root.getWords();
+    }
+
+    /**
+     * Implement this class as a Singleton
+     *
+     * @param jsonFileAsInputStream
+     * @return the single instance of this class
+     * @throws IOException
+     */
+    public static synchronized JMDictEntryBuilder getInstance(InputStream jsonFileAsInputStream) throws IOException {
+        //lazy instantiation
+        if(INSTANCE == null) {
+            INSTANCE = new JMDictEntryBuilder(jsonFileAsInputStream);
+        }
+        return INSTANCE;
     }
 
     public List<JMDictEntry> getJMDictEntries(String input) {
@@ -64,6 +80,7 @@ public class JMDictEntryBuilder {
                             //(earlier results overwritten)
                             if (kana.isCommon()) {
                                 entry.setKana(kana);
+                                break;
                             }
                         }
                         //find the common kanji
@@ -73,6 +90,7 @@ public class JMDictEntryBuilder {
                             //(earlier results overwritten)
                             if (kanji.isCommon()) {
                                 entry.setKanji(kanji);
+                                break;
                             }
                         }
                         dictEntries.add(entry);

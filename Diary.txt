@@ -57,8 +57,19 @@ Also, see whether there's perhaps a web API can use instead of JMDict after all.
 20/7/21: JSON vs xml investigation. If JSON, what's best way to parse/impl in Android. 
 23/7/21: Impl JSON deserialisation using Jackson library. DTOs (pojos), builder helper class and new entity. 
 NEXT - write more test code, remove extraneous classes
+
 24/7/21: JSON file large bc white space (heavily formatted)? If remove, how much space gain?
-Q: if there is >1 Jword for a given Engword, how do we decide which one is the best to use?
+**Q: if there is >1 Jword for a given Engword, how do we decide which one is the best to use?
+**Q: if there is >1 Card in the database with the same Engword, could be confusing for it to show to user as just a diff card.
+
+HOW DO WE DECIDE WHICH WORD IS THE BEST WORD TO SHOW THE USER? Eg 'history' 
+- Using vers of jmdict file with wommon words only
+- "glosses are ordered with the most common appearing first" (https://www.edrdg.org/jmdict/edict_doc.html)
+- (assumption) if a word only has one gloss, use that word
+
+NEXT - Impl clean user input funs: spellcheck, make case-insensitive, ignore spaces before/after (but not in middle)
+NEXT - Leftover things... (make text bigger in UI, remove replies from input field after press back...)
+NEXT - Provide way to separate 'decks' (recyclerview) so don't have to manually purge db - use this persistence feature to implement 'cache' for user to go back and repeat decks...
  
 
 

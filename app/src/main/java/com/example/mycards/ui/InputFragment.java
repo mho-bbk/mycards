@@ -23,6 +23,8 @@ import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,6 +59,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         SharedViewModelFactory factory = new SharedViewModelFactory(repository);
 
         mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
+        try(InputStream input = getResources().openRawResource(R.raw.jmdict_eng_common_3_1_0)) {
+            mainPromptViewModel.loadJMDict(input);
+        } catch (IOException e) {
+            System.err.println(e.getStackTrace());
+        }
 
         jobEditTxt = getView().findViewById(R.id.jobEditTxt);
         hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);

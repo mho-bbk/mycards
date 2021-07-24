@@ -1,6 +1,6 @@
 package com.example.mycards;
 
-import com.example.mycards.data.entities.JMDictEntry;
+import com.example.mycards.jmdict.JMDictEntry;
 import com.example.mycards.jmdict.JMDictEntryBuilder;
 import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
@@ -25,7 +25,7 @@ public class JMDictEntryBuilderTest {
     public void setUp() throws Exception {
         input = getClass()
                 .getResourceAsStream("jmdict_eng_common_3_1_0_sample.json");
-        entryBuilder = new JMDictEntryBuilder(input);
+        entryBuilder = JMDictEntryBuilder.getInstance(input);
     }
 
     @After
@@ -70,8 +70,8 @@ public class JMDictEntryBuilderTest {
         JMDictEntry entry = eligibleEntries.get(0);
 
         assertEquals(entry.getEngDef(), "fake_definition");
-        assertEquals(entry.getKana().getText(), "fake_kana2");
-        assertEquals(entry.getKanji().getText(), "fake_kanji2");
+        assertEquals(entry.getKana().getText(), "fake_kana1");
+        assertEquals(entry.getKanji().getText(), "fake_kanji1");
         assertEquals(entry.getWordID(), "XXXXXX");
     }
 

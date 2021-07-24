@@ -11,7 +11,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.data.repositories.CardRepository;
+import com.example.mycards.jmdict.JMDictEntry;
+import com.example.mycards.jmdict.JMDictEntryBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
 public class SharedViewModel extends ViewModel {
 
     private CardRepository cardRepository;
+    private JMDictEntryBuilder entryBuilder;
 
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
@@ -35,7 +40,7 @@ public class SharedViewModel extends ViewModel {
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Convert input String to CardEntity class here
         for (String s: inputList) {
-            Card input = new Card(s, s + " in Japanese");
+            Card input = createCard(s);
             upsert(input);
         }
         return getAllCards();
@@ -44,8 +49,21 @@ public class SharedViewModel extends ViewModel {
     public SharedViewModel(CardRepository repository) {
         this.cardRepository = repository;
 
-        // Observe the LiveData, passing in the global observer.
+        //Observe the LiveData, passing in the global observer.
         userAnswers.observeForever(observer);
+
+    }
+
+    /**
+     * Method called by the FragmentActivity to pass the correct resource to the VM
+     * @param input stream representing the dictionary file
+     */
+    public void loadJMDict(InputStream input) {
+        try {
+            entryBuilder = JMDictEntryBuilder.getInstance(input);
+        } catch (IOException e) {
+            System.err.println(e.getStackTrace());
+        }
     }
 
     /**
@@ -91,6 +109,29 @@ public class SharedViewModel extends ViewModel {
             currentCard = new Card("Finished deck", "Finished deck");
         }
         return currentCard;
+    }
+
+    /**
+     * Helper method to create cards using the JMDict JSON file
+     * @param inputWord
+     * @return
+     */
+    private Card createCard(String inputWord) {
+        List<JMDictEntry> entries = entryBuilder.getJMDictEntries(inputWord);
+        if(entries.isEmpty()) {
+            return new Card("", "");
+        } else {
+            //TODO - how would we assess which of the entries are most suitable?
+            //For now, just return first word
+            JMDictEntry jmde = entries.get(0);
+            String jWord;
+            if(jmde.getKanji().getText().equals("")) {
+                jWord = jmde.getKana().getText();
+            } else {
+                jWord = jmde.getKanji().getText() + " (" + jmde.getKana().getText() + ")";
+            }
+            return new Card(inputWord, jWord);
+        }
     }
 
     //TODO - could you do a repeat function with resetDeck() and setUserInputs?
