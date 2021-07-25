@@ -120,4 +120,8 @@ public class JMDictEntryBuilder {
 
         Collections.sort(entries, jmDictEntryComparator);
     }
+
+    private boolean matchEntry() {
+        return false;
+    }
 }

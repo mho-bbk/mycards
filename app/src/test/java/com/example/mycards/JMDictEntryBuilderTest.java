@@ -212,8 +212,19 @@ public class JMDictEntryBuilderTest {
     }
 
     //TODO - difficult card - no exact string match: 'cat' - search without brackets?
+    //Also teacher
     @Test
-    private void testSearchTermOutSideBrackets() {
+    public void testSearchTermOutSideBrackets() {
+        List<JMDictEntry> eligibleEntriesCat = entryBuilder.getJMDictEntries("cat");
+
+        assertEquals(eligibleEntriesCat.size(), 1);
+
+        JMDictEntry entry = eligibleEntriesCat.get(0);
+
+        assertEquals(entry.getEngDef(), "cat");
+        assertEquals(entry.getKana().getText(), "ねこ");
+        assertEquals(entry.getKanji().getText(), "猫");
+        assertEquals(entry.getWordID(), "1467640");
 
     }
 
