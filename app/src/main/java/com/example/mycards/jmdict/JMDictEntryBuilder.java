@@ -70,7 +70,7 @@ public class JMDictEntryBuilder {
                 int glossCount = glosses.size();
                 for (Gloss gloss : glosses) {
                     glossOrder++;
-                    if (input.equals(gloss.getText())) {
+                    if (matchEntry(input, gloss.getText())) {
                         //if match, get the kanji, kana and wordID
                         JMDictEntry entry = new JMDictEntry();
                         entry.setEngDef(input);
@@ -121,7 +121,15 @@ public class JMDictEntryBuilder {
         Collections.sort(entries, jmDictEntryComparator);
     }
 
-    private boolean matchEntry() {
-        return false;
+    private boolean matchEntry(String inputString, String glossDef) {
+        if(inputString.equals(glossDef)) {
+            return true;
+        } else if(glossDef.contains(inputString + " (")) {
+            //accounts for circs where the word would be standalone,
+            // if not for elaboration in the JMDict file
+            return true;
+        } else {
+            return false;
+        }
     }
 }

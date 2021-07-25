@@ -79,6 +79,9 @@ NEXT - Provide way to separate 'decks' (recyclerview) so don't have to manually 
 NEXT - quick and dirty romaji
 NEXT (lower priority) - thinking more about OS versions. Try and dl emulator on lower v of Android to test... (not just diff screen sizes)
 
+25/7/21: Testing continues (TDD proper). Difficult words: 'history' -> needing priority ordering
+'teacher' and 'cat' - needing to account for additional info inside brackets in eng def of json file
+
  
 
 

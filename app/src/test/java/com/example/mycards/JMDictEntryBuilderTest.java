@@ -211,24 +211,47 @@ public class JMDictEntryBuilderTest {
 
     }
 
-    //TODO - difficult card - no exact string match: 'cat' - search without brackets?
-    //Also teacher
     @Test
-    public void testSearchTermOutSideBrackets() {
+    public void testMatchEntryAccountsForBrackets() {
+        //first word
         List<JMDictEntry> eligibleEntriesCat = entryBuilder.getJMDictEntries("cat");
 
         assertEquals(eligibleEntriesCat.size(), 1);
 
-        JMDictEntry entry = eligibleEntriesCat.get(0);
+        JMDictEntry entryCat = eligibleEntriesCat.get(0);
 
-        assertEquals(entry.getEngDef(), "cat");
-        assertEquals(entry.getKana().getText(), "ねこ");
-        assertEquals(entry.getKanji().getText(), "猫");
-        assertEquals(entry.getWordID(), "1467640");
+        assertEquals(entryCat.getEngDef(), "cat");
+        assertEquals(entryCat.getKana().getText(), "ねこ");
+        assertEquals(entryCat.getKanji().getText(), "猫");
+        assertEquals(entryCat.getWordID(), "1467640");
 
+        //second word
+        List<JMDictEntry> eligibleEntriesTeacher = entryBuilder.getJMDictEntries("teacher");
+
+        assertEquals(eligibleEntriesCat.size(), 1);
+
+        JMDictEntry entryTeacher = eligibleEntriesTeacher.get(0);
+
+        assertEquals(entryTeacher.getEngDef(), "teacher");
+        assertEquals(entryTeacher.getKanji().getText(), "教師");
+        assertEquals(entryTeacher.getKana().getText(), "きょうし");
+        assertEquals(entryTeacher.getWordID(), "1237130");
+    }
+
+    @Test
+    public void testMatchEntryNoSpaceOrOtherCharAtStart() {
+        List<JMDictEntry> eligibleEntriesCat = entryBuilder.getJMDictEntries("cat");
+        JMDictEntry testTermNotIncl = new JMDictEntry();
+
+        //Equality currently based on word id so only need to set this
+        testTermNotIncl.setWordID("1303100");
+
+        assertFalse(eligibleEntriesCat.contains(testTermNotIncl));
     }
 
     //TODO - difficult cards - keeps coming back with just kana, eg reading should be dokusho, not katakana reading
     //TODO - as dokusho but with 'science'
+    //TODO - 'math' doesn't work for mathematics
+    //TODO - 'cat' still returns rare word, not most common
 
 }
