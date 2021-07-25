@@ -1,9 +1,7 @@
 package com.example.mycards.jmdict.pojo;
 
-import com.example.mycards.jmdict.JMDictJSONRoot;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
-import java.util.Collections;
 import java.util.List;
 
 public class Sense {

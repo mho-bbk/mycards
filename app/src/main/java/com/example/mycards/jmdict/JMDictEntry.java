@@ -11,6 +11,11 @@ public class JMDictEntry {
     private Kana kana = new Kana();
     private String wordID;
 
+    private int glossCount; //ttl num of gloss
+    private int glossOrder;
+    private int senseCount; //ttl num of sense
+    private int senseOrder;
+
     public String getEngDef() {
         return engDef;
     }
@@ -41,6 +46,38 @@ public class JMDictEntry {
 
     public void setWordID(String wordID) {
         this.wordID = wordID;
+    }
+
+    public void setGlossCount(int glossCount) {
+        this.glossCount = glossCount;
+    }
+
+    public void setGlossOrder(int glossOrder) {
+        this.glossOrder = glossOrder;
+    }
+
+    public void setSenseCount(int senseCount) {
+        this.senseCount = senseCount;
+    }
+
+    public void setSenseOrder(int senseOrder) {
+        this.senseOrder = senseOrder;
+    }
+
+    public int getGlossCount() {
+        return glossCount;
+    }
+
+    public int getGlossOrder() {
+        return glossOrder;
+    }
+
+    public int getSenseCount() {
+        return senseCount;
+    }
+
+    public int getSenseOrder() {
+        return senseOrder;
     }
 
     @Override

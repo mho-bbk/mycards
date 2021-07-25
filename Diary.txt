@@ -63,13 +63,22 @@ NEXT - write more test code, remove extraneous classes
 **Q: if there is >1 Card in the database with the same Engword, could be confusing for it to show to user as just a diff card.
 
 HOW DO WE DECIDE WHICH WORD IS THE BEST WORD TO SHOW THE USER? Eg 'history' 
-- Using vers of jmdict file with wommon words only
+- Using vers of jmdict file with common words only
 - "glosses are ordered with the most common appearing first" (https://www.edrdg.org/jmdict/edict_doc.html)
-- (assumption) if a word only has one gloss, use that word
+......Therefore, the earlier the gloss the better the word (eg 1 is better than 3)
+- (assumption) if a word only has one sense, the better the word
+- (assumption) if a word only has one gloss, the better the word
+......SO, if senseOrder/senseCount, and glossOrder/glossCount are all 1/1, then that word is the best choice
+....otherwise, prioritise gloss (gloss order most imp), then sense 
+....gloss order > sense order, then wb gloss/sense count? 
+....if gloss order/sense order is low but g/s count is high, then that word is more likely to be the better choice? see cat - could be tie break?
 
 NEXT - Impl clean user input funs: spellcheck, make case-insensitive, ignore spaces before/after (but not in middle)
 NEXT - Leftover things... (make text bigger in UI, remove replies from input field after press back...)
 NEXT - Provide way to separate 'decks' (recyclerview) so don't have to manually purge db - use this persistence feature to implement 'cache' for user to go back and repeat decks...
+NEXT - quick and dirty romaji
+NEXT (lower priority) - thinking more about OS versions. Try and dl emulator on lower v of Android to test... (not just diff screen sizes)
+
  
 
 

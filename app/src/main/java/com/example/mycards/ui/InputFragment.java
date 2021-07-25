@@ -49,7 +49,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -77,7 +76,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public void createCards() {
         if(passOnDataSuccessful()) {
             NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
@@ -87,7 +85,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public boolean passOnDataSuccessful() {
         //TODO - pass the string entered by the user into a data object to be stored in MainVM
         String job = jobEditTxt.getText().toString();
@@ -112,7 +109,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onClick(View v) {
         switch(v.getId()) {

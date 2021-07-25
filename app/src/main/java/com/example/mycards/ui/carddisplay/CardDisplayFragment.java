@@ -25,7 +25,6 @@ import com.example.mycards.data.repositories.DefaultCardRepository;
 
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.R)
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
     private SharedViewModel cardDisplayViewModel;

@@ -46,7 +46,6 @@ public class Maintenance extends Fragment {
 
         Button deleteAll = getView().findViewById(R.id.maintenanceDeleteAll);
         deleteAll.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
                 viewModel.deleteAllCards();

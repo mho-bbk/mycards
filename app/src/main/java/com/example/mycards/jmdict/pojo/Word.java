@@ -1,7 +1,5 @@
 package com.example.mycards.jmdict.pojo;
 
-import com.example.mycards.jmdict.JMDictJSONRoot;
-
 import java.util.List;
 
 public class Word {

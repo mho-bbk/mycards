@@ -45,20 +45,28 @@ public class JMDictEntryBuilderTest {
         assertEquals(entry.getKana().getText(), "シーディープレーヤー");
         assertEquals(entry.getKanji().getText(), "ＣＤプレーヤー");
         assertEquals(entry.getWordID(), "1000110");
+        assertEquals(entry.getGlossCount(), 1);
+        assertEquals(entry.getGlossOrder(), 1);
+        assertEquals(entry.getSenseCount(), 1);
+        assertEquals(entry.getSenseOrder(), 1);
     }
 
     @Test
     public void singleCommonKanjiKana_multiGlossWord_getWordTest() {
-        List<JMDictEntry> eligibleEntries = entryBuilder.getJMDictEntries("T-back");
+        List<JMDictEntry> eligibleEntries = entryBuilder.getJMDictEntries("bikini thong");
 
         assertEquals(eligibleEntries.size(), 1);
 
         JMDictEntry entry = eligibleEntries.get(0);
 
-        assertEquals(entry.getEngDef(), "T-back");
+        assertEquals(entry.getEngDef(), "bikini thong");
         assertEquals(entry.getKana().getText(), "ティーバック");
         assertEquals(entry.getKanji().getText(), "Ｔバック");
         assertEquals(entry.getWordID(), "1000170");
+        assertEquals(entry.getGlossCount(), 2);
+        assertEquals(entry.getGlossOrder(), 2);
+        assertEquals(entry.getSenseCount(), 1);
+        assertEquals(entry.getSenseOrder(), 1);
     }
 
     @Test
@@ -105,6 +113,20 @@ public class JMDictEntryBuilderTest {
         assertTrue(entry1.equals(testTerm1) || entry1.equals(testTerm2));
         assertTrue(entry2.equals(testTerm1) || entry2.equals(testTerm2));
         assertNotEquals(entry1, entry2);
+
+        for (JMDictEntry entry: eligibleEntries) {
+            if(entry.equals(testTerm1)) {
+                assertEquals(entry.getGlossCount(), 3);
+                assertEquals(entry.getGlossOrder(), 3);
+                assertEquals(entry.getSenseCount(), 1);
+                assertEquals(entry.getSenseOrder(), 1);
+            } else {
+                assertEquals(entry.getGlossCount(), 7);
+                assertEquals(entry.getGlossOrder(), 1);
+                assertEquals(entry.getSenseCount(), 1);
+                assertEquals(entry.getSenseOrder(), 1);
+            }
+        }
     }
 
     @Test
@@ -120,6 +142,11 @@ public class JMDictEntryBuilderTest {
         assertEquals(entry.getKana().getText(), "かいけい");
         assertEquals(entry.getKanji().getText(), "会計");
         assertEquals(entry.getWordID(), "1198430");
+
+        assertEquals(entry.getGlossCount(), 4);
+        assertEquals(entry.getGlossOrder(), 1);
+        assertEquals(entry.getSenseCount(), 5);
+        assertEquals(entry.getSenseOrder(), 3);
     }
 
     @Test
@@ -135,6 +162,62 @@ public class JMDictEntryBuilderTest {
         assertEquals(entry.getKana().getText(), "あっさり");
         assertEquals(entry.getKanji().getText(), "");
         assertEquals(entry.getWordID(), "1000360");
+
+        assertEquals(entry.getGlossCount(), 3);
+        assertEquals(entry.getGlossOrder(), 2);
+        assertEquals(entry.getSenseCount(), 2);
+        assertEquals(entry.getSenseOrder(), 2);
     }
+
+    @Test
+    public void testSortEntries() {
+        List<JMDictEntry> eligibleEntries = entryBuilder.getJMDictEntries("history");
+        JMDictEntry testTerm1 = new JMDictEntry();
+        JMDictEntry testTerm2 = new JMDictEntry();
+
+
+        //set up testTerm1
+        testTerm1.setWordID("1176730");
+        testTerm1.setKanji(new Kanji("沿革"));
+        testTerm1.setKana(new Kana("えんかく"));
+        testTerm1.setEngDef("history");
+
+        //set up testTerm2
+        testTerm2.setWordID("1558050");
+        testTerm1.setKanji(new Kanji("歴史"));
+        testTerm1.setKana(new Kana("れきし"));
+        testTerm1.setEngDef("history");
+
+        assertEquals(eligibleEntries.size(), 2);
+        assertTrue(eligibleEntries.contains(testTerm1));
+        assertTrue(eligibleEntries.contains(testTerm2));
+
+        for (JMDictEntry entry: eligibleEntries) {
+            if(entry.equals(testTerm1)) {
+                assertEquals(entry.getGlossCount(), 2);
+                assertEquals(entry.getGlossOrder(), 1);
+                assertEquals(entry.getSenseCount(), 1);
+                assertEquals(entry.getSenseOrder(), 1);
+            } else {
+                assertEquals(entry.getGlossCount(), 1);
+                assertEquals(entry.getGlossOrder(), 1);
+                assertEquals(entry.getSenseCount(), 1);
+                assertEquals(entry.getSenseOrder(), 1);
+            }
+        }
+
+        assertEquals(eligibleEntries.get(0), testTerm2);    //testTerm2 has better stats, should be sorted first
+        assertEquals(eligibleEntries.get(1), testTerm1);    //testTerm1 has worse stats, should be sorted second
+
+    }
+
+    //TODO - difficult card - no exact string match: 'cat' - search without brackets?
+    @Test
+    private void testSearchTermOutSideBrackets() {
+
+    }
+
+    //TODO - difficult cards - keeps coming back with just kana, eg reading should be dokusho, not katakana reading
+    //TODO - as dokusho but with 'science'
 
 }

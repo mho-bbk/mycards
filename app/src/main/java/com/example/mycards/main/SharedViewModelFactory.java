@@ -18,8 +18,7 @@ public class SharedViewModelFactory extends ViewModelProvider.NewInstanceFactory
     public SharedViewModelFactory(DefaultCardRepository repository) {
         this.repository = repository;
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.R)
+    
     @NonNull
     @NotNull
     @Override

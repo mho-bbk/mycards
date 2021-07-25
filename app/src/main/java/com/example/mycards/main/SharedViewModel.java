@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
 
     private CardRepository cardRepository;
@@ -119,10 +118,9 @@ public class SharedViewModel extends ViewModel {
     private Card createCard(String inputWord) {
         List<JMDictEntry> entries = entryBuilder.getJMDictEntries(inputWord);
         if(entries.isEmpty()) {
-            return new Card("", "");
+            return new Card("Blank", "Blank");
         } else {
-            //TODO - how would we assess which of the entries are most suitable?
-            //For now, just return first word
+            //Return the first word as list should be ordered (most rel first)
             JMDictEntry jmde = entries.get(0);
             String jWord;
             if(jmde.getKanji().getText().equals("")) {
