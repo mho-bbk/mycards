@@ -2,7 +2,7 @@ package com.example.mycards.jmdict.pojo;
 
 import java.util.List;
 
-public class Word {
+public class JMDictWord {
     private String id;
     private List<Kanji> kanji;
     private List<Kana> kana;

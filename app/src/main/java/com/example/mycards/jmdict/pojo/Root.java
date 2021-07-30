@@ -1,8 +1,5 @@
 package com.example.mycards.jmdict.pojo;
 
-import com.example.mycards.jmdict.pojo.Tag;
-import com.example.mycards.jmdict.pojo.Word;
-
 import java.util.List;
 
 public class Root {
@@ -11,7 +8,7 @@ public class Root {
     private String dictDate;
     private List<String> dictRevisions;
     private List<Tag> tags;
-    private List<Word> words;
+    private List<JMDictWord> words;
 
     //getters and setters
 
@@ -31,7 +28,7 @@ public class Root {
         return tags;
     }
 
-    public List<Word> getWords() {
+    public List<JMDictWord> getWords() {
         return words;
     }
 }

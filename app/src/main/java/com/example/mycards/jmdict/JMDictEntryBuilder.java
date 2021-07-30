@@ -5,7 +5,7 @@ import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
 import com.example.mycards.jmdict.pojo.Root;
 import com.example.mycards.jmdict.pojo.Sense;
-import com.example.mycards.jmdict.pojo.Word;
+import com.example.mycards.jmdict.pojo.JMDictWord;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +27,7 @@ public class JMDictEntryBuilder {
     private static JMDictEntryBuilder INSTANCE; //Singleton
 
     private Root root;
-    private List<Word> words;
+    private List<JMDictWord> words;
 
     /**
      * Constructor populates root and List of words
@@ -61,7 +61,7 @@ public class JMDictEntryBuilder {
         //We retrieve the specific entry from the dictionary here
         List<JMDictEntry> dictEntries = new ArrayList<>();
 
-        for (Word word: words) {
+        for (JMDictWord word: words) {
             int senseOrder = 0;
             List<Sense> senses = word.getSense();
             int senseCount = senses.size();
