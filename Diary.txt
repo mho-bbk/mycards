@@ -76,12 +76,16 @@ HOW DO WE DECIDE WHICH WORD IS THE BEST WORD TO SHOW THE USER? Eg 'history'
 NEXT - Impl clean user input funs: spellcheck, make case-insensitive, ignore spaces before/after (but not in middle)
 NEXT - Leftover things... (make text bigger in UI, remove replies from input field after press back...)
 NEXT - Provide way to separate 'decks' (recyclerview) so don't have to manually purge db - use this persistence feature to implement 'cache' for user to go back and repeat decks...
+Also make it so that if there's an input that is already in the db, get that back and put it in a new deck...
 NEXT - quick and dirty romaji
 NEXT (lower priority) - thinking more about OS versions. Try and dl emulator on lower v of Android to test... (not just diff screen sizes)
 
 25/7/21: Testing continues (TDD proper). Difficult words: 'history' -> needing priority ordering
 'teacher' and 'cat' - needing to account for additional info inside brackets in eng def of json file
+TODO - bit worried about main thread (whether need to have executorservice threads for accessing the json file...
+also bit concerned need to explore stackoverflow ans that said 'wouldnt save large json file in raw' - why?? bc should save to db??
 
+30/7/21: DatamuseAPI results on 'chef' - data analysis of JSON dl. 
  
 
 

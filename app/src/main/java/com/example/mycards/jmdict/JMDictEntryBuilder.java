@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper class that stores the JMDict json file as a root, extracts the list of words,
@@ -122,9 +124,12 @@ public class JMDictEntryBuilder {
     }
 
     private boolean matchEntry(String inputString, String glossDef) {
+        Pattern p = Pattern.compile("^" + inputString + "\\s\\([\\w\\s\\p{Punct}]*\\)");
+        Matcher m = p.matcher(glossDef);
+
         if(inputString.equals(glossDef)) {
             return true;
-        } else if(glossDef.contains(inputString + " (")) {
+        } else if(m.matches()) {
             //accounts for circs where the word would be standalone,
             // if not for elaboration in the JMDict file
             return true;

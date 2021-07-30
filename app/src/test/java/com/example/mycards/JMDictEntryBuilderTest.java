@@ -252,6 +252,4 @@ public class JMDictEntryBuilderTest {
     //TODO - difficult cards - keeps coming back with just kana, eg reading should be dokusho, not katakana reading
     //TODO - as dokusho but with 'science'
     //TODO - 'math' doesn't work for mathematics
-    //TODO - 'cat' still returns rare word, not most common
-
 }
