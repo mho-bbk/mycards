@@ -61,7 +61,8 @@ public class DatamuseWordBuilder {
     }
 
     private static void sortEntries(List<DatamuseWord> entries) {
-        Comparator<DatamuseWord> datamuseWordComparator = Comparator.comparingInt(DatamuseWord::getScore);
+        Comparator<DatamuseWord> datamuseWordComparator = Comparator.comparingInt(DatamuseWord::getScore)
+                .reversed();
         Collections.sort(entries, datamuseWordComparator);
     }
 

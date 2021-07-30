@@ -15,8 +15,8 @@ public class DatamuseWordBuilderTest {
 
     private String fakeJsonString = "[{\"word\":\"cuisine\",\"score\":71291,\"tags\":[\"n\"]},\n" +
             "{\"word\":\"cook\",\"score\":69758,\"tags\":[\"n\",\"v\"]},\n" +
-            "{\"word\":\"baker\",\"score\":69008,\"tags\":[\"n\",\"prop\"]},\n" +
             "{\"word\":\"kitchen\",\"score\":67750,\"tags\":[\"n\"]},\n" +
+            "{\"word\":\"baker\",\"score\":69008,\"tags\":[\"n\",\"prop\"]},\n" +
             "{\"word\":\"cooking\",\"score\":67352,\"tags\":[\"n\",\"v\"]}]";
     private DatamuseWordBuilder datamuseWordBuilder;
 
@@ -30,13 +30,11 @@ public class DatamuseWordBuilderTest {
     public void getDatamuseWords() {
         List<DatamuseWord> words = datamuseWordBuilder.getDatamuseWords();
 
-        System.out.println(words.get(0));
-        System.out.println(new DatamuseWord("cuisine", 71291));
         assertEquals(words.get(0), new DatamuseWord("cuisine", 71291));
-        assertEquals(words.get(1), new DatamuseWord());
-        assertEquals(words.get(2), new DatamuseWord());
-        assertEquals(words.get(3), new DatamuseWord());
-        assertEquals(words.get(4), new DatamuseWord());
+        assertEquals(words.get(1), new DatamuseWord("cook", 69758));
+        assertEquals(words.get(2), new DatamuseWord("baker", 69008));
+        assertEquals(words.get(3), new DatamuseWord("kitchen", 67750));
+        assertEquals(words.get(4), new DatamuseWord("cooking",67352));
 
     }
 }
