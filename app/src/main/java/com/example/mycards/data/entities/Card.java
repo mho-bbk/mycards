@@ -5,6 +5,9 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.example.mycards.datamuse.pojo.DatamuseWord;
+import com.example.mycards.jmdict.JMDictEntry;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -27,7 +30,7 @@ public class Card {
     public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
-        this.isShown = false;   //may not work...
+        this.isShown = false;
     }
 
     //Room will use this later to set the id

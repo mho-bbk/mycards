@@ -1,8 +1,5 @@
 package com.example.mycards.main;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -11,6 +8,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.data.repositories.CardRepository;
+import com.example.mycards.datamuse.DatamuseClient;
+import com.example.mycards.datamuse.pojo.DatamuseWord;
 import com.example.mycards.jmdict.JMDictEntry;
 import com.example.mycards.jmdict.JMDictEntryBuilder;
 
@@ -18,11 +17,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executor;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SharedViewModel extends ViewModel {
 
     private CardRepository cardRepository;
     private JMDictEntryBuilder entryBuilder;
+    private List<DatamuseWord> datamuseWords;
 
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
@@ -37,13 +42,48 @@ public class SharedViewModel extends ViewModel {
 
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
-        //Convert input String to CardEntity class here
+        //Convert input String to Card class here
         for (String s: inputList) {
             Card input = createCard(s);
             upsert(input);
+//            //semantic search here using DatamuseAPI
+            startSemanticSearch(s);
         }
         return getAllCards();
     });
+
+    private void startSemanticSearch(String s) {
+        Call<List<DatamuseWord>> call = DatamuseClient.getInstance()
+                .getDatamuseAPIService()
+                .getMaxSingleSearchResults(s, 3);
+
+        call.enqueue(new Callback<List<DatamuseWord>>() {
+            @Override
+            public void onResponse(Call<List<DatamuseWord>> call, Response<List<DatamuseWord>> response) {
+                if(response.isSuccessful()) {
+                    datamuseWords = response.body();
+                    setDatamuseWordsAndCreateCards(datamuseWords);
+                } else {
+                    System.out.println(response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DatamuseWord>> call, Throwable t) {
+                System.out.println("An error occurred with testDatamuseAPIService() method");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    //TODO - Violates SRP so separate
+    private void setDatamuseWordsAndCreateCards(List<DatamuseWord> words) {
+        this.datamuseWords = words;
+        for (DatamuseWord word: datamuseWords) {
+            Card card = createCard(word.getWord());
+            upsert(card);
+        }
+    }
 
     public SharedViewModel(CardRepository repository) {
         this.cardRepository = repository;
@@ -59,7 +99,7 @@ public class SharedViewModel extends ViewModel {
      */
     public void loadJMDict(InputStream input) {
         try {
-            entryBuilder = JMDictEntryBuilder.getInstance(input);
+            entryBuilder = JMDictEntryBuilder.getInstance(input);   //TODO - pass executor to builder?
         } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }
@@ -116,20 +156,7 @@ public class SharedViewModel extends ViewModel {
      * @return
      */
     private Card createCard(String inputWord) {
-        List<JMDictEntry> entries = entryBuilder.getJMDictEntries(inputWord);
-        if(entries.isEmpty()) {
-            return new Card("Blank", "Blank");
-        } else {
-            //Return the first word as list should be ordered (most rel first)
-            JMDictEntry jmde = entries.get(0);
-            String jWord;
-            if(jmde.getKanji().getText().equals("")) {
-                jWord = jmde.getKana().getText();
-            } else {
-                jWord = jmde.getKanji().getText() + " (" + jmde.getKana().getText() + ")";
-            }
-            return new Card(inputWord, jWord);
-        }
+        return entryBuilder.getFirstEntryAsCard(inputWord);
     }
 
     //TODO - could you do a repeat function with resetDeck() and setUserInputs?

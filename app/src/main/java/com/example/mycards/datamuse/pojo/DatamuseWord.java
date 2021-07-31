@@ -1,10 +1,13 @@
 package com.example.mycards.datamuse.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class DatamuseWord {
+
     private String word = "";
     private int score = 0;
     private List<String> tags = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.example.mycards.jmdict;
 
+import com.example.mycards.data.entities.Card;
 import com.example.mycards.jmdict.pojo.Gloss;
 import com.example.mycards.jmdict.pojo.Kana;
 import com.example.mycards.jmdict.pojo.Kanji;
@@ -57,6 +58,7 @@ public class JMDictEntryBuilder {
         return INSTANCE;
     }
 
+    //TODO - put this on bg thread
     public List<JMDictEntry> getJMDictEntries(String input) {
         //We retrieve the specific entry from the dictionary here
         List<JMDictEntry> dictEntries = new ArrayList<>();
@@ -113,12 +115,30 @@ public class JMDictEntryBuilder {
         return dictEntries;
     }
 
+    //TODO - test this
+    public Card getFirstEntryAsCard(String input) {
+        List<JMDictEntry> entries = getJMDictEntries(input);
+        if(entries.isEmpty()) {
+            return new Card("Blank", "Blank");
+        } else {
+            JMDictEntry jmde = entries.get(0);
+            String jWord;
+            if(jmde.getKanji().getText().equals("")) {
+                jWord = jmde.getKana().getText();
+            } else {
+                jWord = jmde.getKanji().getText() + " (" + jmde.getKana().getText() + ")";
+            }
+            return new Card(input, jWord);
+        }
+    }
+
+    //sort by where the definition is found. GlossOrder of 1 = more commonly used term for that English word within that sense.
+    //Then sort by SenseOrder. SenseOrder of 1 = assumed most common context for that English word.
+    //Then sort by GlossCount. GlossCount of 1 = only word that matches the English term, assumed more likely to be the right one.
     private static void sortEntries(List<JMDictEntry> entries) {
         Comparator<JMDictEntry> jmDictEntryComparator = Comparator.comparingInt(JMDictEntry::getGlossOrder)
                 .thenComparingInt(JMDictEntry::getSenseOrder)
                 .thenComparingInt(JMDictEntry::getGlossCount);
-
-        //TODO - this doesn't seem to work? NEEDS TESTING
 
         Collections.sort(entries, jmDictEntryComparator);
     }

@@ -91,4 +91,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0-rc1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0-rc1'
 
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0' //using Jackson, so hopefully don't need gson
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit-mock
+    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.9.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+
+    //Mockito
+    testImplementation "org.mockito:mockito-core:3.11.2"
 }
