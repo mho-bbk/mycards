@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ui.carddisplay.CardDisplayFragment">
+    tools:context=".ui.CardDisplayFragment">
 
     <FrameLayout
         android:id="@+id/flashcardDisplayFrame"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".ui.carddisplay.CardDisplayFragment">
+            tools:context=".ui.CardDisplayFragment">
 
             <TextView
                 android:id="@+id/side_a"

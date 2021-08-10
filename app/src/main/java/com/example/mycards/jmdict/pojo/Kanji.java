@@ -1,29 +1,47 @@
 package com.example.mycards.jmdict.pojo;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class Kanji {
-    private boolean common;
-    private String text;    //NEEDED
-    private List<String> tags;
+
+    @JsonAlias({"common"})
+    private boolean commonKanji;
+    @JsonAlias({"text"})
+    private String kanjiText;    //NEEDED
 
     public Kanji() {
-        this.text = "";
+        this.kanjiText = "";
     }
 
     public Kanji(String kanji) {
-        this.text = kanji;
+        this.kanjiText = kanji;
     }
 
-    public boolean isCommon() {
-        return common;
+    public Kanji(String kanji, boolean bool) {
+        this.kanjiText = kanji;
+        this.commonKanji = bool;
     }
 
-    public String getText() {
-        return text;
+    public boolean isCommonKanji() {
+        return commonKanji;
     }
 
-    public List<String> getTags() {
-        return tags;
+    public void setCommonKanji(boolean commonKanji) {
+        this.commonKanji = commonKanji;
+    }
+
+    public void setKanjiText(String kanjiText) {
+        this.kanjiText = kanjiText;
+    }
+
+    public String getKanjiText() {
+        return kanjiText;
+    }
+
+    @Override
+    public String toString() {
+        return "Kanji{" +
+                "text='" + kanjiText + '\'' +
+                '}';
     }
 }

@@ -23,6 +23,9 @@ public interface CardEntityDao {
     @Query("SELECT * FROM cards ORDER BY id")
     LiveData<List<Card>> getAllCards();
 
+    @Query("SELECT * FROM cards WHERE deck_seed = :deckSeed")
+    LiveData<List<Card>> getCards(String deckSeed);
+
     @Query("DELETE FROM cards")
     void deleteAllCards();
 }

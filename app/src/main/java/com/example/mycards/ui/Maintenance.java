@@ -1,6 +1,6 @@
 package com.example.mycards.ui;
 
-import android.os.Build;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,22 +10,38 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mycards.R;
+import com.example.mycards.main.MyCardsApplication;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
+//From Android Dagger Docs:
+// "When using fragments, inject Dagger in the fragment's onAttach() method.
+// In this case, it can be done before or after calling super.onAttach()."
+
 public class Maintenance extends Fragment {
 
-    private SharedViewModel viewModel;
+    @Inject
+    public SharedViewModelFactory viewModelFactory;
+    private SharedViewModel sharedViewModel;
 
     public static Maintenance newInstance() {
         return new Maintenance();
     }
+
+//    @Override
+//    public void onAttach(@NonNull @NotNull Context context) {
+//        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+//        super.onAttach(context);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,17 +54,13 @@ public class Maintenance extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //TODO - use dependency injection
-        DefaultCardRepository repository = new DefaultCardRepository(getActivity().getApplication());
-        SharedViewModelFactory factory = new SharedViewModelFactory(repository);
-
-        viewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
+        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
 
         Button deleteAll = getView().findViewById(R.id.maintenanceDeleteAll);
         deleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.deleteAllCards();
+                sharedViewModel.getCardUseCase().deleteAllCards();
                 Toast.makeText(getActivity(), "Database has been cleared", Toast.LENGTH_SHORT).show();
             }
         });

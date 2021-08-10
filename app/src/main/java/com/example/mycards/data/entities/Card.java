@@ -2,11 +2,9 @@ package com.example.mycards.data.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import com.example.mycards.datamuse.pojo.DatamuseWord;
-import com.example.mycards.jmdict.JMDictEntry;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,13 +22,30 @@ public class Card {
     @ColumnInfo(name = "side_b")
     private String sideB;
 
-    @ColumnInfo(name = "is_shown")
-    private boolean isShown;
+    @ColumnInfo(name = "repeat")
+    private boolean repeat;
 
+    @ColumnInfo(name = "deck_seed")
+    private String deckSeed;    //this is to help us with user getting deck back
+
+    @Ignore
     public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
-        this.isShown = false;
+        this.repeat = false;
+        this.deckSeed = ""; //avoid NPE
+    }
+
+    //Overload constructor fn
+    public Card(String sideA, String sideB, String deckSeed) {
+        this.sideA = sideA;
+        this.sideB = sideB;
+        this.repeat = false;
+        if(deckSeed == null) {
+            this.deckSeed = ""; //avoid NPE
+        } else {
+            this.deckSeed = deckSeed;
+        }
     }
 
     //Room will use this later to set the id
@@ -55,12 +70,20 @@ public class Card {
         return sideB;
     }
 
-    public void setShown(boolean shown) {
-        this.isShown = shown;
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
     }
 
-    public boolean isShown() {
-        return isShown;
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    public String getDeckSeed() {
+        return deckSeed;
+    }
+
+    public void setDeckSeed(String deckSeed) {
+        this.deckSeed = deckSeed;
     }
 
     @Override

@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/cardDisplayFragment2"
-        android:name="com.example.mycards.ui.carddisplay.CardDisplayFragment"
+        android:name="com.example.mycards.ui.CardDisplayFragment"
         android:label="card_display_fragment"
         tools:layout="@layout/card_display_fragment" />
     <fragment

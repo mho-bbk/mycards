@@ -85,11 +85,46 @@ NEXT (lower priority) - thinking more about OS versions. Try and dl emulator on 
 TODO - bit worried about main thread (whether need to have executorservice threads for accessing the json file...
 also bit concerned need to explore stackoverflow ans that said 'wouldnt save large json file in raw' - why?? bc should save to db??
 
-30/7/21: DatamuseAPI results on 'chef' - data analysis of JSON dl. 
- 
+30/7/21: DatamuseAPI results on 'chef' - data analysis of JSON dl. Impl DatamuseWordBuilder class for breaking down JSON file (as String) with Jackson.
+31/7/21: Broke app trying to implement Retrofit.  Fixed...
+Trying to work out threading as traversal of large JSON file v slow...
+Another heuristic algo for JMDictEntry could be if no exact match then contains?
+Works but is too slow atm 
+NEXT - execute the big method on a sep thread with the swirly GUI thing
+NEXT - look at how to parse huge JSON file better/most efficient way to store (another Repository?)
+
+1/8/21: There is an issue with parsing the huge JSON file.
+1. Try and find another way of getting the Japanese dictionary. 
+1.1 We don't need all the entries in the file all of the time (so space wastage).
+1.2 We reload/search through the entire file every time there is user entry (with every word - what Big O? O(n)? Literally go through every word...) 
+- IDEA: could implement indexing? Store as hash map instead?
+1.3 Json file is searched using the main thread (not a bg thread or asynch - attached to fragment)
+1.4 Does loading the file from JSON make it harder to impl extra features eg spell-check function (from Datamuse API/JSON file)?
+1.5 Related to 1.2 - the file is Japanese to English - we are searching for English gloss within List of Values so even thinking about this
+as key:value pairs, there is no quicker way to search...
+
+Idea: new (web-based) API jisho.org/ (empty github: https://github.com/Jisho-org/jisho-notes)
+https://jisho.org/forum/54fefc1f6e73340b1f160000-is-there-any-kind-of-search-api
+eg: https://jisho.org/api/v1/search/words?keyword=%22rain%22 
+"just provide credit to Jisho.org for the API and make sure you adhere to the licenses of the data sources that Jisho uses, listed on http://jisho.org/about"
+Potential CORs problem? Might need to run through proxy...
 
 
+7/8/21: So much work over past week. Just today though: read about Dagger2 DI and implemented. Made use of Clean Architecture Framework to impl 'use cases'
+creating another layer between VM and Repo, as VM was becoming like a God Object and contained too much intricate business logic. (I wanted VM to be slimmer).
+TODO - Finish writing last use case and refactor VM to use cases instead of coupling with repo. - 8/8/21 Done. 
+TODO - Look at Hilt as a simpler implementation of DI in Android. 
+TODO - test test test. JMDictDao test. 
 
+8/8/21: JMDictDao test failed which makes me think I need to re-look at whether Room is pre-populating the db properly...
+Still TODO - Look at Hilt as a simpler implementation of DI in Android. I spent muchos time getting Dagger 2 to work today but if Hilt can simplify things further...
+App is now up and running but I need to re-put the logic back into the VM before using emulator...
+^Do this to test, as taking time to work out how to get data to load from callback (if that's even pos...)
+
+9/8/21: Worked on aims & objectives. Added wordnet quotes to report. Added more structure and notes.
+Reimpl logic into VM but need to revisit retrofit impl as datamuse API service and callback throws NPE.
+
+Q: how do language dictionaries prioritise which word to display first?
 
 Q&A
 

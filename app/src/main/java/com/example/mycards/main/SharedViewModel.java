@@ -1,33 +1,30 @@
 package com.example.mycards.main;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.example.mycards.usecases.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.data.repositories.CardRepository;
-import com.example.mycards.datamuse.DatamuseClient;
-import com.example.mycards.datamuse.pojo.DatamuseWord;
-import com.example.mycards.jmdict.JMDictEntry;
-import com.example.mycards.jmdict.JMDictEntryBuilder;
+import com.example.mycards.usecases.GetJpWordsUseCase;
+import com.example.mycards.usecases.GetSimilarWordsUseCase;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import javax.inject.Inject;
 
 public class SharedViewModel extends ViewModel {
 
-    private CardRepository cardRepository;
-    private JMDictEntryBuilder entryBuilder;
-    private List<DatamuseWord> datamuseWords;
+    private GetSimilarWordsUseCase similarWordsUseCase;
+    private GetJpWordsUseCase jpWordsUseCase;
+    private CreateAndGetCardUseCase cardUseCase;
 
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
@@ -43,66 +40,29 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Convert input String to Card class here
+        //Deploy use cases here
         for (String s: inputList) {
-            Card input = createCard(s);
-            upsert(input);
-//            //semantic search here using DatamuseAPI
-            startSemanticSearch(s);
+            //semantic search here using DatamuseAPI
+            List<String> simWords = similarWordsUseCase.run(s);
+            //get the Jp translations
+            HashMap<String, String> engToJpWords = jpWordsUseCase.run(simWords);
+            //insert Card into db via the usecase
+            cardUseCase.run(engToJpWords);  //this returns a bool if success that isn't captured anywhere
         }
-        return getAllCards();
+        return cardUseCase.getAllCards();
     });
 
-    private void startSemanticSearch(String s) {
-        Call<List<DatamuseWord>> call = DatamuseClient.getInstance()
-                .getDatamuseAPIService()
-                .getMaxSingleSearchResults(s, 3);
+    @Inject
+    public SharedViewModel(GetSimilarWordsUseCase similarWordsUseCase,
+                           GetJpWordsUseCase jpWordsUseCase,
+                           CreateAndGetCardUseCase cardUseCase) {
+        this.similarWordsUseCase = similarWordsUseCase;
+        this.jpWordsUseCase = jpWordsUseCase;
+        this.cardUseCase = cardUseCase;
 
-        call.enqueue(new Callback<List<DatamuseWord>>() {
-            @Override
-            public void onResponse(Call<List<DatamuseWord>> call, Response<List<DatamuseWord>> response) {
-                if(response.isSuccessful()) {
-                    datamuseWords = response.body();
-                    setDatamuseWordsAndCreateCards(datamuseWords);
-                } else {
-                    System.out.println(response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DatamuseWord>> call, Throwable t) {
-                System.out.println("An error occurred with testDatamuseAPIService() method");
-                t.printStackTrace();
-            }
-        });
-    }
-
-    //TODO - Violates SRP so separate
-    private void setDatamuseWordsAndCreateCards(List<DatamuseWord> words) {
-        this.datamuseWords = words;
-        for (DatamuseWord word: datamuseWords) {
-            Card card = createCard(word.getWord());
-            upsert(card);
-        }
-    }
-
-    public SharedViewModel(CardRepository repository) {
-        this.cardRepository = repository;
-
-        //Observe the LiveData, passing in the global observer.
+        //Observe the LiveData ie user input, passing in the global observer.
         userAnswers.observeForever(observer);
 
-    }
-
-    /**
-     * Method called by the FragmentActivity to pass the correct resource to the VM
-     * @param input stream representing the dictionary file
-     */
-    public void loadJMDict(InputStream input) {
-        try {
-            entryBuilder = JMDictEntryBuilder.getInstance(input);   //TODO - pass executor to builder?
-        } catch (IOException e) {
-            System.err.println(e.getStackTrace());
-        }
     }
 
     /**
@@ -156,7 +116,7 @@ public class SharedViewModel extends ViewModel {
      * @return
      */
     private Card createCard(String inputWord) {
-        return entryBuilder.getFirstEntryAsCard(inputWord);
+        return new Card(inputWord, inputWord + " in Japanese");
     }
 
     //TODO - could you do a repeat function with resetDeck() and setUserInputs?
@@ -174,25 +134,15 @@ public class SharedViewModel extends ViewModel {
 //        this.cardIterator = repeatDeck.iterator();
 //    }
 
-    //**REPOSITORY/DAO METHODS**
-    public LiveData<List<Card>> getAllCards() { return cardRepository.getAllCards(); }
-
-    public void upsert(Card card) {
-        cardRepository.upsert(card);
-    }
-
-    public void delete(Card card) {
-        cardRepository.delete(card);
-    }
-
-    public void deleteAllCards() {
-        cardRepository.deleteAllCards();
+    //public accessor to this usecase, enables deleteCards to be called from a fragment
+    //TODO - refactor so this is private to avoid misuse of run()
+    public CreateAndGetCardUseCase getCardUseCase() {
+        return cardUseCase;
     }
 
     @Override
     protected void onCleared() {
         userAnswers.removeObserver(observer);
-        this.deleteAllCards();   //TODO - this doesn't seem to work. Why? Related to repositories and persistence?
         super.onCleared();
     }
 }

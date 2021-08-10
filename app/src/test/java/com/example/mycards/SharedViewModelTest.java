@@ -3,6 +3,7 @@ package com.example.mycards;
 import com.example.mycards.data.repositories.FakeCardRepository;
 import com.example.mycards.jmdict.JMDictEntryBuilder;
 import com.example.mycards.main.SharedViewModel;
+import com.example.mycards.main.SharedViewModelFactory;
 
 import org.junit.Before;
 
@@ -17,11 +18,12 @@ public class SharedViewModelTest {
     private InputStream input;
     private JMDictEntryBuilder entryBuilder;
 
+    private SharedViewModelFactory sharedViewModelFactory;
     private SharedViewModel testSharedViewModel;
 
     @Before
     public void setUp() throws IOException {
-        testSharedViewModel = new SharedViewModel(new FakeCardRepository());    //doesn't work
+//        testSharedViewModel = new SharedViewModel();    //doesn't work
         input = getClass()
                 .getResourceAsStream("jmdict_eng_common_3_1_0_sample.json");
         entryBuilder = JMDictEntryBuilder.getInstance(input);

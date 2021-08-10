@@ -1,6 +1,6 @@
 package com.example.mycards.ui;
 
-import android.os.Build;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -23,14 +22,21 @@ import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class InputFragment extends Fragment implements View.OnClickListener {
 
-    private SharedViewModel mainPromptViewModel;
+    @Inject
+    public SharedViewModelFactory viewModelFactory;
+    private SharedViewModel sharedViewModel;
+
     private Button makeCards;
     private FloatingActionButton openMaintenanceButton;
 
@@ -42,6 +48,12 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         return new InputFragment();
     }
 
+//    @Override
+//    public void onAttach(@NonNull @NotNull Context context) {
+//        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+//        super.onAttach(context);
+//    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -52,17 +64,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //TODO - use dependency injection
-        DefaultCardRepository repository = new DefaultCardRepository(getActivity().getApplication());
-        SharedViewModelFactory factory = new SharedViewModelFactory(repository);
-
-        mainPromptViewModel = new ViewModelProvider(requireActivity(), factory).get(SharedViewModel.class);
-        try(InputStream input = getResources().openRawResource(R.raw.jmdict_eng_common_3_1_0)) {
-            mainPromptViewModel.loadJMDict(input);
-        } catch (IOException e) {
-            System.err.println(e.getStackTrace());
-        }
+        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
 
         jobEditTxt = getView().findViewById(R.id.jobEditTxt);
         hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);
@@ -76,7 +78,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public void createCards() {
+    private void createCards() {
         if(passOnDataSuccessful()) {
             NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
             NavHostFragment.findNavController(this).navigate(goToCardDisplayFragment);
@@ -85,8 +87,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public boolean passOnDataSuccessful() {
-        //TODO - pass the string entered by the user into a data object to be stored in MainVM
+    /**
+     * Passes user input as List<String> to the VM
+     * @return true/false to indicate whether input has successfully passed to VM
+     */
+    private boolean passOnDataSuccessful() {
         String job = jobEditTxt.getText().toString();
         String hobby = hobbyEditTxt.getText().toString();
         String subject = subjectEditTxt.getText().toString();
@@ -102,10 +107,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         allUserInput.add(hobby);
         allUserInput.add(subject);
 
-//        mainPromptViewModel.upsert(job);
-//        mainPromptViewModel.upsert(hobby);
-//        mainPromptViewModel.upsert(subject);
-        mainPromptViewModel.setUserInputs(allUserInput);
+        sharedViewModel.setUserInputs(allUserInput);
         return true;
     }
 
