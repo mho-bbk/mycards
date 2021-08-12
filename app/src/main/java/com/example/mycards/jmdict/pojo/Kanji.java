@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class Kanji {
 
-    @JsonAlias({"common"})
-    private boolean commonKanji;
     @JsonAlias({"text"})
     private String kanjiText;    //NEEDED
 
@@ -15,19 +13,6 @@ public class Kanji {
 
     public Kanji(String kanji) {
         this.kanjiText = kanji;
-    }
-
-    public Kanji(String kanji, boolean bool) {
-        this.kanjiText = kanji;
-        this.commonKanji = bool;
-    }
-
-    public boolean isCommonKanji() {
-        return commonKanji;
-    }
-
-    public void setCommonKanji(boolean commonKanji) {
-        this.commonKanji = commonKanji;
     }
 
     public void setKanjiText(String kanjiText) {

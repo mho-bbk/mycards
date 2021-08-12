@@ -35,8 +35,7 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
     private static volatile JMDictEntryDatabase instance;    //to make our db a singleton
 
     //As AsyncTask is deprecated...
-    private static final int NUMBER_OF_THREADS = 3; //TODO - 3 is a random num
-    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    public static final ExecutorService jmDictDatabaseWriteExecutor = Executors.newSingleThreadExecutor();
 
     //complete singleton pattern
     public static synchronized JMDictEntryDatabase getInstance(Context context) {
@@ -50,26 +49,27 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
 
     private static synchronized JMDictEntryDatabase buildDatabase(Context context) {
         JMDictEntryDatabase db = Room.databaseBuilder(context.getApplicationContext(),
-                JMDictEntryDatabase.class, "jmdict-database")
+                JMDictEntryDatabase.class, "jmdict_database")
                 //prepopulate the db after onCreate is called
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull @NotNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        //execute it on a thread to prevent freezing main thread
-                        databaseWriteExecutor.execute(
-                                () -> getInstance(context)
-                                        .getJMDictEntryDao()
-                                        .insertAll(getPrePopulatedData(context))
-                        );
-                    }
-                })
+//                .addCallback(new Callback() {
+//                    @Override
+//                    public void onCreate(@NonNull @NotNull SupportSQLiteDatabase db) {
+//                        System.out.println("I'm inside the JMDictDB buildDatabase() callback...");
+//                        super.onCreate(db);
+//                        //execute it on a thread to prevent freezing main thread
+//                        jmDictDatabaseWriteExecutor.execute(
+//                                () -> getInstance(context)
+//                                        .getJMDictEntryDao()
+//                                        .insertAll(getPrePopulatedData(context))
+//                        );
+//                    }
+//                })
                 .build();
 
         return db;
     }
 
-    private static List<JMDictEntry> getPrePopulatedData(Context context) {
+    private static synchronized List<JMDictEntry> getPrePopulatedData(Context context) {
         List<JMDictEntry> dictEntries = new ArrayList<>();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -78,7 +78,7 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
 
         try {
             dictEntries = mapper.readValue(context.getResources()
-                    .openRawResource(R.raw.reverse_jmdictentries_plain),
+                    .openRawResource(R.raw.reverse_jmdictentries_plain_sample),
                     new TypeReference<List<JMDictEntry>>() {
             });
         } catch (IOException e) {

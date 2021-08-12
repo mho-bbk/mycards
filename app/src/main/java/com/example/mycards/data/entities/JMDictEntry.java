@@ -55,6 +55,8 @@ public class JMDictEntry {
     public JMDictEntry() {
         this.innerGloss = "";
         this.wordID = "";
+        this.kana = new Kana();
+        this.kanji = new Kanji();
     }
 
     public JMDictEntry(String gloss, String wordID, Kanji kanji, Kana kana,

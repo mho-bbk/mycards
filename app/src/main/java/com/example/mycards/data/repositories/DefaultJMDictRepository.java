@@ -3,12 +3,15 @@ package com.example.mycards.data.repositories;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.mycards.data.db.JMDictEntryDao;
 import com.example.mycards.data.db.JMDictEntryDatabase;
 import com.example.mycards.data.entities.JMDictEntry;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
@@ -27,22 +30,35 @@ public class DefaultJMDictRepository implements JMDictRepository {
     //Use executor to try and avoid memory leak
     @Override
     public void insertAll(List<JMDictEntry> jmDictEntries) {
-        JMDictEntryDatabase.databaseWriteExecutor.execute(() -> jmDictEntryDao.insertAll(jmDictEntries));
+        JMDictEntryDatabase.jmDictDatabaseWriteExecutor.execute(() -> jmDictEntryDao.insertAll(jmDictEntries));
     }
 
     @Override
     public void upsert(JMDictEntry dictEntry) {
-        JMDictEntryDatabase.databaseWriteExecutor.execute(() -> jmDictEntryDao.upsert(dictEntry));
+        JMDictEntryDatabase.jmDictDatabaseWriteExecutor.execute(() -> jmDictEntryDao.upsert(dictEntry));
     }
 
     @Override
     public void delete(JMDictEntry dictEntry) {
-        JMDictEntryDatabase.databaseWriteExecutor.execute(() -> jmDictEntryDao.delete(dictEntry));
+        JMDictEntryDatabase.jmDictDatabaseWriteExecutor.execute(() -> jmDictEntryDao.delete(dictEntry));
     }
 
     @Override
-    public LiveData<JMDictEntry> getFirstJMDictEntry(String gloss) {
-        return jmDictEntryDao.getFirstJMDictEntry(gloss);
+    public JMDictEntry getFirstJMDictEntry(String gloss) {
+        Future<JMDictEntry> jmdict = JMDictEntryDatabase.jmDictDatabaseWriteExecutor.submit(
+                () -> jmDictEntryDao.getFirstJMDictEntry(gloss)
+        );
+
+        JMDictEntry jmDictEntry = new JMDictEntry();
+        try {
+            jmDictEntry = jmdict.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return jmDictEntry;
     }
 
     @Override
@@ -52,6 +68,6 @@ public class DefaultJMDictRepository implements JMDictRepository {
 
     @Override
     public void deleteAllJMDictEntries() {
-        JMDictEntryDatabase.databaseWriteExecutor.execute(() -> jmDictEntryDao.deleteAllJMDictEntries());
+        JMDictEntryDatabase.jmDictDatabaseWriteExecutor.execute(() -> jmDictEntryDao.deleteAllJMDictEntries());
     }
 }

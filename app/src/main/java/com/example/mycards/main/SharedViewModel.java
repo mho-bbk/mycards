@@ -1,18 +1,22 @@
 package com.example.mycards.main;
 
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.usecases.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.usecases.GetJpWordsUseCase;
 import com.example.mycards.usecases.GetSimilarWordsUseCase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Iterator;
@@ -20,12 +24,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+@RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
 
     private GetSimilarWordsUseCase similarWordsUseCase;
     private GetJpWordsUseCase jpWordsUseCase;
     private CreateAndGetCardUseCase cardUseCase;
 
+    private HashMap<String, String> engToJpWords = new HashMap<>();
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
@@ -37,18 +43,32 @@ public class SharedViewModel extends ViewModel {
         }
     };
 
+//    private final Observer<JMDictEntry> jmDictEntryObserver = new Observer<JMDictEntry>() {
+//        @Override
+//        public void onChanged(JMDictEntry dictEntry) {
+//            //Get result of the LiveData here and do something
+//            engToJpWords.put(dictEntry.getInnerGloss(), jpWordsUseCase.formatKanjiAndKana(dictEntry));
+//        }
+//    };
+
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Convert input String to Card class here
         //Deploy use cases here
-        for (String s: inputList) {
+//        for (String s: inputList) {
             //semantic search here using DatamuseAPI
-            List<String> simWords = similarWordsUseCase.run(s);
-            //get the Jp translations
-            HashMap<String, String> engToJpWords = jpWordsUseCase.run(simWords);
-            //insert Card into db via the usecase
-            cardUseCase.run(engToJpWords);  //this returns a bool if success that isn't captured anywhere
+//            List<String> simWords = similarWordsUseCase.run(s);
+
+        //Test so we can stop needlessly calling API...
+        List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+
+        //get the Jp translations
+        for (String word: fakeSimWords) {
+            jpWordsUseCase.run(word);   //returns bool
         }
+            //insert Card into db via the usecase
+            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
+//        }
         return cardUseCase.getAllCards();
     });
 
@@ -62,6 +82,7 @@ public class SharedViewModel extends ViewModel {
 
         //Observe the LiveData ie user input, passing in the global observer.
         userAnswers.observeForever(observer);
+//        jpWordsUseCase.setObserver(jmDictEntryObserver);
 
     }
 
@@ -142,6 +163,8 @@ public class SharedViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
+//        jpWordsUseCase.removeObserver(jmDictEntryObserver);
+//        jpWordsUseCase.removeObserver();
         userAnswers.removeObserver(observer);
         super.onCleared();
     }

@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface JMDictEntryDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insertAll(List<JMDictEntry> jmDictEntries);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -24,7 +24,7 @@ public interface JMDictEntryDao {
     public void delete(JMDictEntry dictEntry); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
 
     @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss ORDER BY gloss_order, sense_order, gloss_count LIMIT 1")
-    public LiveData<JMDictEntry> getFirstJMDictEntry(String gloss);
+    public JMDictEntry getFirstJMDictEntry(String gloss);
 
     @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss")
     public LiveData<List<JMDictEntry>> getAllJMDictEntries(String gloss);

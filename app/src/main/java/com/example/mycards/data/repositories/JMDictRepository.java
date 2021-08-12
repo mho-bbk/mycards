@@ -17,7 +17,7 @@ public interface JMDictRepository {
     public void delete(JMDictEntry dictEntry);
 
     //method to get the 'best' Jp match based on gloss and sense counts/order
-    public LiveData<JMDictEntry> getFirstJMDictEntry(String gloss);
+    public JMDictEntry getFirstJMDictEntry(String gloss);
 
     //method to get all Jp matches based on gloss
     public LiveData<List<JMDictEntry>> getAllJMDictEntries(String gloss);
