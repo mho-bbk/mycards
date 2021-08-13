@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.JMDictEntry;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
     ExecutorService mainActivityExecutor = Executors.newSingleThreadExecutor();
+    private static final String TAG = "MainActivity";
 
     @Inject
     SharedViewModelFactory sharedViewModelFactory;
@@ -44,11 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
         sharedViewModel = new ViewModelProvider(this, sharedViewModelFactory).get(SharedViewModel.class);
 
-        //Issue: do not want this to run if the database has already been populated... (eg screen config change)
+        //TODO - Issue: do not want this to run if the database has already been populated... (eg screen config change)
         Future<?> future = mainActivityExecutor.submit(() -> jmDictRepository
                 .insertAll(getPrePopulatedData(this)));
         try {
+            Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
             future.get();
+            Log.d(TAG, "jmdict db has pre-populated!");
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -57,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static synchronized List<JMDictEntry> getPrePopulatedData(Context context) {
+        int testResource = R.raw.reverse_jmdictentries_plain_sample;
+        int realResource = R.raw.reverse_jmdictentries_plain;
+
         List<JMDictEntry> dictEntries = new ArrayList<>();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             dictEntries = mapper.readValue(context.getResources()
-                            .openRawResource(R.raw.reverse_jmdictentries_plain_sample),
+                            .openRawResource(realResource),
                     new TypeReference<List<JMDictEntry>>() {
                     });
         } catch (IOException e) {

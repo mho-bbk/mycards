@@ -124,6 +124,25 @@ App is now up and running but I need to re-put the logic back into the VM before
 9/8/21: Worked on aims & objectives. Added wordnet quotes to report. Added more structure and notes.
 Reimpl logic into VM but need to revisit retrofit impl as datamuse API service and callback throws NPE.
 
+13/8/21: (See paper for more notes) Log of print statements in strategic places to demo how asynch call to remote db is not returning in time:
+"SUGAR SPICE..." - playful print from within ViewModel that prints just before cards are returned. (Ie when process should have been completed)
+There is also a print statement placed in datamuseusecase that prints after the search results have been achieved. 
+
+Log:
+I/ViewRootImpl@1b96c69[MainActivity]: ViewPostIme pointer 1
+V/StudioTransport: Handling agent command 1200 for pid: 14828.
+I/System.out: SUGAR SPICE ALL THINGS NICE
+    SUGAR SPICE ALL THINGS NICE
+I/System.out: SUGAR SPICE ALL THINGS NICE
+I/System.out: [DatamuseWord{word='cuisine', score=71291, tags=[n]}, DatamuseWord{word='cook', score=69758, tags=[n, v]}, DatamuseWord{word='baker', score=69008, tags=[n, prop]}]
+I/System.out: [DatamuseWord{word='cookery', score=96200, tags=[syn, n]}, DatamuseWord{word='cuisine', score=91727, tags=[syn, n]}, DatamuseWord{word='culinary art', score=74966, tags=[syn, n]}]
+V/StudioTransport: Handling agent command 1200 for pid: 14828.
+I/System.out: [DatamuseWord{word='skill', score=78550, tags=[syn, n]}, DatamuseWord{word='scientific discipline', score=73791, tags=[syn, n, prop]}, Datamu
+
+Also 13/8/21: Learned how to use Log.class to print out debug statements.
+
+
+
 Q: how do language dictionaries prioritise which word to display first?
 
 Q&A

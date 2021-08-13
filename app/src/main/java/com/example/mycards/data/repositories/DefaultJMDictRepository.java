@@ -1,6 +1,7 @@
 package com.example.mycards.data.repositories;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 public class DefaultJMDictRepository implements JMDictRepository {
 
     private JMDictEntryDao jmDictEntryDao;
+    private final static String TAG = "DefaultJMDictRepository";
 
     @Inject
     public DefaultJMDictRepository(Application application) {
@@ -52,13 +54,15 @@ public class DefaultJMDictRepository implements JMDictRepository {
         JMDictEntry jmDictEntry = new JMDictEntry();
         try {
             jmDictEntry = jmdict.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        return jmDictEntry;
+        if(jmDictEntry == null) {
+            return new JMDictEntry();
+        } else {
+            return jmDictEntry;
+        }
     }
 
     @Override

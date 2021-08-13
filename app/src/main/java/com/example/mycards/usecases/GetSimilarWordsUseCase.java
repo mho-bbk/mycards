@@ -1,5 +1,7 @@
 package com.example.mycards.usecases;
 
+import android.util.Log;
+
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.datamuse.DatamuseAPIService;
 import com.example.mycards.datamuse.pojo.DatamuseWord;
@@ -7,13 +9,14 @@ import com.example.mycards.datamuse.pojo.DatamuseWord;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -23,8 +26,11 @@ import retrofit2.Response;
  *  + Convert DatamuseWord type into List of String for processing
  *  + Return those words to the client (VM)
  */
-public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List<String>> {
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
+public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, Boolean> {
+    ExecutorService simWordUseCaseExecutor = Executors.newSingleThreadExecutor();
+    ExecutorService threadPool = Executors.newFixedThreadPool(3);   //trying to use more threads to see if there's a diff...
+
+    private static final String TAG = "GetSimilarWordsUseCase";
 
     private DatamuseAPIService datamuseAPIService;
     private List<DatamuseWord> datamuseWords = new ArrayList<>();
@@ -35,21 +41,15 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List
     }
 
     @Override
-    public List<String> run(String param) {
-        boolean foundWords = semanticSearch(param);
-        if(foundWords) {
-            return convertDatamuseWordsToStrings(datamuseWords);
-        } else {
-            List<String> dummyList = new ArrayList<>();
-            return dummyList;
-        }
+    public Boolean run(String param) {
+        //Create the call
+        Call<List<DatamuseWord>> maxSingleSearchCall = createMaxSingleSearchCall(
+                datamuseAPIService, param, 3);
+        //Run the semantic search (execute the call on a bg thread)
+        return semanticSearch(maxSingleSearchCall);
     }
 
-    private boolean semanticSearch(String s) {
-        Call<List<DatamuseWord>> call = datamuseAPIService
-                .getMaxSingleSearchResults(s, 3);   //later user should be able to set the max
-
-
+    public boolean semanticSearch(Call<List<DatamuseWord>> call) {
         //Makes sure this doesn't happen on the main thread
 //        call.enqueue(new Callback<List<DatamuseWord>>() {
 //            @Override
@@ -70,17 +70,48 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List
 //        });
 
         //implement Retrofit on blocking thread as need results immediately
-        executorService.execute(() -> {
+        long startTime = System.nanoTime(); //measure starttime
+        Future<?> searchSimilarWords = threadPool.submit(() -> {
             try {
                 Response<List<DatamuseWord>> words = call.execute();
                 datamuseWords = words.body();
-                System.out.println(datamuseWords);
+                Log.d(TAG, "Got datamuseWords: " + datamuseWords);
             } catch (IOException e) {
+                Log.d(TAG, "IOException with semanticSearch() method: ");
                 e.printStackTrace();
             }
         });
 
-        return true;
+        try {
+            searchSimilarWords.get();
+            long endTime = System.nanoTime();   //measure endtime
+            long duration = (endTime - startTime) / 1000000;  //calculate duration in ms
+            Log.d(TAG, Thread.currentThread().getName() + " has finished. DatamuseWords populated in " + duration);
+            return true;
+        } catch (ExecutionException e) {
+            Log.d(TAG, "ExecutionException in semanticSearch() method: ");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d(TAG, "InterruptedException in semanticSearch() method: ");
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<String> getDatamuseWords() {
+        if(!datamuseWords.isEmpty()) {
+            return convertDatamuseWordsToStrings(datamuseWords);
+        } else {
+            List<String> dummyList = new ArrayList<>();
+            return dummyList;
+        }
+    }
+
+    //Helper method to disaggregate Call from semanticSearch to make the latter testable
+    private Call<List<DatamuseWord>> createMaxSingleSearchCall(DatamuseAPIService service,
+                                                               String searchTerm, int upToThisInt) {
+        return service.getMaxSingleSearchResults(searchTerm, upToThisInt);
     }
 
     private List<String> convertDatamuseWordsToStrings(List<DatamuseWord> datamuseWords) {

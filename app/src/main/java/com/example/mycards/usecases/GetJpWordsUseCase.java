@@ -19,14 +19,15 @@ import javax.inject.Inject;
 
 /**
  * Remit:
- * Take a list of String (related English words)
+ * Take a String (English)
  * Connect to JMDictRepository
- * Search the local db and match English words with Jp equivalents
- * Return as HashMap to client (for card creation)
+ * Search the local db and match English word with Jp equivalent with 'best' counts + order
+ * Add to HashMap that client can then call 'get' on
+ * (Client uses HashMap for card creation)
  */
 public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> {
 
-    private JMDictRepository dictRepository;
+    private final JMDictRepository dictRepository;
 
     private  HashMap<String, String> engToJpMap = new HashMap<>();
 
@@ -38,8 +39,7 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> 
     private final Observer<String> jmDictEntryObserver = new Observer<String>() {
         @Override
         public void onChanged(String s) {
-            //Get result of the LiveData here and do something
-            // TODO - ISSUE: only comes in here on last entry...
+            //Get result of the LiveData here and process
             JMDictEntry result = dictRepository.getFirstJMDictEntry(s);
             engToJpMap.put(result.getInnerGloss(), formatKanjiAndKana(result));
         }
@@ -54,7 +54,7 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> 
 
     @Override
     public synchronized Boolean run(String param) {
-        //Trigger the switchmap and observer to add to the hashmap
+        //Trigger the observer to get result and add to the hashmap
         eachString.setValue(param);
 
         return true;

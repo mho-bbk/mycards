@@ -62,8 +62,4 @@ public class FakeCardRepository implements CardRepository {
         refreshObservableTestCards();
     }
 
-    @Override
-    public DatamuseAPIService getDatamuseApiService() {
-        return null;
-    }
 }

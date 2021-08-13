@@ -1,6 +1,7 @@
 package com.example.mycards.main;
 
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -26,6 +27,8 @@ import javax.inject.Inject;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
+
+    private static final String TAG = "SharedViewModel";    //for use in Logcat
 
     private GetSimilarWordsUseCase similarWordsUseCase;
     private GetJpWordsUseCase jpWordsUseCase;
@@ -55,21 +58,26 @@ public class SharedViewModel extends ViewModel {
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Convert input String to Card class here
         //Deploy use cases here
-//        for (String s: inputList) {
+        for (String s: inputList) {
             //semantic search here using DatamuseAPI
-//            List<String> simWords = similarWordsUseCase.run(s);
+            Boolean successfulSemanticSearch = similarWordsUseCase.run(s);
+            if(successfulSemanticSearch) {
+                List<String> simWords = similarWordsUseCase.getDatamuseWords();
+                //Test so we can stop needlessly calling API...
+//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
 
-        //Test so we can stop needlessly calling API...
-        List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
-
-        //get the Jp translations
-        for (String word: fakeSimWords) {
-            jpWordsUseCase.run(word);   //returns bool
+                //get the Jp translations
+                for (String word: simWords) {
+                    jpWordsUseCase.run(word);   //returns bool
+                }
+                //insert Card into db via the usecase
+                cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
+                Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
+            } else {
+                //do nothing
+            }
         }
-            //insert Card into db via the usecase
-            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
-//        }
-        return cardUseCase.getAllCards();
+        return cardUseCase.getAllCards();   //may return nothing
     });
 
     @Inject
