@@ -1,6 +1,7 @@
 package com.example.mycards.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -48,12 +50,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         return new InputFragment();
     }
 
-//    @Override
-//    public void onAttach(@NonNull @NotNull Context context) {
-//        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
-//        super.onAttach(context);
-//    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -78,6 +74,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private void createCards() {
         if(passOnDataSuccessful()) {
             NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
@@ -91,6 +88,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
      * Passes user input as List<String> to the VM
      * @return true/false to indicate whether input has successfully passed to VM
      */
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private boolean passOnDataSuccessful() {
         String job = jobEditTxt.getText().toString();
         String hobby = hobbyEditTxt.getText().toString();

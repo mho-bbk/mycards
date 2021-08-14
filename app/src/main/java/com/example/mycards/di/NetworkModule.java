@@ -13,7 +13,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 //Scope: Return dependencies related to Network calls. Specifically:
 // + Retrofit
 // + DatamuseAPIService
-//TODO - Refactor so DatamuseClient class is replaced with this
 //Loosely based on: https://betterprogramming.pub/dependency-injection-in-android-with-dagger2-d260b8a72bb0
 @Module
 public class NetworkModule {

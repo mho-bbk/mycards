@@ -26,13 +26,15 @@ import retrofit2.Response;
  *  + Convert DatamuseWord type into List of String for processing
  *  + Return those words to the client (VM)
  */
-public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, Boolean> {
+public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List<String>> {
+
     ExecutorService simWordUseCaseExecutor = Executors.newSingleThreadExecutor();
     ExecutorService threadPool = Executors.newFixedThreadPool(3);   //trying to use more threads to see if there's a diff...
 
     private static final String TAG = "GetSimilarWordsUseCase";
 
-    private DatamuseAPIService datamuseAPIService;
+    private final DatamuseAPIService datamuseAPIService;
+    private int searchLimit = 3;    //3 is default
     private List<DatamuseWord> datamuseWords = new ArrayList<>();
 
     @Inject
@@ -41,41 +43,35 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, Bool
     }
 
     @Override
-    public Boolean run(String param) {
+    public List<String> run(String param) {
         //Create the call
         Call<List<DatamuseWord>> maxSingleSearchCall = createMaxSingleSearchCall(
-                datamuseAPIService, param, 3);
+                datamuseAPIService, param, searchLimit);
+
         //Run the semantic search (execute the call on a bg thread)
-        return semanticSearch(maxSingleSearchCall);
+        if(semanticSearch(maxSingleSearchCall)) {
+            return convertDatamuseWordsToStrings(datamuseWords);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public boolean semanticSearch(Call<List<DatamuseWord>> call) {
-        //Makes sure this doesn't happen on the main thread
-//        call.enqueue(new Callback<List<DatamuseWord>>() {
-//            @Override
-//            public void onResponse(Call<List<DatamuseWord>> call, Response<List<DatamuseWord>> response) {
-//                if(response.isSuccessful()) {
-//                    //set the return results here
-//                    datamuseWords = response.body();
-//                } else {
-//                    System.out.println(response.errorBody());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<DatamuseWord>> call, Throwable t) {
-//                System.out.println("An error occurred with semanticSearch() method");
-//                t.printStackTrace();
-//            }
-//        });
-
         //implement Retrofit on blocking thread as need results immediately
+        //but remote API calls should not be made on main thread, so use Executor
         long startTime = System.nanoTime(); //measure starttime
+
         Future<?> searchSimilarWords = threadPool.submit(() -> {
             try {
                 Response<List<DatamuseWord>> words = call.execute();
-                datamuseWords = words.body();
-                Log.d(TAG, "Got datamuseWords: " + datamuseWords);
+
+                if(words.isSuccessful()) {
+                    datamuseWords = words.body();
+                    Log.d(TAG, "Got datamuseWords: " + datamuseWords);
+                } else {
+                    Log.d(TAG, "Datamuse call unsuccessful, datamuseWords will be empty");
+                }
+
             } catch (IOException e) {
                 Log.d(TAG, "IOException with semanticSearch() method: ");
                 e.printStackTrace();
@@ -84,9 +80,11 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, Bool
 
         try {
             searchSimilarWords.get();
+
             long endTime = System.nanoTime();   //measure endtime
             long duration = (endTime - startTime) / 1000000;  //calculate duration in ms
             Log.d(TAG, Thread.currentThread().getName() + " has finished. DatamuseWords populated in " + duration);
+
             return true;
         } catch (ExecutionException e) {
             Log.d(TAG, "ExecutionException in semanticSearch() method: ");
@@ -98,6 +96,8 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, Bool
 
         return false;
     }
+
+    public void setSearchLimit(int n) { this.searchLimit = n; }
 
     public List<String> getDatamuseWords() {
         if(!datamuseWords.isEmpty()) {

@@ -140,6 +140,41 @@ V/StudioTransport: Handling agent command 1200 for pid: 14828.
 I/System.out: [DatamuseWord{word='skill', score=78550, tags=[syn, n]}, DatamuseWord{word='scientific discipline', score=73791, tags=[syn, n, prop]}, Datamu
 
 Also 13/8/21: Learned how to use Log.class to print out debug statements.
+Basic functionally works now but there is some lag -> to be handled via loading screen
+Have broken the app while trying to impl 'cleaning' method. Today's log ends:
+
+I/Choreographer: Skipped 1336 frames!  The application may be doing too much work on its main thread.
+I/OpenGLRenderer: Davey! duration=22287ms; Flags=0, IntendedVsync=1809623468552571, Vsync=1809645735218347, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=1809645738097278, AnimationStart=1809645738527278, PerformTraversalsStart=1809645739532048, DrawStart=1809645742046932, SyncQueued=1809645745325624, SyncStart=1809645746849086, IssueDrawCommandsStart=1809645747711048, SwapBuffers=1809645754921509, FrameCompleted=1809645757571047, DequeueBufferDuration=985116, QueueBufferDuration=951115, GpuCompleted=0, 
+D/AndroidRuntime: Shutting down VM
+E/AndroidRuntime: FATAL EXCEPTION: main
+    Process: com.example.mycards, PID: 20740
+    java.util.ConcurrentModificationException
+        at java.util.ArrayList$Itr.next(ArrayList.java:860)
+        at com.example.mycards.main.SharedViewModel.stripBlankCards(SharedViewModel.java:106)
+        at com.example.mycards.main.SharedViewModel.setUpDeck(SharedViewModel.java:91)
+        at com.example.mycards.main.SharedViewModel.access$000(SharedViewModel.java:30)
+        at com.example.mycards.main.SharedViewModel$1.onChanged(SharedViewModel.java:45)
+        at com.example.mycards.main.SharedViewModel$1.onChanged(SharedViewModel.java:42)
+        at androidx.lifecycle.LiveData.considerNotify(LiveData.java:133)
+        at androidx.lifecycle.LiveData.dispatchingValue(LiveData.java:151)
+        at androidx.lifecycle.LiveData.setValue(LiveData.java:309)
+        at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+        at androidx.lifecycle.Transformations$2$1.onChanged(Transformations.java:155)
+        at androidx.lifecycle.MediatorLiveData$Source.onChanged(MediatorLiveData.java:152)
+        at androidx.lifecycle.LiveData.considerNotify(LiveData.java:133)
+        at androidx.lifecycle.LiveData.dispatchingValue(LiveData.java:151)
+        at androidx.lifecycle.LiveData.setValue(LiveData.java:309)
+        at androidx.lifecycle.LiveData$1.run(LiveData.java:93)
+        at android.os.Handler.handleCallback(Handler.java:938)
+        at android.os.Handler.dispatchMessage(Handler.java:99)
+        at android.os.Looper.loop(Looper.java:246)
+        at android.app.ActivityThread.main(ActivityThread.java:8512)
+        at java.lang.reflect.Method.invoke(Native Method)
+        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:602)
+        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1139)
+I/Process: Sending signal. PID: 20740 SIG: 9
+
+14/8/21: Fixed error from yesterday by moving method into Fragment and removing blank cards at the UI level
 
 
 

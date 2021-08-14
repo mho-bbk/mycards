@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+//TODO - look further into testing here:
+// https://stackoverflow.com/questions/45160055/unit-testing-in-retrofit-for-callback
 public class GetSimilarWordsUseCaseTest {
 
     private DatamuseAPIService mockedAPIService;
@@ -32,7 +34,7 @@ public class GetSimilarWordsUseCaseTest {
     private List<DatamuseWord> resultDatamuseWords = new ArrayList<>();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mockedAPIService = Mockito.mock(DatamuseAPIService.class);
         GetSimilarWordsUseCase similarWordsUseCase = new GetSimilarWordsUseCase(mockedAPIService);
     }
@@ -59,4 +61,10 @@ public class GetSimilarWordsUseCaseTest {
         }
 
     }
+
+    //TODO - test what happens if apiService returns nothing (both null and empty List)
+    //Next steps according to link in TO/DO...
+    // inject mocked ApiInterface to your presenter
+    // and then mock view and verify calls (and eventually use ArgumentCaptor to access call parameters)
+
 }

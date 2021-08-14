@@ -2,14 +2,10 @@ package com.example.mycards.usecases;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.mycards.base.usecasetypes.BaseUseCaseWithOutParams;
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.data.repositories.CardRepository;
-import com.example.mycards.datamuse.DatamuseClient;
-import com.example.mycards.datamuse.pojo.DatamuseWord;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,7 +31,7 @@ import retrofit2.Response;
 public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, String>, Boolean> {
 
     private CardRepository cardRepository;
-    private String deckSeed; //this should be the user's original input
+    private String deckSeed = ""; //this should be the user's original input
 
     @Inject
     public CreateAndGetCardUseCase(CardRepository cardRepository) {
@@ -56,17 +52,17 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     }
 
     public String getDeckSeed() {
-        if(deckSeed == null) {
-            return "deckSeed is null - investigate";
-        } else {
-            return deckSeed;
-        }
+        return deckSeed;
     }
 
     //VM needs to use this to either directly add user's original input String
     //or VM can get the input string from GetSimilarWordsUseCase
     public void setDeckSeed(String deckSeed) {
         this.deckSeed = deckSeed;
+    }
+
+    public void resetDeckSeed() {
+        this.deckSeed = "";
     }
 
     //**REPOSITORY/DAO METHODS**

@@ -58,8 +58,9 @@ public class DefaultJMDictRepository implements JMDictRepository {
             e.printStackTrace();
         }
 
+        //if the search was not fruitful
         if(jmDictEntry == null) {
-            return new JMDictEntry();
+            return new JMDictEntry();   //prevents NPE
         } else {
             return jmDictEntry;
         }

@@ -1,6 +1,7 @@
 package com.example.mycards.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,12 +39,6 @@ public class Maintenance extends Fragment {
         return new Maintenance();
     }
 
-//    @Override
-//    public void onAttach(@NonNull @NotNull Context context) {
-//        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
-//        super.onAttach(context);
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,9 +54,10 @@ public class Maintenance extends Fragment {
 
         Button deleteAll = getView().findViewById(R.id.maintenanceDeleteAll);
         deleteAll.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
-                sharedViewModel.getCardUseCase().deleteAllCards();
+                sharedViewModel.deleteAllCards();
                 Toast.makeText(getActivity(), "Database has been cleared", Toast.LENGTH_SHORT).show();
             }
         });

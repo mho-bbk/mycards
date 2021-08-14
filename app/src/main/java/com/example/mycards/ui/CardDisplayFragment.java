@@ -1,9 +1,11 @@
 package com.example.mycards.ui;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,7 @@ import com.example.mycards.data.repositories.DefaultCardRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,12 +43,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         return new CardDisplayFragment();
     }
 
-//    @Override
-//    public void onAttach(@NonNull @NotNull Context context) {
-//        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
-//        super.onAttach(context);
-//    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -53,6 +50,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         return inflater.inflate(R.layout.card_display_fragment, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -94,27 +92,34 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private void startDeck(List<Card> cards) {
-        //TODO - rename these...
+        //We don't do anything with the cards and instead get the card from the VM...
         showCard(sharedViewModel.getCurrentCard());
     }
 
+    private boolean cardIsBlank(Card card) {
+        return card.getSideA().equals("") || card.getSideB().equals("");
+    }
 
-    public void goToNextCard() {
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void goToNextCard() {
         showCard(sharedViewModel.getNextCard());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private void showCard(Card card) {
-        sideA.setText(card.getSideA());
-        sideB.setText(card.getSideB());
+        if(cardIsBlank(card)) {
+            goToNextCard();
+        } else {
+            sideA.setText(card.getSideA());
+            sideB.setText(card.getSideB());
 
-        //By default, sideB should not be visible
-        if(sideB.getVisibility() == View.VISIBLE) {
-            toggleVisibility(sideB);
+            //By default, sideB should not be visible
+            if (sideB.getVisibility() == View.VISIBLE) {
+                toggleVisibility(sideB);
+            }
         }
-
-        //as the card has been shown, set its flag to true
-        card.setRepeat(true);
     }
 
 //    public void repeatCard() {
@@ -162,6 +167,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //        return current.toString();
 //    }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onClick(View v) {
         switch(v.getId()) {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -34,7 +35,6 @@ public class SharedViewModel extends ViewModel {
     private GetJpWordsUseCase jpWordsUseCase;
     private CreateAndGetCardUseCase cardUseCase;
 
-    private HashMap<String, String> engToJpWords = new HashMap<>();
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
@@ -46,38 +46,27 @@ public class SharedViewModel extends ViewModel {
         }
     };
 
-//    private final Observer<JMDictEntry> jmDictEntryObserver = new Observer<JMDictEntry>() {
-//        @Override
-//        public void onChanged(JMDictEntry dictEntry) {
-//            //Get result of the LiveData here and do something
-//            engToJpWords.put(dictEntry.getInnerGloss(), jpWordsUseCase.formatKanjiAndKana(dictEntry));
-//        }
-//    };
 
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
-        //Convert input String to Card class here
         //Deploy use cases here
         for (String s: inputList) {
             //semantic search here using DatamuseAPI
-            Boolean successfulSemanticSearch = similarWordsUseCase.run(s);
-            if(successfulSemanticSearch) {
-                List<String> simWords = similarWordsUseCase.getDatamuseWords();
-                //Test so we can stop needlessly calling API...
-//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+//            List<String> simWords = similarWordsUseCase.run(s);
+            //Test so we can stop needlessly calling API...
+                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
 
-                //get the Jp translations
-                for (String word: simWords) {
-                    jpWordsUseCase.run(word);   //returns bool
-                }
-                //insert Card into db via the usecase
-                cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
-                Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
-            } else {
-                //do nothing
+            //get the Jp translations
+            for (String word: fakeSimWords) {
+                jpWordsUseCase.run(word);   //returns bool
             }
+
+            //insert Card into db via the usecase
+            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
+            Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
         }
-        return cardUseCase.getAllCards();   //may return nothing
+
+        return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db
     });
 
     @Inject
@@ -95,7 +84,7 @@ public class SharedViewModel extends ViewModel {
     }
 
     /**
-     * Helper method. Sets up deckIterator and currentCard fields when user input is received.
+     * Helper method. Sets up deckIterator and currentCard fields when observer on userAnswers gets all cards.
      * @param allCards List of Card based on user input
      */
     private void setUpDeck(List<Card> allCards) {
@@ -105,7 +94,7 @@ public class SharedViewModel extends ViewModel {
                 currentCard = deckIterator.next();
             }
         } catch(NullPointerException e) {
-            System.err.println(e.getStackTrace());
+            Log.d(TAG, "deckIterator() has thrown NPE");
         }
     }
 
@@ -139,14 +128,6 @@ public class SharedViewModel extends ViewModel {
         return currentCard;
     }
 
-    /**
-     * Helper method to create cards using the JMDict JSON file
-     * @param inputWord
-     * @return
-     */
-    private Card createCard(String inputWord) {
-        return new Card(inputWord, inputWord + " in Japanese");
-    }
 
     //TODO - could you do a repeat function with resetDeck() and setUserInputs?
 //    private Queue<Card> repeatDeck = new LinkedList<>();
@@ -163,16 +144,15 @@ public class SharedViewModel extends ViewModel {
 //        this.cardIterator = repeatDeck.iterator();
 //    }
 
-    //public accessor to this usecase, enables deleteCards to be called from a fragment
-    //TODO - refactor so this is private to avoid misuse of run()
-    public CreateAndGetCardUseCase getCardUseCase() {
-        return cardUseCase;
+    public boolean deleteAllCards() {
+        cardUseCase.deleteAllCards();
+        return true;
     }
 
     @Override
     protected void onCleared() {
 //        jpWordsUseCase.removeObserver(jmDictEntryObserver);
-//        jpWordsUseCase.removeObserver();
+        jpWordsUseCase.removeObserver();
         userAnswers.removeObserver(observer);
         super.onCleared();
     }

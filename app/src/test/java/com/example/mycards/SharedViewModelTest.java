@@ -25,7 +25,7 @@ public class SharedViewModelTest {
     public void setUp() throws IOException {
 //        testSharedViewModel = new SharedViewModel();    //doesn't work
         input = getClass()
-                .getResourceAsStream("jmdict_eng_common_3_1_0_sample.json");
+                .getResourceAsStream("reverse_jmdictentries_plain_sample.json");
         entryBuilder = JMDictEntryBuilder.getInstance(input);
     }
 

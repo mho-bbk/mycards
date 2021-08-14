@@ -10,6 +10,7 @@ import androidx.lifecycle.Transformations;
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.data.repositories.JMDictRepository;
+import com.example.mycards.jmdict.kanatoromaji.KanaToRomaji;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,13 +29,11 @@ import javax.inject.Inject;
 public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> {
 
     private final JMDictRepository dictRepository;
+    private final KanaToRomaji k2r = new KanaToRomaji();
 
-    private  HashMap<String, String> engToJpMap = new HashMap<>();
+    private final HashMap<String, String> engToJpMap = new HashMap<>();
 
-    private MutableLiveData<String> eachString = new MutableLiveData<>();
-//    private LiveData<JMDictEntry> stringToJmDict = Transformations.switchMap(eachString,
-//            (eachString) -> dictRepository.getFirstJMDictEntry(eachString));
-
+    private final MutableLiveData<String> eachString = new MutableLiveData<>();
 
     private final Observer<String> jmDictEntryObserver = new Observer<String>() {
         @Override
@@ -48,7 +47,7 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> 
     @Inject
     public GetJpWordsUseCase(JMDictRepository dictRepository) {
         this.dictRepository = dictRepository;
-//        stringToJmDict.observeForever(jmDictEntryObserver);
+
         eachString.observeForever(jmDictEntryObserver);
     }
 
@@ -58,25 +57,17 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> 
         eachString.setValue(param);
 
         return true;
-
-        //Old implementation, didn't work - LiveData calls bc no observer?
-//        HashMap<String, String> engToJapMap = new HashMap<>();
-//        for (String s: param) {
-//            //we only want one jp entry per eng word, so use getFirst
-//            JMDictEntry jp = dictRepository.getFirstJMDictEntry(s).getValue();
-//            String jpString = formatKanjiAndKana(jp);
-//            engToJapMap.put(s, jpString);
-//        }
-//        return engToJapMap;
     }
 
 
     public String formatKanjiAndKana(JMDictEntry jmDictEntry) {
         //String formatted differently, depending on whether Kanji is blank
         if(jmDictEntry.getKanji().getKanjiText().equals("")) {
-            return jmDictEntry.getKana().getKanaText();
+            return jmDictEntry.getKana().getKanaText() + " (" + k2r.convert(jmDictEntry.getKana().getKanaText()) + ")";
         } else {
-            return jmDictEntry.getKanji().getKanjiText() + " (" + jmDictEntry.getKana().getKanaText() + ")";
+            return jmDictEntry.getKanji().getKanjiText() +
+                    " (" + jmDictEntry.getKana().getKanaText() + ", " +
+                    k2r.convert(jmDictEntry.getKana().getKanaText()) +  ")";
         }
     }
 
@@ -84,13 +75,8 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<String, Boolean> 
         return engToJpMap;
     }
 
-    //enables VM to add the observer...
-//    public void setObserver(Observer observer) {
-//        stringToJmDict.observeForever(observer);
-//    }
-//
-//    //enables VM to remove the observer...
-//    public void removeObserver() {
-//        stringToJmDict.removeObserver(jmDictEntryObserver);
-//    }
+    //enables VM to remove the observer to better manage lifecycle...
+    public void removeObserver() {
+        eachString.removeObserver(jmDictEntryObserver);
+    }
 }

@@ -35,7 +35,7 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
     private static volatile JMDictEntryDatabase instance;    //to make our db a singleton
 
     //As AsyncTask is deprecated...
-    public static final ExecutorService jmDictDatabaseWriteExecutor = Executors.newSingleThreadExecutor();
+    public static final ExecutorService jmDictDatabaseWriteExecutor = Executors.newFixedThreadPool(3);
 
     //complete singleton pattern
     public static synchronized JMDictEntryDatabase getInstance(Context context) {

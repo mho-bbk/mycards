@@ -18,7 +18,7 @@ public class JMDictEntryBuilderTest {
     @Before
     public void setUp() throws Exception {
         input = getClass()
-                .getResourceAsStream("jmdict_eng_common_3_1_0_sample.json");
+                .getResourceAsStream("reverse_jmdictentries_plain_sample.json");
         entryBuilder = JMDictEntryBuilder.getInstance(input);
     }
 
