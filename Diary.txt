@@ -175,7 +175,8 @@ E/AndroidRuntime: FATAL EXCEPTION: main
 I/Process: Sending signal. PID: 20740 SIG: 9
 
 14/8/21: Fixed error from yesterday by moving method into Fragment and removing blank cards at the UI level
-
+Implemented romaji conversion.
+Began understanding how to impl ProgressBar - experimenting in offline project, to be added to app. 
 
 
 Q: how do language dictionaries prioritise which word to display first?

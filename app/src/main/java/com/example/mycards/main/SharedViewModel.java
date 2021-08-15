@@ -23,6 +23,10 @@ import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
@@ -50,23 +54,8 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Deploy use cases here
-        for (String s: inputList) {
-            //semantic search here using DatamuseAPI
-//            List<String> simWords = similarWordsUseCase.run(s);
-            //Test so we can stop needlessly calling API...
-                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
-
-            //get the Jp translations
-            for (String word: fakeSimWords) {
-                jpWordsUseCase.run(word);   //returns bool
-            }
-
-            //insert Card into db via the usecase
-            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
-            Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
-        }
-
-        return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db
+        runUseCases(inputList);;
+        return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db (TEST)
     });
 
     @Inject
@@ -83,6 +72,25 @@ public class SharedViewModel extends ViewModel {
 
     }
 
+    private boolean runUseCases(List<String> inputList) {
+        for (String s: inputList) {
+            //semantic search here using DatamuseAPI
+            List<String> simWords = similarWordsUseCase.run(s);
+            //Test so we can stop needlessly calling API...
+//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+
+            //get the Jp translations
+            for (String word: simWords) {
+                jpWordsUseCase.run(word);   //returns bool
+            }
+
+            //insert Card into db via the usecase
+            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
+            Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
+        }
+        return true;
+    }
+
     /**
      * Helper method. Sets up deckIterator and currentCard fields when observer on userAnswers gets all cards.
      * @param allCards List of Card based on user input
@@ -94,7 +102,7 @@ public class SharedViewModel extends ViewModel {
                 currentCard = deckIterator.next();
             }
         } catch(NullPointerException e) {
-            Log.d(TAG, "deckIterator() has thrown NPE");
+            Log.d(TAG, e.getMessage() + "\nsetUpDeck() has thrown NPE");
         }
     }
 
@@ -120,10 +128,14 @@ public class SharedViewModel extends ViewModel {
      * @return currentCard according to deckIterator
      */
     public Card getNextCard() {
-        if(deckIterator.hasNext()) {
-            currentCard = deckIterator.next();
-        } else {
-            currentCard = new Card("Finished deck", "Finished deck");
+        try {
+            if (deckIterator.hasNext()) {
+                currentCard = deckIterator.next();
+            } else {
+                currentCard = new Card("Finished deck", "Finished deck");
+            }
+        } catch (NullPointerException e) {
+            Log.d(TAG, e.getMessage() + "\ngetNextCard() has thrown NPE");
         }
         return currentCard;
     }

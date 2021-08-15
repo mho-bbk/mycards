@@ -1,13 +1,14 @@
 package com.example.mycards.ui;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,13 +22,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mycards.R;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
-import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +31,15 @@ import javax.inject.Inject;
 
 public class InputFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = "InputFragment";
+
     @Inject
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
 
     private Button makeCards;
     private FloatingActionButton openMaintenanceButton;
+    private ProgressBar progressBar;
 
     private EditText jobEditTxt;
     private EditText hobbyEditTxt;
@@ -72,11 +71,13 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         openMaintenanceButton = getView().findViewById(R.id.openMaintenance);
         openMaintenanceButton.setOnClickListener(this);
 
+        progressBar = (ProgressBar) getView().findViewById(R.id.inputFragmentProgressBar);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void createCards() {
-        if(passOnDataSuccessful()) {
+        if (passOnDataSuccessful()) {
             NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
             NavHostFragment.findNavController(this).navigate(goToCardDisplayFragment);
         } else {
@@ -98,21 +99,27 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         if(job.trim().isEmpty() || hobby.trim().isEmpty() || subject.trim().isEmpty()) {
             Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
             return false;
+        } else {
+            List<String> allUserInput = new ArrayList<>();
+            allUserInput.add(job);
+            allUserInput.add(hobby);
+            allUserInput.add(subject);
+
+            sharedViewModel.setUserInputs(allUserInput);
+
+            return true;
         }
-
-        List<String> allUserInput = new ArrayList<>();
-        allUserInput.add(job);
-        allUserInput.add(hobby);
-        allUserInput.add(subject);
-
-        sharedViewModel.setUserInputs(allUserInput);
-        return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.makeCardsBtn:
+                //TODO - this doesn't display immediately. Why? Is it bc the main thread is busy before this? Is this Database Inspector playing tricks again...?
+                Log.d(TAG, "Setting InputFragment progressBar to visible...");
+                progressBar.setVisibility(View.VISIBLE);
+
                 createCards();
                 break;
             case R.id.openMaintenance:

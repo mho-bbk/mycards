@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.JMDictEntry;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         sharedViewModel = new ViewModelProvider(this, sharedViewModelFactory).get(SharedViewModel.class);
 
+        ProgressBar activityProgressBar = findViewById(R.id.activityProgressBar);   //TODO
+
         //TODO - Issue: do not want this to run if the database has already been populated... (eg screen config change)
         Future<?> future = mainActivityExecutor.submit(() -> jmDictRepository
                 .insertAll(getPrePopulatedData(this)));
@@ -53,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
             future.get();
             Log.d(TAG, "jmdict db has pre-populated!");
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -70,9 +73,8 @@ public class MainActivity extends AppCompatActivity {
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        try {
-            dictEntries = mapper.readValue(context.getResources()
-                            .openRawResource(realResource),
+        try(InputStream jsonStream = context.getResources().openRawResource(realResource)) {
+            dictEntries = mapper.readValue(jsonStream,
                     new TypeReference<List<JMDictEntry>>() {
                     });
         } catch (IOException e) {
