@@ -4,7 +4,9 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -16,6 +18,8 @@ import com.example.mycards.usecases.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.usecases.GetJpWordsUseCase;
 import com.example.mycards.usecases.GetSimilarWordsUseCase;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +43,8 @@ public class SharedViewModel extends ViewModel {
     private GetJpWordsUseCase jpWordsUseCase;
     private CreateAndGetCardUseCase cardUseCase;
 
+    public MutableLiveData<Boolean> runAllUseCasesSuccessful = new MutableLiveData<>();
+
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
@@ -54,7 +60,7 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Deploy use cases here
-        runUseCases(inputList);;
+        runUseCases(inputList);
         return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db (TEST)
     });
 
@@ -72,7 +78,7 @@ public class SharedViewModel extends ViewModel {
 
     }
 
-    private boolean runUseCases(List<String> inputList) {
+    private void runUseCases(List<String> inputList) {
         for (String s: inputList) {
             //semantic search here using DatamuseAPI
             List<String> simWords = similarWordsUseCase.run(s);
@@ -88,7 +94,7 @@ public class SharedViewModel extends ViewModel {
             cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
             Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
         }
-        return true;
+        runAllUseCasesSuccessful.setValue(true);
     }
 
     /**
@@ -140,8 +146,15 @@ public class SharedViewModel extends ViewModel {
         return currentCard;
     }
 
+    public Boolean isRunAllUseCasesSuccessful() {
+        return runAllUseCasesSuccessful.getValue();
+    }
 
-    //TODO - could you do a repeat function with resetDeck() and setUserInputs?
+    public void setRunAllUseCasesSuccessful(Boolean success) {
+        runAllUseCasesSuccessful.setValue(success);
+    }
+
+//TODO - could you do a repeat function with resetDeck() and setUserInputs?
 //    private Queue<Card> repeatDeck = new LinkedList<>();
 //
 //    public Queue<Card> getRepeatDeck() {

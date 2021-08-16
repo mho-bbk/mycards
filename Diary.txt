@@ -178,6 +178,14 @@ I/Process: Sending signal. PID: 20740 SIG: 9
 Implemented romaji conversion.
 Began understanding how to impl ProgressBar - experimenting in offline project, to be added to app. 
 
+15/8/21: Discovered that ProgressBar must not be in the main thread in order for it to show. 
+Prob need to decouple some components so the right task on the bg thread, so main can hold the ProgressBar.
+HOWEVER, setting the progressBar to visible means it shows until the fragment moves to next - no need to set to invisible? 
+Decision to move away from this ProgressBar venture fn as taking too much time + not important. 
+Decision to concentrate on other features/report writing. For 16/8: assure self that app still works and move on to next.
+
+
+
 
 Q: how do language dictionaries prioritise which word to display first?
 
