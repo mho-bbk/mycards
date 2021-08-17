@@ -1,4 +1,4 @@
-package com.example.mycards.test;
+package com.example.mycards.jmdict;
 
 import com.example.mycards.jmdict.kanatoromaji.KanaToRomaji;
 

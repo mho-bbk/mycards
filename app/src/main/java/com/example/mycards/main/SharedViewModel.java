@@ -43,6 +43,8 @@ public class SharedViewModel extends ViewModel {
     private GetJpWordsUseCase jpWordsUseCase;
     private CreateAndGetCardUseCase cardUseCase;
 
+    private String deckSeed;
+
     public MutableLiveData<Boolean> runAllUseCasesSuccessful = new MutableLiveData<>();
 
     private Iterator<Card> deckIterator;
@@ -60,6 +62,7 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
         //Deploy use cases here
+        setDeckSeed(inputList);
         runUseCases(inputList);
         return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db (TEST)
     });
@@ -74,8 +77,24 @@ public class SharedViewModel extends ViewModel {
 
         //Observe the LiveData ie user input, passing in the global observer.
         userAnswers.observeForever(observer);
-//        jpWordsUseCase.setObserver(jmDictEntryObserver);
 
+    }
+
+    //Set the deckSeed within VM so it survives config changes
+    private void setDeckSeed(List<String> inputList) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < inputList.size(); i++) {
+            if(i == 0) {
+                stringBuilder.append("{").append(inputList.get(i)).append(", ");
+            } else if (i == inputList.size() - 1) {
+                stringBuilder.append(inputList.get(i)).append("}");
+            } else {
+                stringBuilder.append(inputList.get(i)).append(", ");
+            }
+        }
+
+        deckSeed = stringBuilder.toString();
     }
 
     private void runUseCases(List<String> inputList) {
@@ -90,6 +109,8 @@ public class SharedViewModel extends ViewModel {
                 jpWordsUseCase.run(word);   //returns bool
             }
 
+            //set the deckSeed for the cardUseCase
+            cardUseCase.setDeckSeed(deckSeed);
             //insert Card into db via the usecase
             cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
             Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");

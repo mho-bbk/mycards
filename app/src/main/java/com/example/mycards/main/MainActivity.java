@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        try(InputStream jsonStream = context.getResources().openRawResource(realResource)) {
+        try(InputStream jsonStream = context.getResources().openRawResource(testResource)) {
             dictEntries = mapper.readValue(jsonStream,
                     new TypeReference<List<JMDictEntry>>() {
                     });

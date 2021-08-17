@@ -1,33 +1,47 @@
 package com.example.mycards;
 
-import com.example.mycards.data.repositories.FakeCardRepository;
-import com.example.mycards.jmdict.JMDictEntryBuilder;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
+import com.example.mycards.usecases.CreateAndGetCardUseCase;
+import com.example.mycards.usecases.GetJpWordsUseCase;
+import com.example.mycards.usecases.GetSimilarWordsUseCase;
 
 import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 //Not testing getters and setters
 public class SharedViewModelTest {
-    private InputStream input;
-    private JMDictEntryBuilder entryBuilder;
 
-    private SharedViewModelFactory sharedViewModelFactory;
+    @Mock
+    private SharedViewModelFactory sharedViewModelFactory;     //not used
     private SharedViewModel testSharedViewModel;
+
+    @Mock
+    private GetSimilarWordsUseCase similarWordsUseCase;
+    @Mock
+    private GetJpWordsUseCase jpWordsUseCase;
+    @Mock
+    private CreateAndGetCardUseCase cardUseCase;
 
     @Before
     public void setUp() throws IOException {
-//        testSharedViewModel = new SharedViewModel();    //doesn't work
-        input = getClass()
-                .getResourceAsStream("reverse_jmdictentries_plain_sample.json");
-        entryBuilder = JMDictEntryBuilder.getInstance(input);
+        //instantiate VM using usecase mocks
+        testSharedViewModel = new SharedViewModel(similarWordsUseCase, jpWordsUseCase, cardUseCase);
     }
+
+    //TODO - test LiveData values are setting accordingly
+    // Ref: https://medium.com/androiddevelopers/unit-testing-livedata-and-other-common-observability-problems-bb477262eb04
+    //  (Associated github) https://gist.github.com/JoseAlcerreca/1e9ee05dcdd6a6a6fa1cbfc125559bba
+    //  Need to account for how JUnit has no idea about main thread/doesn't allow for async operations
+
+    //Also this: https://medium.com/mindorks/unit-testing-for-viewmodel-19f4d76b20d4
+
 
 //    private final List<Card> testDeck =
 //        List.of(new Card("apple", "りんご (ringo)"),
@@ -39,8 +53,4 @@ public class SharedViewModelTest {
     //- Not accepting String that are too long in length
     //- Not accepting words that are misspelled (don't appear in Datamuse API)...
 
-//    @Test
-//    public void getSimilarWordsTest() {
-//        assertNull(testSharedViewModel.getSimilarWords(""));
-//    }
 }

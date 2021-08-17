@@ -31,7 +31,7 @@ import retrofit2.Response;
 public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, String>, Boolean> {
 
     private CardRepository cardRepository;
-    private String deckSeed = ""; //this should be the user's original input
+    private String deckSeed = ""; //this should be the user's original input (string(s))
 
     @Inject
     public CreateAndGetCardUseCase(CardRepository cardRepository) {

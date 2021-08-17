@@ -1,4 +1,4 @@
-package com.example.mycards.test;
+package com.example.mycards.usecases;
 
 import com.example.mycards.datamuse.DatamuseAPIService;
 import com.example.mycards.datamuse.pojo.DatamuseWord;

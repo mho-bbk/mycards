@@ -1,5 +1,7 @@
 package com.example.mycards.data.db;
 
+import android.util.Log;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -231,6 +234,70 @@ public class CardDaoTest {
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertTrue(allCards.isEmpty());
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
+
+    @Test
+    public void getDeckOfCardsSameDeck() {
+        //Recreate db from previous test - with deckSeeds
+        Card testCard1 = new Card("chef", "チェフ", "{chef, baker, musician}");
+        testCard1.setId(1);
+        Card testCard2 = new Card("baker", "パン屋さん", "{chef, baker, musician}");
+        testCard2.setId(2);
+        Card testCard3 = new Card("musician", "音楽家", "{chef, baker, musician}");
+        testCard3.setId(3);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+        cardEntityDao.upsert(testCard3);
+
+        String deckName = "{chef, baker, musician}";
+
+        List<Card> allCardsSameDeck;
+        try {
+            allCardsSameDeck = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(deckName));
+            assertEquals(3, allCardsSameDeck.size());
+            assertTrue(allCardsSameDeck.contains(testCard1));
+            assertTrue(allCardsSameDeck.contains(testCard2));
+            assertTrue(allCardsSameDeck.contains(testCard3));
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
+
+    @Test
+    public void getDeckOfCardsDiffDeck() {
+        //Recreate db from previous test - with deckSeeds
+        Card testCard1 = new Card("chef", "チェフ", "{chef, baker}");
+        testCard1.setId(1);
+        Card testCard2 = new Card("baker", "パン屋さん", "{chef, baker}");
+        testCard2.setId(2);
+        Card testCard3 = new Card("musician", "音楽家", "{musician moo}");
+        testCard3.setId(3);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+        cardEntityDao.upsert(testCard3);
+
+        String deckName1 = "{chef, baker}";
+        String deckName2 = "{musician moo}";
+
+        List<Card> deck1;
+        List<Card> deck2;
+        try {
+            deck1 = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(deckName1));
+            assertEquals(2, deck1.size());
+            assertTrue(deck1.contains(testCard1));
+            assertTrue(deck1.contains(testCard2));
+            assertFalse(deck1.contains(testCard3));
+
+            deck2 = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(deckName2));
+            assertEquals(1, deck2.size());
+            assertTrue(deck2.contains(testCard3));
+            assertFalse(deck2.contains(testCard2));
+            assertFalse(deck2.contains(testCard1));
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
