@@ -180,9 +180,11 @@ public class KanaToRomaji {
         tempMap.put("きょ", "kyo");
 
         tempMap.put("シャ", "sha");
+        tempMap.put("シェ", "she");
         tempMap.put("シュ", "shu");
         tempMap.put("ショ", "sho");
         tempMap.put("しゃ", "sha");
+        tempMap.put("しぇ", "she");
         tempMap.put("しゅ", "shu");
         tempMap.put("しょ", "sho");
 

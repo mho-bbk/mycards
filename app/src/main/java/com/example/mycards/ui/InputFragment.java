@@ -11,12 +11,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -37,29 +39,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     @Inject
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
-
-    private ProgressBar progressBar;
+    private NavController navController;
 
     private EditText jobEditTxt;
     private EditText hobbyEditTxt;
     private EditText subjectEditTxt;
-
-    //Creating an observer
-    private final Observer<Boolean> observeCardsReadiness = new Observer<Boolean>() {
-        @Override
-        public void onChanged(Boolean cardsReady) {
-            if(cardsReady) {
-                Log.d(TAG, "Setting InputFragment progressBar to INvisible...");
-                progressBar.setVisibility(View.GONE);
-
-                assert getParentFragment() != null;
-                NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
-                NavHostFragment.findNavController(getParentFragment()).navigate(goToCardDisplayFragment);
-            } else {
-                Toast.makeText(getContext(), "passOnData unsuccessful", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 
     public static InputFragment newInstance() {
         return new InputFragment();
@@ -77,6 +61,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+        navController = NavHostFragment.findNavController(this);
 
         jobEditTxt = getView().findViewById(R.id.jobEditTxt);
         hobbyEditTxt = getView().findViewById(R.id.hobbyEditTxt);
@@ -87,10 +72,6 @@ public class InputFragment extends Fragment implements View.OnClickListener {
 
         FloatingActionButton openMaintenanceButton = getView().findViewById(R.id.openMaintenance);
         openMaintenanceButton.setOnClickListener(this);
-
-        progressBar = getView().findViewById(R.id.inputFragmentProgressBar);
-
-        sharedViewModel.runAllUseCasesSuccessful.observe(getViewLifecycleOwner(), observeCardsReadiness);
 
     }
 
@@ -117,17 +98,19 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void goToCardDisplayFragment() {
+        NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
+        navController.navigate(goToCardDisplayFragment);
+        Log.d(TAG, "Moving to CardDisplayFragment...");
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.makeCardsBtn:
-                //TODO - this doesn't display immediately. Why? Is it bc the main thread is busy before this?
-                // (Is this Database Inspector playing tricks again...?)
-                Log.d(TAG, "Setting InputFragment progressBar to visible...");
-                progressBar.setVisibility(View.VISIBLE);
-
                 passOnData();
+                goToCardDisplayFragment();
                 break;
             case R.id.openMaintenance:
                 NavDirections goToMaintenanceFragment = InputFragmentDirections.actionMainFragment2ToMaintenance();

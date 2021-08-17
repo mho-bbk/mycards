@@ -21,7 +21,8 @@ public class KanaToRomajiTest {
                 "@マーク",
                 "ティーカップ",
                 "ビルディング",
-                "トッツィ"};
+                "トッツィ",
+                "シェフ"};
 
         Assert.assertEquals("pyu-tofukujaga-", k2r.convert(strs[0]));
         Assert.assertEquals("ma-jan", k2r.convert(strs[1]));
@@ -34,6 +35,7 @@ public class KanaToRomajiTest {
         Assert.assertEquals("ti-kappu", k2r.convert(strs[8]));
         Assert.assertEquals("birudingu", k2r.convert(strs[9]));
         Assert.assertEquals("tottsi", k2r.convert(strs[10]));
+        Assert.assertEquals("shefu", k2r.convert(strs[11]));
     }
 
     @Test

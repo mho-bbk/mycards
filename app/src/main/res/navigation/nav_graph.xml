@@ -21,7 +21,14 @@
         android:id="@+id/cardDisplayFragment2"
         android:name="com.example.mycards.ui.CardDisplayFragment"
         android:label="card_display_fragment"
-        tools:layout="@layout/card_display_fragment" />
+        tools:layout="@layout/card_display_fragment" >
+        <action
+            android:id="@+id/action_cardDisplayFragment2_to_mainFragment22"
+            app:destination="@id/mainFragment2"
+            app:popUpTo="@+id/mainFragment2"
+            app:popUpToInclusive="true"/>
+        
+    </fragment>
     <fragment
         android:id="@+id/maintenance"
         android:name="com.example.mycards.ui.Maintenance"

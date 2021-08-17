@@ -1,5 +1,6 @@
 package com.example.mycards.ui;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,6 +12,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +40,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
     @Inject
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
+    private NavController navController;
 
     private TextView sideA, sideB;
 
@@ -56,8 +61,11 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         super.onViewCreated(view, savedInstanceState);
 
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+        navController = NavHostFragment.findNavController(this);
 
         // Create the observer which updates the UI.
+        //TODO - not sure this observes the right thing, as no guarantee that VM has setUp the deck
+        // in order to be able to get the current card?
         final Observer<List<Card>> observer = new Observer<List<Card>>() {
             @Override
             public void onChanged(List<Card> cards) {
@@ -77,11 +85,13 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         displayBBtn.setOnClickListener(this);
         Button nextBtn = getView().findViewById(R.id.nextFlashcard);
         nextBtn.setOnClickListener(this);
+        Button backToHome = getView().findViewById(R.id.backToHome);
+        backToHome.setOnClickListener(this);
+
+
 //        Button repeatBtn = getView().findViewById(R.id.repeatFlashcard);
 //        repeatBtn.setOnClickListener(this);
-//        Button backToHome = getView().findViewById(R.id.backToHome);
-//        backToHome.setOnClickListener(this);
-//
+
     }
 
     public void toggleVisibility(View view) {
@@ -183,9 +193,12 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 //                        getCurrentCardAsString() + " will repeat at end of deck",
 //                        Toast.LENGTH_SHORT).show();
 //                break;
-//            case R.id.backToHome:
-////                finish();   //clears activity from the stack
-//                break;
+            case R.id.backToHome:
+                //This goes back to a 'clean' home page and keeps the original InputFragment on the stack (so can continue going back)
+                //Consider removing the original InputFragment on the stack using popUpTo and popUpToInclusive on the Nav action in xml - TODO
+                NavDirections goBackToMain = CardDisplayFragmentDirections.actionCardDisplayFragment2ToMainFragment22();
+                navController.navigate(goBackToMain);
+                break;
             default:
                 break;
         }

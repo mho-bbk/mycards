@@ -81,12 +81,12 @@ public class SharedViewModel extends ViewModel {
     private void runUseCases(List<String> inputList) {
         for (String s: inputList) {
             //semantic search here using DatamuseAPI
-            List<String> simWords = similarWordsUseCase.run(s);
+//            List<String> simWords = similarWordsUseCase.run(s);
             //Test so we can stop needlessly calling API...
-//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
 
             //get the Jp translations
-            for (String word: simWords) {
+            for (String word: fakeSimWords) {
                 jpWordsUseCase.run(word);   //returns bool
             }
 

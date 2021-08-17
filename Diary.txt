@@ -184,6 +184,19 @@ HOWEVER, setting the progressBar to visible means it shows until the fragment mo
 Decision to move away from this ProgressBar venture fn as taking too much time + not important. 
 Decision to concentrate on other features/report writing. For 16/8: assure self that app still works and move on to next.
 
+16/8/21: Report work today. Refactored Fragment to work on Observer pattern, but this seems to have broken Navigation...
+Took Nav instructions out of Observer code and back into onClickView code. Seems to work again...
+Changed impl so the input string is now also included in the deck itself.
+Issue 1: the pause
+Issue 2: ProgressBar showing/not showing
+PB should be in CardDisplayFragment. Observer on cardReadiness should trigger whether fields (cards) show
+Based on component (screen) state. 
+main thread should be 'busy' rendering the progress bar. 
+From: https://developer.android.com/guide/navigation/navigation-pass-data
+"To pass around custom complex data, store the data elsewhere such as a ViewModel or database and only pass an identifier 
+while navigating; then retrieve the data in the new location after navigation has concluded."
+ACTION: Read about state. 
+
 
 
 

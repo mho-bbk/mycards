@@ -34,8 +34,9 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List
     private static final String TAG = "GetSimilarWordsUseCase";
 
     private final DatamuseAPIService datamuseAPIService;
-    private int searchLimit = 3;    //3 is default
+    private int searchLimit = 4;    //4 is default
     private List<DatamuseWord> datamuseWords = new ArrayList<>();
+    private List<String> originalAndSimilarWords = new ArrayList<>();
 
     @Inject
     public GetSimilarWordsUseCase(DatamuseAPIService datamuseAPIService) {
@@ -44,13 +45,17 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List
 
     @Override
     public List<String> run(String param) {
+        //Original String should be included in the deck, so add to List
+        originalAndSimilarWords.add(param);
+
         //Create the call
         Call<List<DatamuseWord>> maxSingleSearchCall = createMaxSingleSearchCall(
                 datamuseAPIService, param, searchLimit);
 
         //Run the semantic search (execute the call on a bg thread)
         if(semanticSearch(maxSingleSearchCall)) {
-            return convertDatamuseWordsToStrings(datamuseWords);
+            originalAndSimilarWords.addAll(convertDatamuseWordsToStrings(datamuseWords));
+            return originalAndSimilarWords;
         } else {
             return new ArrayList<>();
         }
