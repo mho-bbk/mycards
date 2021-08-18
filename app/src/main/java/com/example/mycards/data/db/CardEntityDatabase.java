@@ -18,10 +18,6 @@ public abstract class CardEntityDatabase extends RoomDatabase {
 
     private static volatile CardEntityDatabase instance;    //to make our db a singleton
 
-    //As AsyncTask is deprecated...
-    private static final int NUMBER_OF_THREADS = 3; //TODO - 3 here is an arbitrary number
-    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
     //complete singleton pattern
     public static synchronized CardEntityDatabase getInstance(Context context) {
         //lazy instantiation

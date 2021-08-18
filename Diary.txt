@@ -195,9 +195,13 @@ main thread should be 'busy' rendering the progress bar.
 From: https://developer.android.com/guide/navigation/navigation-pass-data
 "To pass around custom complex data, store the data elsewhere such as a ViewModel or database and only pass an identifier 
 while navigating; then retrieve the data in the new location after navigation has concluded."
-ACTION: Read about state. 
+ACTION: Read about state. - OK.
 
-
+17/8/21: Read more about state and threading in Android.
+Wrote a couple more tests for new feature (introduction of 'decks')
+Design Q: should users be able to have same cards in diff decks? Instinctively I want to say yes. 
+SO, if deckSeed is diff, then 'same card' is allowed. TODO - change how we define equality in Card...
+ACTION: Refactor and more tests (androidtests and unit tests). Sort out threading first, then the saved state.
 
 
 Q: how do language dictionaries prioritise which word to display first?

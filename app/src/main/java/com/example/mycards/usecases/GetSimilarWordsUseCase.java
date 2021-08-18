@@ -28,13 +28,14 @@ import retrofit2.Response;
  */
 public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List<String>> {
 
-    ExecutorService simWordUseCaseExecutor = Executors.newSingleThreadExecutor();
-    ExecutorService threadPool = Executors.newFixedThreadPool(3);   //trying to use more threads to see if there's a diff...
+    @Inject
+    ExecutorService executorService;
+//    = Executors.newFixedThreadPool(3);   //trying to use more threads to see if there's a diff...
 
     private static final String TAG = "GetSimilarWordsUseCase";
 
     private final DatamuseAPIService datamuseAPIService;
-    private int searchLimit = 4;    //4 is default
+    private int searchLimit = 4;    //4 is default as plus original Word = 5 cards total
     private List<DatamuseWord> datamuseWords = new ArrayList<>();
     private List<String> originalAndSimilarWords = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<String, List
         //but remote API calls should not be made on main thread, so use Executor
         long startTime = System.nanoTime(); //measure starttime
 
-        Future<?> searchSimilarWords = threadPool.submit(() -> {
+        Future<?> searchSimilarWords = executorService.submit(() -> {
             try {
                 Response<List<DatamuseWord>> words = call.execute();
 

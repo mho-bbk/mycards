@@ -6,14 +6,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.data.repositories.DefaultJMDictRepository;
-import com.example.mycards.data.repositories.JMDictRepository;
-import com.example.mycards.di.AppComponent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,13 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
-    ExecutorService mainActivityExecutor = Executors.newSingleThreadExecutor();
+
+    @Inject
+    ExecutorService activityExecutors;
+
     private static final String TAG = "MainActivity";
 
     @Inject
@@ -42,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //TODO - Consider splash screen at start up
         ((MyCardsApplication) getApplicationContext()).appComponent.inject(this);
 
         super.onCreate(savedInstanceState);
@@ -49,10 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
         sharedViewModel = new ViewModelProvider(this, sharedViewModelFactory).get(SharedViewModel.class);
 
-        ProgressBar activityProgressBar = findViewById(R.id.activityProgressBar);   //TODO
-
         //TODO - Issue: do not want this to run if the database has already been populated... (eg screen config change)
-        Future<?> future = mainActivityExecutor.submit(() -> jmDictRepository
+        Future<?> future = activityExecutors.submit(() -> jmDictRepository
                 .insertAll(getPrePopulatedData(this)));
         try {
             Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
@@ -82,5 +79,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return dictEntries;
+    }
+    
+    @Override
+    public void onDestroy() {
+        activityExecutors.shutdown();   //close thread pool
+        super.onDestroy();
     }
 }

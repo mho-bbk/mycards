@@ -41,6 +41,8 @@ public class JMDictDaoTest {
                 JMDictEntryDatabase.class).allowMainThreadQueries().build();
 
         jmDictEntryDao = database.getJMDictEntryDao();
+
+        //TODO - create json stream off sample file here
     }
 
     @After  //executed after every test case
@@ -49,7 +51,7 @@ public class JMDictDaoTest {
     }
 
     @Test
-    public void testPreLoad() {
+    public void testInsertAll() {
         JMDictEntry expectedEntry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
                 new Kana("はやめる"), 3, 2, 2, 2,
                 new ArrayList<>(List.of("v1", "vt")));

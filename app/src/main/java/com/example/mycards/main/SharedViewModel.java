@@ -61,10 +61,11 @@ public class SharedViewModel extends ViewModel {
 
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
-        //Deploy use cases here
+        //Set the String to identify the deck
         setDeckSeed(inputList);
+        //Deploy use cases
         runUseCases(inputList);
-        return cardUseCase.getAllCards();   //may return nothing - TODO handle empty card db (TEST)
+        return cardUseCase.getCards(deckSeed);   //may return nothing - TODO handle empty card db (TEST)
     });
 
     @Inject
@@ -80,7 +81,8 @@ public class SharedViewModel extends ViewModel {
 
     }
 
-    //Set the deckSeed within VM so it survives config changes
+    //Set the deckSeed within VM so it survives config changes.
+    //The 'deckSeed' is just the inputWords, separated by commas and spaces and bracketed with curly braces.
     private void setDeckSeed(List<String> inputList) {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -197,7 +199,6 @@ public class SharedViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-//        jpWordsUseCase.removeObserver(jmDictEntryObserver);
         jpWordsUseCase.removeObserver();
         userAnswers.removeObserver(observer);
         super.onCleared();

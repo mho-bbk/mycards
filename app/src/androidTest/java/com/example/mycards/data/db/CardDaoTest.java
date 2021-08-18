@@ -115,10 +115,6 @@ public class CardDaoTest {
     public void testMultipleUpsertDiffASameB() {
         //TODO - This is 'correct' behaviour atm but question this.
         // Do we want to diff Ewords to have same Jword on Bside? (Instinct: no, not useful)
-        // Should we use production code to decide how to handle Ewords that are too similar
-        // to avoid having to handle the same Jwords?
-        // NB: JMDictEntry holds ref to unique wordID from JSON file & uses this as basis for equality
-        // (so sideB here should have the same wordID)
         Card testCard1 = new Card("cook", "チェフ");
         testCard1.setId(1);
         Card testCard2 = new Card("chef", "チェフ");
@@ -302,4 +298,6 @@ public class CardDaoTest {
             System.err.println(e.getStackTrace());
         }
     }
+
+    //TODO handle empty card db
 }

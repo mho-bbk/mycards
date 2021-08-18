@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//Based on: https://gist.github.com/florina-muntenescu/697e543652b03d3d2a06703f5d6b44b5
+//Commented out parts based on:
+// https://gist.github.com/florina-muntenescu/697e543652b03d3d2a06703f5d6b44b5
 
 @Database(entities = JMDictEntry.class, version = 1)
 @TypeConverters(value = JMDictEntryTypeConverters.class)
@@ -33,9 +34,6 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
     public abstract JMDictEntryDao getJMDictEntryDao();
 
     private static volatile JMDictEntryDatabase instance;    //to make our db a singleton
-
-    //As AsyncTask is deprecated...
-    public static final ExecutorService jmDictDatabaseWriteExecutor = Executors.newFixedThreadPool(3);
 
     //complete singleton pattern
     public static synchronized JMDictEntryDatabase getInstance(Context context) {

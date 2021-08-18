@@ -5,6 +5,8 @@ import com.example.mycards.data.repositories.DefaultCardRepository;
 import com.example.mycards.data.repositories.DefaultJMDictRepository;
 import com.example.mycards.data.repositories.JMDictRepository;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.inject.Singleton;
 
 import dagger.Binds;

@@ -10,17 +10,20 @@ import com.example.mycards.data.entities.Card;
 import com.example.mycards.datamuse.DatamuseAPIService;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 
 public class DefaultCardRepository implements CardRepository {
 
-    private CardEntityDao cardEntityDao;
+    private final CardEntityDao cardEntityDao;
+    private final ExecutorService executorService;
 
     @Inject
-    public DefaultCardRepository(Application application) {
+    public DefaultCardRepository(Application application, ExecutorService executorService) {
         CardEntityDatabase db = CardEntityDatabase.getInstance(application);
-        cardEntityDao = db.getCardEntityDao();
+        this.cardEntityDao = db.getCardEntityDao();
+        this.executorService = executorService;
     }
 
     //These are the methods exposed to the client class.
@@ -28,14 +31,14 @@ public class DefaultCardRepository implements CardRepository {
     //Use executor to try and avoid memory leak
     @Override
     public void upsert(Card card) {
-        CardEntityDatabase.databaseWriteExecutor.execute( () -> {
+        executorService.execute( () -> {
             cardEntityDao.upsert(card);
         });
     }
 
     @Override
     public void delete(Card card) {
-        CardEntityDatabase.databaseWriteExecutor.execute( () -> {
+        executorService.execute( () -> {
             cardEntityDao.delete(card);
         });
     }
@@ -45,12 +48,13 @@ public class DefaultCardRepository implements CardRepository {
 
     @Override
     public LiveData<List<Card>> getCards(String deckSeed) {
+        //TODO - test null return
         return cardEntityDao.getCards(deckSeed);
     }
 
     @Override
     public void deleteAllCards() {
-        CardEntityDatabase.databaseWriteExecutor.execute( () -> {
+        executorService.execute( () -> {
             cardEntityDao.deleteAllCards();
         });
     }

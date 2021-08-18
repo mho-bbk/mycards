@@ -15,16 +15,4 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
-    <ProgressBar
-        android:id="@+id/activityProgressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:max="100"
-        android:backgroundTint="@color/white"
-        android:layout_gravity="center"
-        android:indeterminateTint="@color/purple_500"
-        android:visibility="invisible"/>
-
 </FrameLayout>
