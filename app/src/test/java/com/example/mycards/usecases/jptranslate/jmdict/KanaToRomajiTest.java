@@ -1,6 +1,6 @@
-package com.example.mycards.jmdict;
+package com.example.mycards.usecases.jptranslate.jmdict;
 
-import com.example.mycards.jmdict.kanatoromaji.KanaToRomaji;
+import com.example.mycards.usecases.jptranslate.jmdict.kanatoromaji.KanaToRomaji;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +22,8 @@ public class KanaToRomajiTest {
                 "ティーカップ",
                 "ビルディング",
                 "トッツィ",
-                "シェフ"};
+                "シェフ",
+                "フォーラム"};
 
         Assert.assertEquals("pyu-tofukujaga-", k2r.convert(strs[0]));
         Assert.assertEquals("ma-jan", k2r.convert(strs[1]));
@@ -36,6 +37,7 @@ public class KanaToRomajiTest {
         Assert.assertEquals("birudingu", k2r.convert(strs[9]));
         Assert.assertEquals("tottsi", k2r.convert(strs[10]));
         Assert.assertEquals("shefu", k2r.convert(strs[11]));
+        Assert.assertEquals("fo-ramu", k2r.convert(strs[12]));
     }
 
     @Test
@@ -105,9 +107,11 @@ public class KanaToRomajiTest {
     public void testDetailedSmallTsu() {
         String smallTsuInMiddle = "ロッポンギヒルズ";
         String smallTsuAtStart = "って";
+        String smallTsuAtEnd = "カプッ";
 
         Assert.assertEquals("roppongihiruzu", k2r.convert(smallTsuInMiddle));
         Assert.assertEquals("tte", k2r.convert(smallTsuAtStart));
+        Assert.assertEquals("kapuッ", k2r.convert(smallTsuAtEnd));   //TODO - not desired behaviour
     }
 
     @Test

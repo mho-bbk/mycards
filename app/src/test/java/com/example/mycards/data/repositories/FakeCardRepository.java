@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.datamuse.DatamuseAPIService;
 
 import java.util.List;
 
@@ -54,6 +53,11 @@ public class FakeCardRepository implements CardRepository {
     public LiveData<List<Card>> getCards(String deckSeed) {
         //TODO - this will just return everything atm...
         return observableTestCards;
+    }
+
+    @Override
+    public List<Card> getCardsNotLive(String deckSeed) {
+        return null;
     }
 
     @Override

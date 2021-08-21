@@ -1,57 +1,84 @@
 package com.example.mycards.main;
 
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.example.mycards.data.entities.JMDictEntry;
-import com.example.mycards.usecases.CreateAndGetCardUseCase;
+import com.example.mycards.base.callbacks.Result;
+import com.example.mycards.base.callbacks.UseCaseCallback;
+import com.example.mycards.usecases.UseCaseManager;
+import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.usecases.GetJpWordsUseCase;
-import com.example.mycards.usecases.GetSimilarWordsUseCase;
+import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
+import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.inject.Inject;
+
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
 
     private static final String TAG = "SharedViewModel";    //for use in Logcat
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private GetSimilarWordsUseCase similarWordsUseCase;
-    private GetJpWordsUseCase jpWordsUseCase;
-    private CreateAndGetCardUseCase cardUseCase;
+    private UseCaseManager useCaseManager;
+//    private GetSimilarWordsUseCase similarWordsUseCase;
+//    private GetJpWordsUseCase jpWordsUseCase;
+//    private CreateAndGetCardUseCase cardUseCase;
 
-    private String deckSeed;
+    private String currentDeckSeed;
 
-    public MutableLiveData<Boolean> runAllUseCasesSuccessful = new MutableLiveData<>();
+    public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
+    public MutableLiveData<Boolean> cardsInRepoReady = new MutableLiveData<>();
+    public final LiveData<List<Card>> cardTransformation =
+            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(currentDeckSeed));
 
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
-    //Creating an observer
-    private final Observer<List<Card>> observer = new Observer<List<Card>>() {
+    private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
+
+    //NEW IMPL
+    private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
+        @Override
+        public void onChanged(List<String> input) {
+            //Set the currentDeckSeed which is owned by VM
+            setCurrentDeckSeed(input);
+            //Deploy use cases via the Manager Mediator and request callback when done
+            //Should be on Main thread
+            useCaseManager.runAllUseCases(input, currentDeckSeed, new UseCaseCallback<Boolean>() {
+                @Override
+                public void onComplete(Result<Boolean> result) {
+                    if(result instanceof Result.Success) {
+                        Boolean success = ((Result.Success<Boolean>) result).getData();
+                        mainHandler.post( () ->
+                                cardsInRepoReady.setValue(success) //Is this ever false?
+                        );
+                    } else {
+                        //show on UI that no cards could be found
+                        // send signal to waiting CardFragment to move to sep 'error' fragment?
+                        mainHandler.post(() ->
+                                cardsInVMReady.setValue(false)
+                        );
+                    }
+                }
+            });
+        }
+    };
+
+    private final Observer<List<Card>> cardObserver = new Observer<List<Card>>() {
         @Override
         public void onChanged(List<Card> cards) {
             setUpDeck(cards);
@@ -59,31 +86,57 @@ public class SharedViewModel extends ViewModel {
     };
 
 
-    private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
-    public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
-        //Set the String to identify the deck
-        setDeckSeed(inputList);
-        //Deploy use cases
-        runUseCases(inputList);
-        return cardUseCase.getCards(deckSeed);   //may return nothing - TODO handle empty card db (TEST)
-    });
+    //OLD IMPL (NOT IN USE)
+//    private final Observer<List<Card>> observer = new Observer<List<Card>>() {
+//        @Override
+//        public void onChanged(List<Card> cards) {
+//            setUpDeck(cards);
+//        }
+//    };
+//    public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
+//        //TODO - Remove bulk of logic is here, make sure doesn't run on main thread...
+//        //Set the String to identify the deck
+//        setCurrentDeckSeed(inputList);
+//        //Deploy use cases
+//        useCaseManager.runAllUseCases(inputList, currentDeckSeed, new UseCaseCallback<Boolean>() {
+//            @Override
+//            public void onComplete(Result<Boolean> result) {
+//                if(result instanceof Result.Success) {
+//                    //do something happy - use the callback
+//                    cardsReady.setValue(true);
+//                } else {
+//                    //show on UI that no cards could be found
+//                    // send signal to waiting CardFragment to move to sep 'error' fragment?
+//                }
+//            }
+//        });
+//        Log.d(TAG, Thread.currentThread().getName() + " returning cardUseCase.getCards(deckSeed) within userAnswers Transformations.switchMap...");
+//        return cardUseCase.getCards(currentDeckSeed);
+//    });
 
     @Inject
     public SharedViewModel(GetSimilarWordsUseCase similarWordsUseCase,
                            GetJpWordsUseCase jpWordsUseCase,
-                           CreateAndGetCardUseCase cardUseCase) {
-        this.similarWordsUseCase = similarWordsUseCase;
-        this.jpWordsUseCase = jpWordsUseCase;
-        this.cardUseCase = cardUseCase;
+                           CreateAndGetCardUseCase cardUseCase,
+                           ExecutorService executorService) {
 
-        //Observe the LiveData ie user input, passing in the global observer.
-        userAnswers.observeForever(observer);
+        useCaseManager = UseCaseManager
+                .getInstance(similarWordsUseCase, jpWordsUseCase, cardUseCase, executorService);
+
+//        this.similarWordsUseCase = similarWordsUseCase;
+//        this.jpWordsUseCase = jpWordsUseCase;
+//        this.cardUseCase = cardUseCase;
+
+        //Observe the LiveData ie user input, passing in an observer that does the logic.
+//        userAnswers.observeForever(observer);
+        userInputs.observeForever(inputObserver);
+        cardTransformation.observeForever(cardObserver);
 
     }
 
     //Set the deckSeed within VM so it survives config changes.
     //The 'deckSeed' is just the inputWords, separated by commas and spaces and bracketed with curly braces.
-    private void setDeckSeed(List<String> inputList) {
+    private void setCurrentDeckSeed(List<String> inputList) {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < inputList.size(); i++) {
@@ -96,29 +149,24 @@ public class SharedViewModel extends ViewModel {
             }
         }
 
-        deckSeed = stringBuilder.toString();
+        currentDeckSeed = stringBuilder.toString();
     }
 
-    private void runUseCases(List<String> inputList) {
-        for (String s: inputList) {
-            //semantic search here using DatamuseAPI
-//            List<String> simWords = similarWordsUseCase.run(s);
-            //Test so we can stop needlessly calling API...
-                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
-
-            //get the Jp translations
-            for (String word: fakeSimWords) {
-                jpWordsUseCase.run(word);   //returns bool
-            }
-
-            //set the deckSeed for the cardUseCase
-            cardUseCase.setDeckSeed(deckSeed);
-            //insert Card into db via the usecase
-            cardUseCase.run(jpWordsUseCase.getEngToJpMap());  //returns a bool if success that isn't captured anywhere
-            Log.d(TAG, "Returning cardUseCase.getAllCards() within userAnswers Transformations.switchMap...");
-        }
-        runAllUseCasesSuccessful.setValue(true);
-    }
+//    private void runUseCases(List<String> inputList, String deckSeed,
+//                             UseCaseCallback<Boolean> cardsReady) {
+////        for (String s: inputList) {
+//            //semantic search here using DatamuseAPI
+////            List<String> simWords = similarWordsUseCase.run(s);
+//            //Test so we can stop needlessly calling API...
+//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+//
+//            //get the Jp translations
+//            jpWordsUseCase.run(fakeSimWords);
+//
+//            //set the deckSeed for the cardUseCase
+//            cardUseCase.setDeckSeed(deckSeed);
+////        }
+//    }
 
     /**
      * Helper method. Sets up deckIterator and currentCard fields when observer on userAnswers gets all cards.
@@ -130,8 +178,11 @@ public class SharedViewModel extends ViewModel {
             if (deckIterator.hasNext()) {
                 currentCard = deckIterator.next();
             }
+            cardsInVMReady.setValue(true);
         } catch(NullPointerException e) {
-            Log.d(TAG, e.getMessage() + "\nsetUpDeck() has thrown NPE");
+            Log.d(TAG, Thread.currentThread().getName() + ", " + e.getMessage() +
+                    "\nsetUpDeck() has thrown NPE");
+            cardsInVMReady.setValue(false);
         }
     }
 
@@ -164,18 +215,16 @@ public class SharedViewModel extends ViewModel {
                 currentCard = new Card("Finished deck", "Finished deck");
             }
         } catch (NullPointerException e) {
-            Log.d(TAG, e.getMessage() + "\ngetNextCard() has thrown NPE");
+            Log.d(TAG, Thread.currentThread().getName() + ", " + e.getMessage() +
+                    "\ngetNextCard() has thrown NPE");
         }
         return currentCard;
     }
 
     public Boolean isRunAllUseCasesSuccessful() {
-        return runAllUseCasesSuccessful.getValue();
+        return cardsInVMReady.getValue();
     }
 
-    public void setRunAllUseCasesSuccessful(Boolean success) {
-        runAllUseCasesSuccessful.setValue(success);
-    }
 
 //TODO - could you do a repeat function with resetDeck() and setUserInputs?
 //    private Queue<Card> repeatDeck = new LinkedList<>();
@@ -193,14 +242,15 @@ public class SharedViewModel extends ViewModel {
 //    }
 
     public boolean deleteAllCards() {
-        cardUseCase.deleteAllCards();
+        useCaseManager.deleteAllCards();
         return true;
     }
 
     @Override
     protected void onCleared() {
-        jpWordsUseCase.removeObserver();
-        userAnswers.removeObserver(observer);
+//        userAnswers.removeObserver(observer);
+        userInputs.removeObserver(inputObserver);
+        cardTransformation.removeObserver(cardObserver);
         super.onCleared();
     }
 }

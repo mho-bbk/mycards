@@ -1,12 +1,11 @@
-package com.example.mycards.datamuse;
+package com.example.mycards.server.datamuse;
 
-import com.example.mycards.datamuse.pojo.DatamuseWord;
+import com.example.mycards.server.datamuse.pojo.DatamuseWord;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface DatamuseAPIService {

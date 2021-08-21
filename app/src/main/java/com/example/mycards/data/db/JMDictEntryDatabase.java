@@ -2,27 +2,21 @@ package com.example.mycards.data.db;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.JMDictEntry;
-import com.example.mycards.jmdict.typeconverters.JMDictEntryTypeConverters;
+import com.example.mycards.usecases.jptranslate.jmdict.typeconverters.JMDictEntryTypeConverters;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 //Commented out parts based on:
 // https://gist.github.com/florina-muntenescu/697e543652b03d3d2a06703f5d6b44b5

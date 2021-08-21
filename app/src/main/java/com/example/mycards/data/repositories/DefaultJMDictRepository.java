@@ -51,33 +51,17 @@ public class DefaultJMDictRepository implements JMDictRepository {
 
     @Override
     public JMDictEntry getFirstJMDictEntry(String gloss) {
-        Future<JMDictEntry> jmdict = executorService.submit(
-                () -> jmDictEntryDao.getFirstJMDictEntry(gloss)
-        );
-
-        JMDictEntry jmDictEntry = new JMDictEntry();
-        try {
-            jmDictEntry = jmdict.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //if the search was not fruitful, handles null here
-        if(jmDictEntry == null) {
-            return new JMDictEntry();   //prevents NPE
-        } else {
-            return jmDictEntry;
-        }
+        return jmDictEntryDao.getFirstJMDictEntry(gloss);
     }
 
     @Override
     public LiveData<List<JMDictEntry>> getAllJMDictEntries(String gloss) {
-        //TODO - there's no handling of null here, as above? TEST null response from Repository
+        //TODO - does this need to return live data?
         return jmDictEntryDao.getAllJMDictEntries(gloss);
     }
 
     @Override
     public void deleteAllJMDictEntries() {
-        executorService.execute(() -> jmDictEntryDao.deleteAllJMDictEntries());
+        executorService.execute(jmDictEntryDao::deleteAllJMDictEntries);
     }
 }

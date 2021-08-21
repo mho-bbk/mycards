@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import com.example.mycards.data.db.CardEntityDao;
 import com.example.mycards.data.db.CardEntityDatabase;
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.datamuse.DatamuseAPIService;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -31,9 +30,7 @@ public class DefaultCardRepository implements CardRepository {
     //Use executor to try and avoid memory leak
     @Override
     public void upsert(Card card) {
-        executorService.execute( () -> {
-            cardEntityDao.upsert(card);
-        });
+        cardEntityDao.upsert(card);
     }
 
     @Override
@@ -50,6 +47,10 @@ public class DefaultCardRepository implements CardRepository {
     public LiveData<List<Card>> getCards(String deckSeed) {
         //TODO - test null return
         return cardEntityDao.getCards(deckSeed);
+    }
+
+    public List<Card> getCardsNotLive(String deckSeed) {
+        return cardEntityDao.getCardsNotLive(deckSeed);
     }
 
     @Override

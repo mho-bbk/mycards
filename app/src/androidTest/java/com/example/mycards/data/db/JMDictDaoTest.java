@@ -1,16 +1,14 @@
 package com.example.mycards.data.db;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.example.mycards.LiveDataTestUtil;
 import com.example.mycards.data.entities.JMDictEntry;
-import com.example.mycards.jmdict.pojo.Kana;
-import com.example.mycards.jmdict.pojo.Kanji;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kana;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kanji;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,6 +47,8 @@ public class JMDictDaoTest {
     public void tearDown() {
         database.close();
     }
+
+    //TODO - handle null returns on get methods
 
     @Test
     public void testInsertAll() {

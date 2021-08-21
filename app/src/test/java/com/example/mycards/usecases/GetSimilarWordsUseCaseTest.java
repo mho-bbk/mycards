@@ -1,13 +1,12 @@
 package com.example.mycards.usecases;
 
-import com.example.mycards.datamuse.DatamuseAPIService;
-import com.example.mycards.datamuse.pojo.DatamuseWord;
-import com.example.mycards.usecases.GetSimilarWordsUseCase;
+import com.example.mycards.server.datamuse.DatamuseAPIService;
+import com.example.mycards.server.datamuse.pojo.DatamuseWord;
+import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;

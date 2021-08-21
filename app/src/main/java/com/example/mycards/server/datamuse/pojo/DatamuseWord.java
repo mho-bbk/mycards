@@ -1,6 +1,4 @@
-package com.example.mycards.datamuse.pojo;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.example.mycards.server.datamuse.pojo;
 
 import java.util.ArrayList;
 import java.util.List;

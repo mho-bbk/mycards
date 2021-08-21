@@ -10,7 +10,8 @@ import dagger.BindsInstance;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, DataModule.class, ViewModelModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, DataModule.class, UseCaseModule.class,
+        ViewModelModule.class})
 public interface AppComponent {
 
     void inject(MainActivity mainActivity);

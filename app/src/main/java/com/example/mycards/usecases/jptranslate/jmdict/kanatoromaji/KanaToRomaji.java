@@ -1,4 +1,4 @@
-package com.example.mycards.jmdict.kanatoromaji;
+package com.example.mycards.usecases.jptranslate.jmdict.kanatoromaji;
 
 import android.util.Log;
 
@@ -269,9 +269,11 @@ public class KanaToRomaji {
         tempMap.put("チェ", "che");
         tempMap.put("フィ", "fi");
         tempMap.put("フェ", "fe");
+        tempMap.put("フォ", "fo");
         tempMap.put("ちぇ", "che");
         tempMap.put("ふぃ", "fi");
         tempMap.put("ふぇ", "fe");
+        tempMap.put("ふぉ", "fo");
 
         tempMap.put("ウィ", "wi");
         tempMap.put("ウェ", "we");

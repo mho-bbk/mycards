@@ -1,11 +1,9 @@
 package com.example.mycards.ui;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,37 +14,53 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mycards.R;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.main.SharedViewModelFactory;
-import com.example.mycards.data.repositories.DefaultCardRepository;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
+    private final String TAG = "CardDisplayFragment";
+
     @Inject
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
     private NavController navController;
+    private ProgressBar progressBar;
 
     private TextView sideA, sideB;
 
-    public static CardDisplayFragment newInstance() {
-        return new CardDisplayFragment();
-    }
+    // Create the observer
+    final Observer<Boolean> observer = new Observer<Boolean>() {
+        @RequiresApi(api = Build.VERSION_CODES.R)
+        @Override
+        public void onChanged(Boolean cardsReady) {
+            if(cardsReady) {
+                //Update the UI - make ProgressBar disappear
+                Log.d(TAG, "Setting InputFragment progressBar to INvisible...");
+                progressBar.setVisibility(View.GONE);
+                startDeck();
+            } else {
+                sideA.setText("An error occurred, no cards");
+                sideB.setText("An error occurred, no cards");
+                sideA.setVisibility(View.VISIBLE);
+                sideB.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -63,18 +77,9 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
         navController = NavHostFragment.findNavController(this);
 
-        // Create the observer which updates the UI.
-        //TODO - not sure this observes the right thing, as no guarantee that VM has setUp the deck
-        // in order to be able to get the current card?
-        final Observer<List<Card>> observer = new Observer<List<Card>>() {
-            @Override
-            public void onChanged(List<Card> cards) {
-                startDeck(cards);
-            }
-        };
-
         // Observe the LiveData, passing in this fragment/activity as the LifecycleOwner and the observer.
-        sharedViewModel.userAnswers.observe(getViewLifecycleOwner(), observer);
+        progressBar = getView().findViewById(R.id.inputFragmentProgressBar);
+        sharedViewModel.cardsInVMReady.observe(getViewLifecycleOwner(), observer);
 
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
@@ -87,7 +92,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         nextBtn.setOnClickListener(this);
         Button backToHome = getView().findViewById(R.id.backToHome);
         backToHome.setOnClickListener(this);
-
 
 //        Button repeatBtn = getView().findViewById(R.id.repeatFlashcard);
 //        repeatBtn.setOnClickListener(this);
@@ -103,13 +107,9 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    private void startDeck(List<Card> cards) {
+    private void startDeck() {
         //We don't do anything with the cards and instead get the card from the VM...
         showCard(sharedViewModel.getCurrentCard());
-    }
-
-    private boolean cardIsBlank(Card card) {
-        return card.getSideA().equals("") || card.getSideB().equals("");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -125,11 +125,18 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
             sideA.setText(card.getSideA());
             sideB.setText(card.getSideB());
 
-            //By default, sideB should not be visible
+            //Side A should always be visible
+            sideA.setVisibility(View.VISIBLE);
+
+            //By default, sideB should always be not visible
             if (sideB.getVisibility() == View.VISIBLE) {
                 toggleVisibility(sideB);
             }
         }
+    }
+
+    private boolean cardIsBlank(Card card) {
+        return card.getSideA().equals("") || card.getSideB().equals("");
     }
 
 //    public void repeatCard() {

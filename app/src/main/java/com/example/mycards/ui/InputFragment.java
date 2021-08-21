@@ -101,7 +101,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     private void goToCardDisplayFragment() {
         NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
         navController.navigate(goToCardDisplayFragment);
-        Log.d(TAG, "Moving to CardDisplayFragment...");
+        Log.d(TAG, Thread.currentThread().getName() + " moving to CardDisplayFragment...");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)

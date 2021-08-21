@@ -81,7 +81,7 @@ public class CardDaoTest {
             assertEquals(allCards.get(0), testCard1);
             assertEquals(allCards.get(1), testCard2);
             assertEquals(allCards.get(2), testCard3);
-            assertTrue(allCards.size() == 3);
+            assertEquals(3, allCards.size());
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
@@ -112,7 +112,7 @@ public class CardDaoTest {
     }
 
     @Test
-    public void testMultipleUpsertDiffASameB() {
+    public void testMultipleUpsertDiffASameBSuccessNoDeckSeed() {
         //TODO - This is 'correct' behaviour atm but question this.
         // Do we want to diff Ewords to have same Jword on Bside? (Instinct: no, not useful)
         Card testCard1 = new Card("cook", "チェフ");
@@ -299,5 +299,6 @@ public class CardDaoTest {
         }
     }
 
-    //TODO handle empty card db
+    //TODO handle empty card db (getAllCards or getCards returns null)
+    // Currently: if returns nothing, deck goes straight to 'Finished deck' - is this the desired behaviour?
 }

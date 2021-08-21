@@ -2,15 +2,15 @@ package com.example.mycards;
 
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
-import com.example.mycards.usecases.CreateAndGetCardUseCase;
-import com.example.mycards.usecases.GetJpWordsUseCase;
-import com.example.mycards.usecases.GetSimilarWordsUseCase;
+import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
+import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
+import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -28,11 +28,13 @@ public class SharedViewModelTest {
     private GetJpWordsUseCase jpWordsUseCase;
     @Mock
     private CreateAndGetCardUseCase cardUseCase;
+    @Mock
+    private ExecutorService executorService;
 
     @Before
     public void setUp() throws IOException {
         //instantiate VM using usecase mocks
-        testSharedViewModel = new SharedViewModel(similarWordsUseCase, jpWordsUseCase, cardUseCase);
+        testSharedViewModel = new SharedViewModel(similarWordsUseCase, jpWordsUseCase, cardUseCase, executorService);
     }
 
     //TODO - test LiveData values are setting accordingly

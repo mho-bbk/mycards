@@ -1,6 +1,6 @@
 package com.example.mycards.di;
 
-import com.example.mycards.datamuse.DatamuseAPIService;
+import com.example.mycards.server.datamuse.DatamuseAPIService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

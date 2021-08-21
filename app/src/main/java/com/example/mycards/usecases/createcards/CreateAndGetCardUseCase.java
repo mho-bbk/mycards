@@ -1,19 +1,21 @@
-package com.example.mycards.usecases;
+package com.example.mycards.usecases.createcards;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.mycards.base.usecasetypes.BaseCaseWithoutParamWithoutReturn;
+import com.example.mycards.base.usecasetypes.BaseUseCaseWithOutParams;
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
+import com.example.mycards.base.usecasetypes.BaseUseCaseWithParamWithOutReturn;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.data.repositories.CardRepository;
+import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.inject.Inject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Remit:
@@ -30,7 +32,8 @@ import retrofit2.Response;
  */
 public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, String>, Boolean> {
 
-    private CardRepository cardRepository;
+    private final CardRepository cardRepository;
+
     private String deckSeed = ""; //this should be the user's original input (string(s))
 
     @Inject
@@ -39,24 +42,21 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     }
 
     @Override
-    public Boolean run(HashMap<String, String> param) {
-        return createCards(param);
+    public Boolean run(HashMap<String, String> stringStringHashMap) {
+        return createCards(stringStringHashMap);
     }
 
-    private Boolean createCards(HashMap<String, String> param) {
+    //This is the run method of this use case really
+    private boolean createCards(HashMap<String, String> param) {
         param.entrySet().forEach(entry -> {
             cardRepository.upsert(new Card(entry.getKey(), entry.getValue(), deckSeed));
         });
-        //Assume the above will throw exception and stop, or return true
+
+        resetDeckSeed(); //TODO - needed?
         return true;
     }
 
-    public String getDeckSeed() {
-        return deckSeed;
-    }
-
-    //VM needs to use this to either directly add user's original input String
-    //or VM can get the input string from GetSimilarWordsUseCase
+    //Manager uses this to add user's original input String as deck identified
     public void setDeckSeed(String deckSeed) {
         this.deckSeed = deckSeed;
     }
@@ -65,11 +65,16 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
         this.deckSeed = "";
     }
 
+
     //**REPOSITORY/DAO METHODS**
     public LiveData<List<Card>> getAllCards() { return cardRepository.getAllCards(); }
 
     public LiveData<List<Card>> getCards(String deckSeed) {
         return cardRepository.getCards(deckSeed);
+    }
+
+    public List<Card> getCardsNotLive(String deckSeed) {
+        return cardRepository.getCardsNotLive(deckSeed);
     }
 
     public void upsert(Card card) {
@@ -83,5 +88,4 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     public void deleteAllCards() {
         cardRepository.deleteAllCards();
     }
-
 }

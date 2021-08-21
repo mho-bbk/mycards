@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 
-import com.example.mycards.jmdict.pojo.Kana;
-import com.example.mycards.jmdict.pojo.Kanji;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kana;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kanji;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.mycards.jmdict.pojo;
+package com.example.mycards.usecases.jptranslate.jmdict.pojo;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 

@@ -1,9 +1,9 @@
-package com.example.mycards.jmdict.typeconverters;
+package com.example.mycards.usecases.jptranslate.jmdict.typeconverters;
 
 import androidx.room.TypeConverter;
 
-import com.example.mycards.jmdict.pojo.Kana;
-import com.example.mycards.jmdict.pojo.Kanji;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kana;
+import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kanji;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
