@@ -1,19 +1,14 @@
 package com.example.mycards.usecases.createcards;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
-import com.example.mycards.base.usecasetypes.BaseCaseWithoutParamWithoutReturn;
-import com.example.mycards.base.usecasetypes.BaseUseCaseWithOutParams;
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
-import com.example.mycards.base.usecasetypes.BaseUseCaseWithParamWithOutReturn;
 import com.example.mycards.data.entities.Card;
 import com.example.mycards.data.repositories.CardRepository;
-import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -30,11 +25,10 @@ import javax.inject.Inject;
  *  + Assumption that VM can get the deckSeed from here.
  *      If not, VM must already knows deckSeed (as passed down as userinput)
  */
-public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, String>, Boolean> {
+public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, HashMap<String, String>>,
+        Boolean> {
 
     private final CardRepository cardRepository;
-
-    private String deckSeed = ""; //this should be the user's original input (string(s))
 
     @Inject
     public CreateAndGetCardUseCase(CardRepository cardRepository) {
@@ -42,39 +36,32 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     }
 
     @Override
-    public Boolean run(HashMap<String, String> stringStringHashMap) {
-        return createCards(stringStringHashMap);
+    public Boolean run(HashMap<String, HashMap<String, String>> stringHashMapString) {
+        return createCards(stringHashMapString);
     }
 
     //This is the run method of this use case really
-    private boolean createCards(HashMap<String, String> param) {
-        param.entrySet().forEach(entry -> {
-            cardRepository.upsert(new Card(entry.getKey(), entry.getValue(), deckSeed));
+    private boolean createCards(HashMap<String, HashMap<String, String>> map) {
+        map.entrySet().forEach( entry -> {
+            String inputWord = entry.getKey();
+            HashMap<String, String> engToJpPerInputWord = entry.getValue();
+            engToJpPerInputWord.entrySet().forEach( innerEntry -> {
+                cardRepository.upsert(new Card(innerEntry.getKey(), innerEntry.getValue(), inputWord));
+            });
         });
 
-        resetDeckSeed(); //TODO - needed?
         return true;
     }
-
-    //Manager uses this to add user's original input String as deck identified
-    public void setDeckSeed(String deckSeed) {
-        this.deckSeed = deckSeed;
-    }
-
-    public void resetDeckSeed() {
-        this.deckSeed = "";
-    }
-
 
     //**REPOSITORY/DAO METHODS**
     public LiveData<List<Card>> getAllCards() { return cardRepository.getAllCards(); }
 
-    public LiveData<List<Card>> getCards(String deckSeed) {
-        return cardRepository.getCards(deckSeed);
+    public LiveData<List<Card>> getCards(String relatedWord) {
+        return cardRepository.getCards(relatedWord);
     }
 
-    public List<Card> getCardsNotLive(String deckSeed) {
-        return cardRepository.getCardsNotLive(deckSeed);
+    public LiveData<List<Card>> getCards(List<String> relatedWords) {
+        return cardRepository.getCards(relatedWords);
     }
 
     public void upsert(Card card) {

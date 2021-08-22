@@ -44,20 +44,18 @@ public class DefaultCardRepository implements CardRepository {
     public LiveData<List<Card>> getAllCards() { return cardEntityDao.getAllCards(); }
 
     @Override
-    public LiveData<List<Card>> getCards(String deckSeed) {
-        //TODO - test null return
-        return cardEntityDao.getCards(deckSeed);
+    public LiveData<List<Card>> getCards(String relatedWord) {
+        return cardEntityDao.getCards(relatedWord);
     }
 
-    public List<Card> getCardsNotLive(String deckSeed) {
-        return cardEntityDao.getCardsNotLive(deckSeed);
+    @Override
+    public LiveData<List<Card>> getCards(List<String> relatedWords) {
+        return cardEntityDao.getCards(relatedWords);
     }
 
     @Override
     public void deleteAllCards() {
-        executorService.execute( () -> {
-            cardEntityDao.deleteAllCards();
-        });
+        executorService.execute(cardEntityDao::deleteAllCards);
     }
 
 }

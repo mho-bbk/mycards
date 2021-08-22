@@ -48,7 +48,7 @@ public class JMDictDaoTest {
         database.close();
     }
 
-    //TODO - handle null returns on get methods
+    //TODO - handle null returns on get methods - if there are any?
 
     @Test
     public void testInsertAll() {

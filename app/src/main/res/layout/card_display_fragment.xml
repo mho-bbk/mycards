@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_weight="0.5"
         android:layout_marginRight="20dp"
-        android:text="Back to Home"
+        android:text="@string/backToHome"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

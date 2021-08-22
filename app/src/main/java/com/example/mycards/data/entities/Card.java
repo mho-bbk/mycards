@@ -25,26 +25,26 @@ public class Card {
     @ColumnInfo(name = "repeat")
     private boolean repeat;
 
-    @ColumnInfo(name = "deck_seed")
-    private String deckSeed;    //this is to help us with user getting deck back
+    @ColumnInfo(name = "related_word")
+    private String relatedWord;    //this is to help us with user getting deck back
 
     @Ignore
     public Card(String sideA, String sideB) {
         this.sideA = sideA;
         this.sideB = sideB;
         this.repeat = false;
-        this.deckSeed = ""; //avoid NPE
+        this.relatedWord = ""; //avoid NPE
     }
 
     //Overload constructor fn
-    public Card(String sideA, String sideB, String deckSeed) {
+    public Card(String sideA, String sideB, String relatedWord) {
         this.sideA = sideA;
         this.sideB = sideB;
         this.repeat = false;
-        if(deckSeed == null) {
-            this.deckSeed = ""; //avoid NPE
+        if(relatedWord == null) {
+            this.relatedWord = ""; //avoid NPE
         } else {
-            this.deckSeed = deckSeed;
+            this.relatedWord = relatedWord;
         }
     }
 
@@ -78,12 +78,12 @@ public class Card {
         return repeat;
     }
 
-    public String getDeckSeed() {
-        return deckSeed;
+    public String getRelatedWord() {
+        return relatedWord;
     }
 
-    public void setDeckSeed(String deckSeed) {
-        this.deckSeed = deckSeed;
+    public void setRelatedWord(String relatedWord) {
+        this.relatedWord = relatedWord;
     }
 
     @Override

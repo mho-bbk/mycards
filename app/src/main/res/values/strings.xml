@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">MyCards</string>
     <string name="multipleLineDisplayToggle">Show/\nHide B Side</string>
+    <string name="noResult">Sorry…/\nNo appropriate words were found ☹</string>
+    <string name="finishedDeck">Finished deck!/\nWell done ☺</string>
+    <string name="backToHome">Back to Home</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

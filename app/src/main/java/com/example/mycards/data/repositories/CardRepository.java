@@ -14,9 +14,9 @@ public interface CardRepository {
 
     public LiveData<List<Card>> getAllCards();
 
-    public LiveData<List<Card>> getCards(String deckSeed);
+    public LiveData<List<Card>> getCards(String relatedWord);
 
-    public List<Card> getCardsNotLive(String deckSeed);
+    public LiveData<List<Card>> getCards(List<String> relatedWords);
 
     public void deleteAllCards();
 

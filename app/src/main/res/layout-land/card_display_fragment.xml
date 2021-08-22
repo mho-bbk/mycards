@@ -82,7 +82,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintVertical_weight="0.5"
-        android:text="Back to Home"
+        android:text="@string/backToHome"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -8,6 +8,7 @@ import com.example.mycards.server.datamuse.pojo.DatamuseWord;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -25,7 +26,7 @@ import retrofit2.Response;
  *  + Convert DatamuseWord type into List of String for processing
  *  + Return those words to the client (VM)
  */
-public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>, List<String>> {
+public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>, HashMap<String, List<String>>> {
 
     private static final String TAG = "GetSimilarWordsUseCase";
 
@@ -38,20 +39,19 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
     }
 
     @Override
-    public List<String> run(List<String> inputWords) {
-        //Original Strings should be included in the deck, so add to List
-        List<String> originalAndSimilarWords = new ArrayList<>(inputWords);
+    public HashMap<String, List<String>> run(List<String> inputWords) {
+        HashMap<String, List<String>> wordsAndRelatedWords = new HashMap<>();
 
         inputWords.forEach(word -> {
             //for each input word, call the service and search
             //get the words from the service and add to originalAndSimilarWords
             List<String> results = callService(datamuseAPIService, word, searchLimit);
             if(!results.isEmpty()) {
-                originalAndSimilarWords.addAll(results);
+                wordsAndRelatedWords.put(word, results);
             }
         });
 
-        return originalAndSimilarWords; //should never be null bc added inputWords
+        return wordsAndRelatedWords; //null is captured in callService, but results can be empty
     }
 
     private List<String> callService(DatamuseAPIService service, String searchTerm, int searchLimit) {
@@ -77,6 +77,7 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
         return apiSearchResult;
     }
 
+    //For future feature
     public void setSearchLimit(int n) { this.searchLimit = n; }
 
     //Helper method to disaggregate Call from semanticSearch to make the latter testable

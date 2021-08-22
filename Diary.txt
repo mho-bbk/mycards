@@ -214,6 +214,10 @@ Looking at how to impl Handlers so bg/main thread can communicate robustly.
 Sorted bg/main thread comms issue using combo of Handler on main and callback that delegates all loading/data transformation to threads.
 ACTION: more tests, saved state, write report, test/improve results.
 
+22/8: Observed strange phenomenon where JMDict db would not preload/was slow to load. 
+I'd input my strings and received no results because of this... Had to stop and changing nothing, start again - worked second time...
+
+
 
 Q: how do language dictionaries prioritise which word to display first?
 

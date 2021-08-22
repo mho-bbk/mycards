@@ -1,7 +1,6 @@
 package com.example.mycards.usecases;
 
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -60,10 +59,10 @@ public class UseCaseManager {
 
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    public void runAllUseCases(List<String> inputList, String deckSeed, UseCaseCallback<Boolean> callback) {
+    public void runAllUseCases(List<String> inputList, UseCaseCallback<Boolean> callback) {
         executorService.execute(() -> {
             try {
-                Result<Boolean> result = runAllUseCasesSynchronously(inputList, deckSeed);
+                Result<Boolean> result = runAllUseCasesSynchronously(inputList);
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<Boolean> errorResult = new Result.Error<>(e);
@@ -73,54 +72,67 @@ public class UseCaseManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    private Result<Boolean> runAllUseCasesSynchronously(List<String> inputList, String deckSeed) {
-        Boolean ready;
-        //TODO - split these use cases up into separate methods
+    private Result<Boolean> runAllUseCasesSynchronously(List<String> inputList) {
+        return runSimilarWordsUseCaseSynchronously(inputList); //could be null
+
+        //Run the below if testing on emulator to avoid having to do network call constantly
+//        HashMap<String, List<String>> words = new HashMap<>();
+//        words.put("to speed up", List.of("to fail to notice", "inspection"));
+//        words.put("to fail to notice", List.of("to speed up", "inspection"));
+//        words.put("inspection", List.of("to speed up", "to fail to notice"));
+//
+//        return runGetJPWordsUseCaseSynchronously(words);    //could be null
+    }
+
+    private Result<Boolean> runSimilarWordsUseCaseSynchronously(List<String> inputList) {
         try {
-            createAndGetCardUseCase.setDeckSeed(deckSeed); //TODO - bit of an anomaly here
             //semantic search using DatamuseAPI
-            Future<List<String>> semanticSearch = executorService.submit(
-                    () -> getSimilarWordsUseCase.run(inputList));
+            Future<HashMap<String, List<String>>> semanticSearch =
+                    executorService.submit(() -> getSimilarWordsUseCase.run(inputList));
             try {
-                List<String> words = semanticSearch.get();
-                //Test so we can stop needlessly calling API...
-//                List<String> words = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+                HashMap<String, List<String>> wordsAndRelatedWords = semanticSearch.get();
 
-                Future<HashMap<String, String>> engToJpReady = executorService.submit(
-                        () -> getJpWordsUseCase.run(words));
-                try {
-                    HashMap<String, String> engToJpMap = engToJpReady.get();
+                return runGetJPWordsUseCaseSynchronously(wordsAndRelatedWords);
 
-                    Future<Boolean> cardsReady = executorService.submit(
-                            () -> createAndGetCardUseCase.run(engToJpMap));
-                    try {
-                        ready = cardsReady.get();
-                    } catch (Exception e) {
-                        Log.d(TAG, "Exception during cardsReady.get()");
-                        return new Result.Error<>(e);
-                    }
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.d(TAG, "Exception during engToJpReady.get()");
-                    return new Result.Error<>(e);
-                }
             } catch (ExecutionException | InterruptedException e) {
                 Log.d(TAG, "Exception during semanticSearch.get()");
                 return new Result.Error<>(e);
             }
         } catch (Exception e) {
-            //catch any exception
+            //catch any exception, probably IO from failed network call
             return new Result.Error<>(e);
         }
-        return new Result.Success<>(ready);
+    }
+
+    private Result<Boolean> runGetJPWordsUseCaseSynchronously(HashMap<String, List<String>> wordsAndRelatedWords) {
+
+        Future<HashMap<String, HashMap<String, String>>> engToJpReady =
+                executorService.submit(() -> getJpWordsUseCase.run(wordsAndRelatedWords));
+        try {
+            HashMap<String, HashMap<String, String>> engToJpMap = engToJpReady.get();
+            return runCreateAndGetCardUseCaseSynchronously(engToJpMap);
+
+        } catch (ExecutionException | InterruptedException e) {
+            Log.d(TAG, "Exception during engToJpReady.get()");
+            return new Result.Error<>(e);
+        }
+    }
+
+    private Result<Boolean> runCreateAndGetCardUseCaseSynchronously(HashMap<String, HashMap<String, String>> engToJpMap) {
+        Future<Boolean> cardsReady =
+                executorService.submit(() -> createAndGetCardUseCase.run(engToJpMap));
+        try {
+            Boolean ready = cardsReady.get();
+            return new Result.Success<>(ready); //could be null?
+        } catch (Exception e) {
+            Log.d(TAG, "Exception during cardsReady.get()");
+            return new Result.Error<>(e);
+        }
     }
 
     //Access point: VM -> this -> cardUseCase -> Repository -> Dao -> DB
-    public LiveData<List<Card>> getCards(String deckSeed) {
-        return createAndGetCardUseCase.getCards(deckSeed);
-    }
-
-    public List<Card> getCardsNotLive(String deckSeed) {
-        return createAndGetCardUseCase.getCardsNotLive(deckSeed);
+    public LiveData<List<Card>> getCards(List<String> inputList) {
+        return createAndGetCardUseCase.getCards(inputList);
     }
 
     public void deleteAllCards() {

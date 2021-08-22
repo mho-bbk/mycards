@@ -1,6 +1,6 @@
 package com.example.mycards.base.usecasetypes;
 
-public interface BaseCaseWithoutParamWithoutReturn {
+public interface BaseUseCaseWithoutParamWithoutReturn {
 
     public void run();
 }

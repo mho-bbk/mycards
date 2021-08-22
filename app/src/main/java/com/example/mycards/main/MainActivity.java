@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static synchronized List<JMDictEntry> getPrePopulatedData(Context context) {
-        int testResource = R.raw.reverse_jmdictentries_plain_sample;
         int realResource = R.raw.reverse_jmdictentries_plain;
 
         List<JMDictEntry> dictEntries = new ArrayList<>();
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        try(InputStream jsonStream = context.getResources().openRawResource(testResource)) {
+        try(InputStream jsonStream = context.getResources().openRawResource(realResource)) {
             dictEntries = mapper.readValue(jsonStream,
                     new TypeReference<List<JMDictEntry>>() {
                     });

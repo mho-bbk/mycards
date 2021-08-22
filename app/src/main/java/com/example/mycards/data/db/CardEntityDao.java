@@ -23,11 +23,11 @@ public interface CardEntityDao {
     @Query("SELECT * FROM cards ORDER BY id")
     LiveData<List<Card>> getAllCards();
 
-    @Query("SELECT * FROM cards WHERE deck_seed = :deckSeed")
-    LiveData<List<Card>> getCards(String deckSeed);
+    @Query("SELECT * FROM cards WHERE related_word = :relatedWord")
+    LiveData<List<Card>> getCards(String relatedWord);
 
-    @Query("SELECT * FROM cards WHERE deck_seed = :deckSeed")
-    List<Card> getCardsNotLive(String deckSeed);
+    @Query("SELECT * FROM cards WHERE related_word IN (:relatedWords)")
+    LiveData<List<Card>> getCards(List<String> relatedWords);
 
     @Query("DELETE FROM cards")
     void deleteAllCards();

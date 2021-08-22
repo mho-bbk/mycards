@@ -20,6 +20,7 @@ import com.example.mycards.data.entities.Card;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -34,31 +35,33 @@ public class SharedViewModel extends ViewModel {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private UseCaseManager useCaseManager;
-//    private GetSimilarWordsUseCase similarWordsUseCase;
-//    private GetJpWordsUseCase jpWordsUseCase;
-//    private CreateAndGetCardUseCase cardUseCase;
 
-    private String currentDeckSeed;
+//    private String currentDeckSeed;
 
-    public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
+    private final List<String> userInputListCopy = new ArrayList<>();
+
     public MutableLiveData<Boolean> cardsInRepoReady = new MutableLiveData<>();
     public final LiveData<List<Card>> cardTransformation =
-            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(currentDeckSeed));
+            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(userInputListCopy));
+
+    public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
 
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
-    private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
 
     //NEW IMPL
     private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
         @Override
         public void onChanged(List<String> input) {
             //Set the currentDeckSeed which is owned by VM
-            setCurrentDeckSeed(input);
+//            setCurrentDeckSeed(input);
+            //NEW IMPL: Save copy of user inputs. This will be used to return decks.
+            userInputListCopy.addAll(input);
             //Deploy use cases via the Manager Mediator and request callback when done
             //Should be on Main thread
-            useCaseManager.runAllUseCases(input, currentDeckSeed, new UseCaseCallback<Boolean>() {
+            useCaseManager.runAllUseCases(input, new UseCaseCallback<Boolean>() {
                 @Override
                 public void onComplete(Result<Boolean> result) {
                     if(result instanceof Result.Success) {
@@ -86,34 +89,6 @@ public class SharedViewModel extends ViewModel {
     };
 
 
-    //OLD IMPL (NOT IN USE)
-//    private final Observer<List<Card>> observer = new Observer<List<Card>>() {
-//        @Override
-//        public void onChanged(List<Card> cards) {
-//            setUpDeck(cards);
-//        }
-//    };
-//    public final LiveData<List<Card>> userAnswers = Transformations.switchMap(userInputs, (inputList) -> {
-//        //TODO - Remove bulk of logic is here, make sure doesn't run on main thread...
-//        //Set the String to identify the deck
-//        setCurrentDeckSeed(inputList);
-//        //Deploy use cases
-//        useCaseManager.runAllUseCases(inputList, currentDeckSeed, new UseCaseCallback<Boolean>() {
-//            @Override
-//            public void onComplete(Result<Boolean> result) {
-//                if(result instanceof Result.Success) {
-//                    //do something happy - use the callback
-//                    cardsReady.setValue(true);
-//                } else {
-//                    //show on UI that no cards could be found
-//                    // send signal to waiting CardFragment to move to sep 'error' fragment?
-//                }
-//            }
-//        });
-//        Log.d(TAG, Thread.currentThread().getName() + " returning cardUseCase.getCards(deckSeed) within userAnswers Transformations.switchMap...");
-//        return cardUseCase.getCards(currentDeckSeed);
-//    });
-
     @Inject
     public SharedViewModel(GetSimilarWordsUseCase similarWordsUseCase,
                            GetJpWordsUseCase jpWordsUseCase,
@@ -123,12 +98,7 @@ public class SharedViewModel extends ViewModel {
         useCaseManager = UseCaseManager
                 .getInstance(similarWordsUseCase, jpWordsUseCase, cardUseCase, executorService);
 
-//        this.similarWordsUseCase = similarWordsUseCase;
-//        this.jpWordsUseCase = jpWordsUseCase;
-//        this.cardUseCase = cardUseCase;
-
         //Observe the LiveData ie user input, passing in an observer that does the logic.
-//        userAnswers.observeForever(observer);
         userInputs.observeForever(inputObserver);
         cardTransformation.observeForever(cardObserver);
 
@@ -136,36 +106,20 @@ public class SharedViewModel extends ViewModel {
 
     //Set the deckSeed within VM so it survives config changes.
     //The 'deckSeed' is just the inputWords, separated by commas and spaces and bracketed with curly braces.
-    private void setCurrentDeckSeed(List<String> inputList) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < inputList.size(); i++) {
-            if(i == 0) {
-                stringBuilder.append("{").append(inputList.get(i)).append(", ");
-            } else if (i == inputList.size() - 1) {
-                stringBuilder.append(inputList.get(i)).append("}");
-            } else {
-                stringBuilder.append(inputList.get(i)).append(", ");
-            }
-        }
-
-        currentDeckSeed = stringBuilder.toString();
-    }
-
-//    private void runUseCases(List<String> inputList, String deckSeed,
-//                             UseCaseCallback<Boolean> cardsReady) {
-////        for (String s: inputList) {
-//            //semantic search here using DatamuseAPI
-////            List<String> simWords = similarWordsUseCase.run(s);
-//            //Test so we can stop needlessly calling API...
-//                List<String> fakeSimWords = new ArrayList<>(List.of("to speed up", "to fail to notice", "inspection"));
+//    private void setCurrentDeckSeed(List<String> inputList) {
+//        StringBuilder stringBuilder = new StringBuilder();
 //
-//            //get the Jp translations
-//            jpWordsUseCase.run(fakeSimWords);
+//        for (int i = 0; i < inputList.size(); i++) {
+//            if(i == 0) {
+//                stringBuilder.append("{").append(inputList.get(i)).append(", ");
+//            } else if (i == inputList.size() - 1) {
+//                stringBuilder.append(inputList.get(i)).append("}");
+//            } else {
+//                stringBuilder.append(inputList.get(i)).append(", ");
+//            }
+//        }
 //
-//            //set the deckSeed for the cardUseCase
-//            cardUseCase.setDeckSeed(deckSeed);
-////        }
+//        currentDeckSeed = stringBuilder.toString();
 //    }
 
     /**
@@ -248,7 +202,6 @@ public class SharedViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-//        userAnswers.removeObserver(observer);
         userInputs.removeObserver(inputObserver);
         cardTransformation.removeObserver(cardObserver);
         super.onCleared();

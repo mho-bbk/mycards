@@ -54,6 +54,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
                 progressBar.setVisibility(View.GONE);
                 startDeck();
             } else {
+                //TODO - Go to no results Fragment
                 sideA.setText("An error occurred, no cards");
                 sideB.setText("An error occurred, no cards");
                 sideA.setVisibility(View.VISIBLE);

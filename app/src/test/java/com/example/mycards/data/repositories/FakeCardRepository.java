@@ -50,14 +50,15 @@ public class FakeCardRepository implements CardRepository {
     }
 
     @Override
-    public LiveData<List<Card>> getCards(String deckSeed) {
+    public LiveData<List<Card>> getCards(String relatedWord) {
         //TODO - this will just return everything atm...
         return observableTestCards;
     }
 
     @Override
-    public List<Card> getCardsNotLive(String deckSeed) {
-        return null;
+    public LiveData<List<Card>> getCards(List<String> relatedWords) {
+        //TODO - this will just return everything atm...
+        return observableTestCards;
     }
 
     @Override

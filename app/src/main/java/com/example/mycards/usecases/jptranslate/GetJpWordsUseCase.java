@@ -2,11 +2,7 @@ package com.example.mycards.usecases.jptranslate;
 
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
-import com.example.mycards.base.usecasetypes.BaseUseCaseWithParamWithOutReturn;
 import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.data.repositories.JMDictRepository;
 import com.example.mycards.usecases.jptranslate.jmdict.kanatoromaji.KanaToRomaji;
@@ -14,7 +10,6 @@ import com.example.mycards.usecases.jptranslate.jmdict.kanatoromaji.KanaToRomaji
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,14 +23,15 @@ import javax.inject.Singleton;
  * (Client uses HashMap for card creation)
  */
 @Singleton
-public class GetJpWordsUseCase implements BaseUseCaseWithParam<List<String>, HashMap<String, String>> {
+public class GetJpWordsUseCase implements BaseUseCaseWithParam<HashMap<String, List<String>>,
+        HashMap<String, HashMap<String, String>>> {
 
     private String TAG = "GetJpWordsUseCase";
 
     private final JMDictRepository dictRepository;
     private final KanaToRomaji romajiConverter = new KanaToRomaji();
 
-    private final HashMap<String, String> engToJpMap = new HashMap<>();
+    private final HashMap<String, HashMap<String, String>> wordAndRelatedWordsWithTranslations = new HashMap<>();
 
     @Inject
     public GetJpWordsUseCase(JMDictRepository dictRepository) {
@@ -43,7 +39,23 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<List<String>, Has
     }
 
     @Override
-    public HashMap<String, String> run(List<String> wordsForTranslation) {
+    public HashMap<String, HashMap<String, String>> run(HashMap<String, List<String>> wordsForTranslation) {
+
+        wordsForTranslation.entrySet().forEach( entry  -> {
+            //the String key also needs to be translated
+            List<String> inputStringAndRelatedWords = new ArrayList<>();
+            inputStringAndRelatedWords.add(entry.getKey()); //add the original input String
+            inputStringAndRelatedWords.addAll(entry.getValue());    //add all the related words
+
+            wordAndRelatedWordsWithTranslations.put(entry.getKey(), translateWords(inputStringAndRelatedWords));
+        });
+
+        return wordAndRelatedWordsWithTranslations;
+    }
+
+    private HashMap<String, String> translateWords(List<String> wordsForTranslation) {
+        HashMap<String, String> engToJpMap = new HashMap<>();
+
         wordsForTranslation.forEach(word -> {
             try {
                 JMDictEntry result = dictRepository.getFirstJMDictEntry(word);  //NPE is currently handled by Repo
@@ -69,8 +81,8 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<List<String>, Has
         }
     }
 
-    public HashMap<String, String> getEngToJpMap() {
-        return engToJpMap;
+    public HashMap<String, HashMap<String, String>> getWordAndRelatedWordsWithTranslations() {
+        return wordAndRelatedWordsWithTranslations;
     }
 
 }
