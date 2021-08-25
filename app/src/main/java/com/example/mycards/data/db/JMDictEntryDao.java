@@ -29,6 +29,9 @@ public interface JMDictEntryDao {
     @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss")
     public LiveData<List<JMDictEntry>> getAllJMDictEntries(String gloss);
 
+    @Query("SELECT * FROM jmdict")
+    public LiveData<List<JMDictEntry>> getAllJMDictEntries();
+
     @Query("DELETE FROM jmdict")
     public void deleteAllJMDictEntries();
 }

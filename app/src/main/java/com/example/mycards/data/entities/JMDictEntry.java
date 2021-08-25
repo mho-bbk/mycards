@@ -158,8 +158,8 @@ public class JMDictEntry {
         if (o == null || getClass() != o.getClass()) return false;
         JMDictEntry that = (JMDictEntry) o;
 
-        //equality is based on wordID to avoid the same Japanese term appearing for diff glosses
-        return wordID.equals(that.wordID);
+        //equality is based on both wordID and innerGloss, mirrors composite PK constraint
+        return wordID.equals(that.wordID) && innerGloss.equals(that.innerGloss);
     }
 
     @Override

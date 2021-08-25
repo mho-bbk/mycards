@@ -1,11 +1,13 @@
 package com.example.mycards.data.db;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import com.example.mycards.LiveDataTestUtil;
 import com.example.mycards.data.entities.JMDictEntry;
 import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kana;
 import com.example.mycards.usecases.jptranslate.jmdict.pojo.Kanji;
@@ -21,6 +23,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -39,8 +43,6 @@ public class JMDictDaoTest {
                 JMDictEntryDatabase.class).allowMainThreadQueries().build();
 
         jmDictEntryDao = database.getJMDictEntryDao();
-
-        //TODO - create json stream off sample file here
     }
 
     @After  //executed after every test case
@@ -48,220 +50,329 @@ public class JMDictDaoTest {
         database.close();
     }
 
-    //TODO - handle null returns on get methods - if there are any?
+    @Test
+    public void testInsertAllValidEntries() {
+        JMDictEntry entry1 = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                new ArrayList<>(List.of("n", "vs", "adj")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(3, getEntries.size());
+            assertTrue(getEntries.contains(entry1));
+            assertTrue(getEntries.contains(entry2));
+            assertTrue(getEntries.contains(entry3));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
-    public void testInsertAll() {
-        JMDictEntry expectedEntry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+    public void testInsertAll_NullInnerGlossFails_NoException() {
+        JMDictEntry entry1 = new JMDictEntry(null, "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                new ArrayList<>(List.of("n", "vs", "adj")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(2, getEntries.size());
+            assertFalse(getEntries.contains(entry1));
+            assertTrue(getEntries.contains(entry2));
+            assertTrue(getEntries.contains(entry3));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInsertAll_NullWordIdFails_NoException() {
+        JMDictEntry entry1 = new JMDictEntry("to speed up", null, new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                new ArrayList<>(List.of("n", "vs", "adj")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(2, getEntries.size());
+
+            assertTrue(getEntries.contains(entry2));
+            assertTrue(getEntries.contains(entry3));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInsertAll_NullValuesExceptInnerGlossAndWordIdPass() {
+        JMDictEntry nullKanji = new JMDictEntry("to speed up", "1601080", null,
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry nullKana = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                null, 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry nullSensePosTag = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                null);
+
+        List<JMDictEntry> testEntries = List.of(nullKanji, nullKana, nullSensePosTag);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(3, getEntries.size());
+
+            assertTrue(getEntries.contains(nullKanji));
+            assertTrue(getEntries.contains(nullKana));
+            assertTrue(getEntries.contains(nullSensePosTag));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInsertAll_DuplicatesNotDoubleSaved() {
+        //indirectly test equality of JMDictEntry class here
+
+        JMDictEntry entry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry exactDuplicate = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
                 new Kana("はやめる"), 3, 2, 2, 2,
                 new ArrayList<>(List.of("v1", "vt")));
 
-        //test db is empty so we must insert this to get it back - this thus doesn't test preload...
-        jmDictEntryDao.upsert(expectedEntry);
-        JMDictEntry actualEntry;
 
-//        try {
-//            LiveData<JMDictEntry> testGet = jmDictEntryDao.getFirstJMDictEntry("to speed up");
-//            assertFalse(testGet == null);   //this test passes
-//            actualEntry = testGet.getValue();
-//            assertFalse(actualEntry == null);   //this test doesn't pass
-//            actualEntry = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getFirstJMDictEntry("to speed up"));
-//            assertEquals(expectedEntry, actualEntry);   //assertion failure bc result is null
-//        } catch (InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+        List<JMDictEntry> testEntries = List.of(entry, exactDuplicate);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(1, getEntries.size());
+            assertTrue(getEntries.contains(entry));
+            assertTrue(getEntries.contains(exactDuplicate));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testUpsert() {
-//        Card test = new Card("chef", "チェフ");
-//        test.setId(1);   //When testAns is entered into dao, Room will autoset id to 1 as it's the first object
-//
-//        cardEntityDao.upsert(test);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.get(0), test);
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testInsertAll_DuplicateWordIdInnerGlossNotSaved() {
+        JMDictEntry entry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry duplicateWordIdInnerGlossOnly = new JMDictEntry("to speed up", "1601080", new Kanji("異なる言葉"),
+                new Kana("ことなることば"), 0,0, 0, 0,
+                new ArrayList<>(List.of("n")));
+
+        List<JMDictEntry> testEntries = List.of(entry, duplicateWordIdInnerGlossOnly);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(1, getEntries.size());
+            assertTrue(getEntries.contains(entry));
+            assertTrue(getEntries.contains(duplicateWordIdInnerGlossOnly));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testMultipleUpsert() {
-//        Card testCard1 = new Card("chef", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("baker", "パン屋さん");
-//        testCard2.setId(2);
-//        Card testCard3 = new Card("musician", "音楽家");
-//        testCard3.setId(3);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//        cardEntityDao.upsert(testCard3);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.get(0), testCard1);
-//            assertEquals(allCards.get(1), testCard2);
-//            assertEquals(allCards.get(2), testCard3);
-//            assertTrue(allCards.size() == 3);
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testUpsertValidEntry_testDelete() {
+        //upsert also uses Room's @Insert annotation so this can be argued to have been tested via the insertAll tests
+        JMDictEntry entry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+
+
+        jmDictEntryDao.upsert(entry);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(1, getEntries.size());
+            assertTrue(getEntries.contains(entry));
+
+            //Test delete
+            jmDictEntryDao.delete(entry);
+            List<JMDictEntry> dbAfterDeletion = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertTrue(dbAfterDeletion.isEmpty());
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testMultipleUpsertSameADiffB() {
-        //TODO - This is 'correct' behaviour atm but question this.
-        // Do we want to display diff Jwords for the same Eword as diff cards?
-        // Should we use production code to decide how to display multi Jwords for same Eword?
-//        Card testCard1 = new Card("chef", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("chef", "コック");
-//        testCard2.setId(2);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.get(0), testCard1);
-//            assertEquals(allCards.get(1), testCard2);
-//            assertEquals(2, allCards.size());
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testDeleteAllIfEmpty_NoException() {
+        //Nothing happens if we call this and the db is empty. No exception is thrown.
+        jmDictEntryDao.deleteAllJMDictEntries();
     }
 
     @Test
-    public void testMultipleUpsertDiffASameB() {
-        //TODO - This is 'correct' behaviour atm but question this.
-        // Do we want to diff Ewords to have same Jword on Bside? (Instinct: no, not useful)
-        // Should we use production code to decide how to handle Ewords that are too similar
-        // to avoid having to handle the same Jwords?
-        // NB: JMDictEntry holds ref to unique wordID from JSON file & uses this as basis for equality
-        // (so sideB here should have the same wordID)
-//        Card testCard1 = new Card("cook", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("chef", "チェフ");
-//        testCard2.setId(2);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.get(0), testCard1);
-//            assertEquals(allCards.get(1), testCard2);
-//            assertEquals(2, allCards.size());
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testDeleteSpecificEntryIfEmpty_NoException() {
+        JMDictEntry pointlessEntry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+
+        //above is not inserted but we attempt a deletion anyway. No exception is thrown.
+        jmDictEntryDao.delete(pointlessEntry);
     }
 
     @Test
-    public void testUpdateOnInsertNoId() {
-//        Card testCard1 = new Card("chef", "チェフ");
-//        Card testCard2 = new Card("chef", "チェフ");
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.size(), 1);
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testGetFirstEntry() {
+        //    Reminder of the method and SQL query:
+        //    @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss ORDER BY gloss_order, sense_order, gloss_count LIMIT 1")
+        //    public JMDictEntry getFirstJMDictEntry(String gloss);
+
+        JMDictEntry entry1 = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("to speed up", "1365990", new Kanji("進める"),
+                new Kana("すすめる"), 7, 7, 3, 2,
+                new ArrayList<>(List.of("v1","vt")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //check the db is full
+            List<JMDictEntry> allEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(3, allEntries.size());
+
+            //Don't need to use helper class LiveDataTestUtil as we are not using LiveData for getFirst
+            JMDictEntry firstEntry = jmDictEntryDao.getFirstJMDictEntry("to speed up");
+            assertEquals(entry1, firstEntry);
+
+            jmDictEntryDao.delete(entry1);
+            JMDictEntry secondEntry = jmDictEntryDao.getFirstJMDictEntry("to speed up");
+            assertEquals(entry2, secondEntry);
+
+            jmDictEntryDao.delete(entry2);
+            JMDictEntry thirdEntry = jmDictEntryDao.getFirstJMDictEntry("to speed up");
+            assertEquals(entry3, thirdEntry);
+
+            jmDictEntryDao.delete(entry3);
+            allEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertTrue(allEntries.isEmpty());
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testUpdateOnInsertSameId() {
-//        Card testCard1 = new Card("chef", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("chef", "チェフ");
-//        testCard2.setId(1);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.size(), 1);
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testGetFirstEntryNoResult_getsNull_NoException() {
+        //We don't use LiveData -> returns null if no result
+        JMDictEntry noEntry = jmDictEntryDao.getFirstJMDictEntry("no word");
+        assertNull(noEntry);
     }
 
     @Test
-    public void testUpdateOnInsertDiffId() {
-//        Card testCard1 = new Card("chef", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("chef", "チェフ");
-//        testCard2.setId(2);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertEquals(allCards.size(), 1);
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testGetAllWithString_DifferentStrings_ExactStringMatch() {
+        //
+        JMDictEntry entry1 = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                new ArrayList<>(List.of("n", "vs", "adj")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        //NB: indirectly testing insertAll() works here
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            List<JMDictEntry> speedEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries("to speed up"));
+            assertEquals(2, speedEntries.size());
+            assertTrue(speedEntries.contains(entry1));
+            assertTrue(speedEntries.contains(entry2));
+
+            List<JMDictEntry> inspectionEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries("inspection"));
+            assertEquals(1, inspectionEntries.size());
+            assertTrue(inspectionEntries.contains(entry3));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testDelete() {
-//        //Recreate db from previous test
-//        Card testCard = new Card("chef", "チェフ");
-//        testCard.setId(1);
-//
-//        cardEntityDao.upsert(testCard);
-//
-//        //Test delete() method
-//        cardEntityDao.delete(testCard);
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertTrue(allCards.isEmpty());
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testGetAllWithString_NotExactStringMatches() {
+        //TODO - test pattern matching and trim here (unless in another class)
     }
 
     @Test
-    public void testDeleteAllAnswers() {
-//        //Recreate db from previous test
-//        Card testCard1 = new Card("chef", "チェフ");
-//        testCard1.setId(1);
-//        Card testCard2 = new Card("baker", "パン屋さん");
-//        testCard2.setId(2);
-//        Card testCard3 = new Card("musician", "音楽家");
-//        testCard3.setId(3);
-//
-//        cardEntityDao.upsert(testCard1);
-//        cardEntityDao.upsert(testCard2);
-//        cardEntityDao.upsert(testCard3);
-//
-//        //Test method deleteAllAnswers()
-//        cardEntityDao.deleteAllCards();
-//
-//        List<Card> allCards;
-//        try {
-//            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-//            assertTrue(allCards.isEmpty());
-//        } catch(InterruptedException e) {
-//            System.err.println(e.getStackTrace());
-//        }
+    public void testGetAllWithStringNoResult_NotNull_NoException() {
+        try {
+            List<JMDictEntry> noEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries("no words"));
+            assertTrue(noEntries.isEmpty());
+            assertNotNull(noEntries);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+    @Test
+    public void testGetAllWithOutParamNoResult_NotNull_NoException() {
+        try {
+            List<JMDictEntry> noEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertTrue(noEntries.isEmpty());
+            assertNotNull(noEntries);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

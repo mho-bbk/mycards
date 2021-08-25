@@ -124,7 +124,18 @@ App is now up and running but I need to re-put the logic back into the VM before
 9/8/21: Worked on aims & objectives. Added wordnet quotes to report. Added more structure and notes.
 Reimpl logic into VM but need to revisit retrofit impl as datamuse API service and callback throws NPE.
 
-13/8/21: (See paper for more notes) Log of print statements in strategic places to demo how asynch call to remote db is not returning in time:
+11/8: (from paper notes) getsimwords: datamuse api seems to work but possible concurrency issues with call.execute()
+getjpwords: doesn't work - possible issues:
++ data hasn't preloaded (impl is via callback)
++ possible concurrency issue
++ poss the specific entry we were testing on doesn't exist in the db
+
+12/8: (from paper notes) impl switchmap Transformations in VM on LiveData (different type of Observer pattern) 
+
+13/8/21: Bit of loading time needs to be given to app at start up in order to 'pre-load' jmdict db -> consider splash screen impl. 
+NB: LiveData objs should be stored in VM. Observers of LD usually attached in Activity/Fragment onCreate() method. 
+NB: API Level 3 required for VM functions from fragments - why? Current min SDK is 24. 
+Log of print statements in strategic places to demo how asynch call to remote db is not returning in time:
 "SUGAR SPICE..." - playful print from within ViewModel that prints just before cards are returned. (Ie when process should have been completed)
 There is also a print statement placed in datamuseusecase that prints after the search results have been achieved. 
 
@@ -216,7 +227,7 @@ ACTION: more tests, saved state, write report, test/improve results.
 
 22/8: Observed strange phenomenon where JMDict db would not preload/was slow to load. 
 I'd input my strings and received no results because of this... Had to stop and changing nothing, start again - worked second time...
-
+Writing up DB part of report + DB tests. 
 
 
 Q: how do language dictionaries prioritise which word to display first?
