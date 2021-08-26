@@ -212,7 +212,7 @@ public class CardDaoTest {
     }
 
     @Test
-    public void testDeleteAllAnswers() {
+    public void testDeleteAllCards() {
         //Recreate db from previous test
         Card testCard1 = new Card("chef", "チェフ");
         testCard1.setId(1);

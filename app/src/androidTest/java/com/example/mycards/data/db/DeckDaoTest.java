@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.example.mycards.LiveDataTestUtil;
-import com.example.mycards.data.entities.Card;
+import com.example.mycards.data.entities.Deck;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,10 +15,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,15 +29,15 @@ public class DeckDaoTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private CardEntityDatabase database;
-    private CardEntityDao cardEntityDao;
+    private DeckEntityDatabase database;
+    private DeckEntityDao deckEntityDao;
 
     @Before //executed before every test case
     public void setUp() {
         database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
-                CardEntityDatabase.class).allowMainThreadQueries().build();
+                DeckEntityDatabase.class).allowMainThreadQueries().build();
 
-        cardEntityDao = database.getCardEntityDao();
+        deckEntityDao = database.getDeckEntityDao();
     }
 
     @After  //executed after every test case
@@ -46,143 +46,76 @@ public class DeckDaoTest {
     }
 
     @Test
-    public void testUpsert() {
-        Card test = new Card("chef", "チェフ");
-        test.setId(1);   //When testAns is entered into dao, Room will autoset id to 1 as it's the first object
+    public void testUpsertStringParam() {
+        Deck test = new Deck("new deck name");
 
-        cardEntityDao.upsert(test);
+        deckEntityDao.upsert(test);
 
-        List<Card> allCards;
+        List<Deck> allDecks;
         try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.get(0), test);
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(test, allDecks.get(0));
+
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
     }
 
     @Test
-    public void testMultipleUpsert() {
-        Card testCard1 = new Card("chef", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("baker", "パン屋さん");
-        testCard2.setId(2);
-        Card testCard3 = new Card("musician", "音楽家");
-        testCard3.setId(3);
+    public void testUpsertListParam() {
+        //Testing the constructor specifically with Room's Dao implementation and the @Ignore annotation
+        List<String> listParam = new ArrayList<>(List.of("chef", "art", "music"));
+        Deck test = new Deck(listParam);
 
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-        cardEntityDao.upsert(testCard3);
+        deckEntityDao.upsert(test);
 
-        List<Card> allCards;
+        List<Deck> allDecks;
         try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.get(0), testCard1);
-            assertEquals(allCards.get(1), testCard2);
-            assertEquals(allCards.get(2), testCard3);
-            assertEquals(3, allCards.size());
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(test, allDecks.get(0));
+
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
     }
 
-    @Test
-    public void testMultipleUpsertSameADiffB() {
-        //TODO - This is 'correct' behaviour atm but question this.
-        // Do we want to display diff Jwords for the same Eword as diff cards?
-        // Should we use production code to decide how to display multi Jwords for same Eword?
-        Card testCard1 = new Card("chef", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("chef", "コック");
-        testCard2.setId(2);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-
-        List<Card> allCards;
-        try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.get(0), testCard1);
-            assertEquals(allCards.get(1), testCard2);
-            assertEquals(2, allCards.size());
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
 
     @Test
-    public void testMultipleUpsertDiffASameBSuccessNoDeckSeed() {
-        //TODO - This is 'correct' behaviour atm but question this.
-        // Do we want to diff Ewords to have same Jword on Bside? (Instinct: no, not useful)
-        Card testCard1 = new Card("cook", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("chef", "チェフ");
-        testCard2.setId(2);
+    public void testMultipleUpsert_OverlappingDecks_Pass() {
+        //Testing upserts work with overlaps still
+        List<String> inputWords = List.of("chef", "tennis", "art");
+        Deck testDeck = new Deck(inputWords);
+        testDeck.setDeckId(1);
 
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
+        List<String> inputWordsExactDuplicate = List.of("chef", "tennis", "art");
+        Deck testDeckDuplicate = new Deck(inputWordsExactDuplicate);
+        testDeckDuplicate.setDeckId(1);
 
-        List<Card> allCards;
+        List<String> inputWordsDuplicateDiffId = List.of("chef", "tennis", "art");
+        Deck testDeckSameButDiffId = new Deck(inputWordsDuplicateDiffId);
+        testDeckSameButDiffId.setDeckId(2); //tests id does not matter for equality
+
+        List<String> inputWordsOverlapNotDuplicate = List.of("teacher", "tennis", "art");
+        Deck testDeckOverlap = new Deck(inputWordsOverlapNotDuplicate);
+        testDeckOverlap.setDeckId(3);
+
+        List<String> inputWordsAllDifferent = List.of("interpreter", "skiing", "history");
+        Deck testDeckDifferent = new Deck(inputWordsAllDifferent);
+        testDeckDifferent.setDeckId(4);
+
+        deckEntityDao.upsert(testDeck);
+        deckEntityDao.upsert(testDeckDuplicate);
+        deckEntityDao.upsert(testDeckSameButDiffId);
+        deckEntityDao.upsert(testDeckOverlap);
+        deckEntityDao.upsert(testDeckDifferent);
+
+        List<Deck> allDecks;
         try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.get(0), testCard1);
-            assertEquals(allCards.get(1), testCard2);
-            assertEquals(2, allCards.size());
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void testUpdateOnInsertNoId() {
-        Card testCard1 = new Card("chef", "チェフ");
-        Card testCard2 = new Card("chef", "チェフ");
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-
-        List<Card> allCards;
-        try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.size(), 1);
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void testUpdateOnInsertSameId() {
-        Card testCard1 = new Card("chef", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("chef", "チェフ");
-        testCard2.setId(1);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-
-        List<Card> allCards;
-        try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.size(), 1);
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void testUpdateOnInsertDiffId() {
-        Card testCard1 = new Card("chef", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("chef", "チェフ");
-        testCard2.setId(2);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-
-        List<Card> allCards;
-        try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertEquals(allCards.size(), 1);
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(3, allDecks.size());
+            assertEquals(testDeck, allDecks.get(0));
+            assertEquals(testDeckOverlap, allDecks.get(1));
+            assertEquals(testDeckDifferent, allDecks.get(2));
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
@@ -191,165 +124,69 @@ public class DeckDaoTest {
     @Test
     public void testDelete() {
         //Recreate db from previous test
-        Card testCard = new Card("chef", "チェフ");
-        testCard.setId(1);
+        Deck test = new Deck("new deck name");
+        test.setDeckId(1);  //NOTE: Must set Id (autogenerated IRL) in order for delete to work
 
-        cardEntityDao.upsert(testCard);
+        deckEntityDao.upsert(test);
 
-        //Test delete() method
-        cardEntityDao.delete(testCard);
-
-        List<Card> allCards;
+        List<Deck> allDecks;
         try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertTrue(allCards.isEmpty());
+            //Check the db is not empty
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(1, allDecks.size());
+
+            //Test delete() method
+            deckEntityDao.delete(test);
+            //Re-get the decks
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertTrue(allDecks.isEmpty());
+
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
     }
 
     @Test
-    public void testDeleteAllAnswers() {
+    public void testDeleteAllDecks() {
         //Recreate db from previous test
-        Card testCard1 = new Card("chef", "チェフ");
-        testCard1.setId(1);
-        Card testCard2 = new Card("baker", "パン屋さん");
-        testCard2.setId(2);
-        Card testCard3 = new Card("musician", "音楽家");
-        testCard3.setId(3);
+        List<String> inputWords = List.of("chef", "tennis", "art");
+        Deck testDeck = new Deck(inputWords);
+        testDeck.setDeckId(1);
 
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-        cardEntityDao.upsert(testCard3);
+        List<String> inputWordsOverlapNotDuplicate = List.of("teacher", "tennis", "art");
+        Deck testDeckOverlap = new Deck(inputWordsOverlapNotDuplicate);
+        testDeckOverlap.setDeckId(2);
 
-        //Test method deleteAllAnswers()
-        cardEntityDao.deleteAllCards();
+        List<String> inputWordsAllDifferent = List.of("interpreter", "skiing", "history");
+        Deck testDeckDifferent = new Deck(inputWordsAllDifferent);
+        testDeckDifferent.setDeckId(3);
 
-        List<Card> allCards;
+        deckEntityDao.upsert(testDeck);
+        deckEntityDao.upsert(testDeckOverlap);
+        deckEntityDao.upsert(testDeckDifferent);
+
+        List<Deck> allDecks;
         try {
-            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertTrue(allCards.isEmpty());
+            //Repeat test to check it's filled
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(3, allDecks.size());
+
+            //Test deleteAll() method
+            deckEntityDao.deleteAllDecks();
+            //re-get the data
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertTrue(allDecks.isEmpty());
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }
     }
 
     @Test
-    public void getDeckOfCardsSameDeck() {
-        //Recreate db from previous test - with deckSeeds
-        String inputString = "chef";
-
-        Card testCard1 = new Card("chef", "チェフ", "chef");
-        testCard1.setId(1);
-        Card testCard2 = new Card("baker", "パン屋さん", "chef");
-        testCard2.setId(2);
-        Card testCard3 = new Card("musician", "音楽家", "chef");
-        testCard3.setId(3);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-        cardEntityDao.upsert(testCard3);
-
-        List<Card> allCardsSameDeck;
+    public void onNoResultGetEmptyListNotNull_allDecks() {
         try {
-            allCardsSameDeck = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(inputString));
-            assertEquals(3, allCardsSameDeck.size());
-            assertTrue(allCardsSameDeck.contains(testCard1));
-            assertTrue(allCardsSameDeck.contains(testCard2));
-            assertTrue(allCardsSameDeck.contains(testCard3));
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void getDeckOfCardsDiffDeck() {
-        String inputString1 = "chef";
-        String inputString2 = "musician moo";
-
-        //Recreate db from previous test - with relatedWord
-        Card testCard1 = new Card("chef", "チェフ", "chef");
-        testCard1.setId(1);
-        Card testCard2 = new Card("baker", "パン屋さん", "chef");
-        testCard2.setId(2);
-        Card testCard3 = new Card("musician", "音楽家", "musician moo");
-        testCard3.setId(3);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-        cardEntityDao.upsert(testCard3);
-
-
-        List<Card> deck1;
-        List<Card> deck2;
-        try {
-            deck1 = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(inputString1));
-            assertEquals(2, deck1.size());
-            assertTrue(deck1.contains(testCard1));
-            assertTrue(deck1.contains(testCard2));
-            assertFalse(deck1.contains(testCard3));
-
-            deck2 = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(inputString2));
-            assertEquals(1, deck2.size());
-            assertTrue(deck2.contains(testCard3));
-            assertFalse(deck2.contains(testCard2));
-            assertFalse(deck2.contains(testCard1));
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void getAllCardsFromListString() {
-        //Recreate db from previous test - with deckSeeds
-        List<String> inputStrings = List.of("chef seed", "baker seed", "musician seed");
-
-        Card testCard1 = new Card("chef", "チェフ", "chef seed");
-        testCard1.setId(1);
-        Card testCard2 = new Card("baker", "パン屋さん", "baker seed");
-        testCard2.setId(2);
-        Card testCard3 = new Card("musician", "音楽家", "musician seed");
-        testCard3.setId(3);
-
-        cardEntityDao.upsert(testCard1);
-        cardEntityDao.upsert(testCard2);
-        cardEntityDao.upsert(testCard3);
-
-        List<Card> chefBakerMusicianDeck;
-        try {
-            chefBakerMusicianDeck = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(inputStrings));
-            assertEquals(3, chefBakerMusicianDeck.size());
-            assertTrue(chefBakerMusicianDeck.contains(testCard1));
-            assertTrue(chefBakerMusicianDeck.contains(testCard2));
-            assertTrue(chefBakerMusicianDeck.contains(testCard3));
-        } catch(InterruptedException e) {
-            System.err.println(e.getStackTrace());
-        }
-    }
-
-    @Test
-    public void onNoResultGetEmptyListNotNull_withDeckSeed() {
-        String keyboardSmash = "agddjahd";
-
-        try {
-            List<Card> keyboardSmashDeck = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getCards(keyboardSmash));
-            assertTrue(keyboardSmashDeck.isEmpty());
-            assertNotNull(keyboardSmashDeck);
-
-            List<Card> allCardsEmpty = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertTrue(allCardsEmpty.isEmpty());
-            assertNotNull(allCardsEmpty);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void onNoResultGetEmptyListNotNull_allCards() {
-        try {
-            List<Card> allCardsEmpty = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
-            assertTrue(allCardsEmpty.isEmpty());
-            assertNotNull(allCardsEmpty);
+            List<Deck> allDecksEmpty = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertTrue(allDecksEmpty.isEmpty());
+            assertNotNull(allDecksEmpty);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
