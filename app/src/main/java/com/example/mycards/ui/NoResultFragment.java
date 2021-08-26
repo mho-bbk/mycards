@@ -58,8 +58,10 @@ public class NoResultFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
-
+                //TODO - go home
             }
         });
+
+        //TODO - button for decks
     }
 }

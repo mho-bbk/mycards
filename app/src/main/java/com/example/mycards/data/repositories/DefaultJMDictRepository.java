@@ -61,6 +61,12 @@ public class DefaultJMDictRepository implements JMDictRepository {
     }
 
     @Override
+    public LiveData<List<JMDictEntry>> getAllJMDictEntries() {
+        //TODO - does this need to return live data?
+        return jmDictEntryDao.getAllJMDictEntries();
+    }
+
+    @Override
     public void deleteAllJMDictEntries() {
         executorService.execute(jmDictEntryDao::deleteAllJMDictEntries);
     }

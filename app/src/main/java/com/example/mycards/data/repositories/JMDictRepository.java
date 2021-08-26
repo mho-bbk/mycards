@@ -22,6 +22,8 @@ public interface JMDictRepository {
     //method to get all Jp matches based on gloss
     public LiveData<List<JMDictEntry>> getAllJMDictEntries(String gloss);
 
+    public LiveData<List<JMDictEntry>> getAllJMDictEntries();
+
     //Should never need to use this really...
     public void deleteAllJMDictEntries();
 }

@@ -50,6 +50,9 @@ public class SharedViewModel extends ViewModel {
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
+    //Possible state of the deck
+    //Finished/not finished
+    //Ready/not ready
 
     //NEW IMPL
     private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
@@ -166,6 +169,7 @@ public class SharedViewModel extends ViewModel {
             if (deckIterator.hasNext()) {
                 currentCard = deckIterator.next();
             } else {
+                //run finished procedure: reset currentCard, trigger CardDisplayFragment to go to Finished page
                 currentCard = new Card("Finished deck", "Finished deck");
             }
         } catch (NullPointerException e) {
