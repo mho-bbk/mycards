@@ -253,6 +253,39 @@ public class JMDictDaoTest {
     }
 
     @Test
+    public void testDeleteAllPasses() {
+        //This method if not used in production code bc jmdict local db is pre-filled (and not changeable)
+        JMDictEntry entry1 = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
+                new Kana("はやめる"), 3, 2, 2, 2,
+                new ArrayList<>(List.of("v1", "vt")));
+        JMDictEntry entry2 = new JMDictEntry("to speed up", "1400170", new Kanji("早まる"),
+                new Kana("はやまる"), 3, 2, 3, 3,
+                new ArrayList<>(List.of("v5r", "vi")));
+        JMDictEntry entry3 = new JMDictEntry("inspection", "1312040", new Kanji("視察"),
+                new Kana("しさつ"), 2, 1, 1, 1,
+                new ArrayList<>(List.of("n", "vs", "adj")));
+
+        List<JMDictEntry> testEntries = List.of(entry1, entry2, entry3);
+
+        jmDictEntryDao.insertAll(testEntries);
+
+        try {
+            //NB: indirectly testing getAllJMDictEntries() works here
+
+            List<JMDictEntry> getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(3, getEntries.size());
+
+            //Test deleteAll here
+            jmDictEntryDao.deleteAllJMDictEntries();
+            getEntries = LiveDataTestUtil.getOrAwaitValue(jmDictEntryDao.getAllJMDictEntries());
+            assertEquals(0, getEntries.size());
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testDeleteSpecificEntryIfEmpty_NoException() {
         JMDictEntry pointlessEntry = new JMDictEntry("to speed up", "1601080", new Kanji("早める"),
                 new Kana("はやめる"), 3, 2, 2, 2,

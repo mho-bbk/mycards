@@ -39,9 +39,10 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
         HashMap<String, List<String>> wordsAndRelatedWords = new HashMap<>();
 
         inputWords.forEach(word -> {
-            //for each input word, call the service and search
+            //for each input word, create the call, call the service
+            Call<List<DatamuseWord>> call = createMaxSingleSearchCall(datamuseAPIService, word, searchLimit);
+            List<String> results = callService(call, word);
             //get the words from the service and add to originalAndSimilarWords
-            List<String> results = callService(datamuseAPIService, word, searchLimit);
             if(!results.isEmpty()) {
                 wordsAndRelatedWords.put(word, results);
             }
@@ -51,9 +52,7 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
     }
 
     //Helper method. Calls the API service with individual Strings.
-    private List<String> callService(DatamuseAPIService service, String searchTerm, int searchLimit) {
-        Call<List<DatamuseWord>> call = createMaxSingleSearchCall(
-                service, searchTerm, searchLimit);
+    private List<String> callService(Call<List<DatamuseWord>> call, String searchTerm) {
 
         List<String> apiSearchResult = new ArrayList<>();
 
@@ -75,7 +74,6 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
     }
 
     //Helper method. Decouple call creation from call execute for testability.
-    //TODO - not sure this is needed/what happens when we use more than ml search method in API
     private Call<List<DatamuseWord>> createMaxSingleSearchCall(DatamuseAPIService service,
                                                                String searchTerm, int upToThisInt) {
         return service.getMaxSingleSearchResults(searchTerm, upToThisInt);

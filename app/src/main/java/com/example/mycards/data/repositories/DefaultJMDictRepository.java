@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class DefaultJMDictRepository implements JMDictRepository {
 
     private final JMDictEntryDao jmDictEntryDao;
-    private final static String TAG = "DefaultJMDictRepository";
+    private final String TAG = "DefaultJMDictRepository";
     private final ExecutorService executorService;
 
     @Inject

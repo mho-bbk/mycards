@@ -16,17 +16,17 @@ import javax.inject.Singleton;
 
 /**
  * Remit:
- * Take a String (English)
- * Connect to JMDictRepository
- * Search the local db and match English word with Jp equivalent with 'best' counts + order
- * Add to HashMap that client can then call 'get' on
- * (Client uses HashMap for card creation)
+ * Takes a HashMap with the input word as the key and a list of related words (in English) as the values
+ * Connects to JMDictRepository (local db)
+ * Searches the local db and matches English words with their Jp equivalent using 'best' counts + order
+ * Returns HashMap with input word as key (as original) and HashMap Eng:Jp words as value
+ * Jp values use helper class KanaToRomaji so String includes romaji readings
  */
 @Singleton
 public class GetJpWordsUseCase implements BaseUseCaseWithParam<HashMap<String, List<String>>,
         HashMap<String, HashMap<String, String>>> {
 
-    private String TAG = "GetJpWordsUseCase";
+    private final String TAG = "GetJpWordsUseCase";
 
     private final JMDictRepository dictRepository;
     private final KanaToRomaji romajiConverter = new KanaToRomaji();
@@ -79,10 +79,6 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<HashMap<String, L
                     " (" + jmDictEntry.getKana().getKanaText() + ", " +
                     romajiConverter.convert(jmDictEntry.getKana().getKanaText()) +  ")";
         }
-    }
-
-    public HashMap<String, HashMap<String, String>> getWordAndRelatedWordsWithTranslations() {
-        return wordAndRelatedWordsWithTranslations;
     }
 
 }

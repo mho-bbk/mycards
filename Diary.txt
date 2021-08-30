@@ -229,6 +229,10 @@ ACTION: more tests, saved state, write report, test/improve results.
 I'd input my strings and received no results because of this... Had to stop and changing nothing, start again - worked second time...
 Writing up DB part of report + DB tests. 
 
+30/8: May be some duplication in passing to threads during instantiation of jmdict local db. 
+MainActivity passes off from main thread to executor -> repo then also does insertAll on ANOTHER executor... 
+Repo does not consistently use executors. 
+
 
 Q: how do language dictionaries prioritise which word to display first?
 

@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,21 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.mock.Calls;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
-
-//TODO - TEST IMPL OF RETROFIT/NETWORK CALL HERE
-// See: https://stackoverflow.com/questions/53707876/how-to-unit-test-retrofit-call
-// and: https://stackoverflow.com/questions/45160055/unit-testing-in-retrofit-for-callback
 
 /**
  * Tests for Retrofit and Network calls
+ * Helpful stack overflow answers:
+ * + https://stackoverflow.com/questions/53707876/how-to-unit-test-retrofit-call
+ * + (For testIOException) https://stackoverflow.com/questions/45160055/unit-testing-in-retrofit-for-callback
+ * + (For testIOException) https://stackoverflow.com/questions/3762047/throw-checked-exceptions-from-mocks-with-mockito
  */
 
 public class GetSimilarWordsUseCaseTest {
@@ -118,7 +121,6 @@ public class GetSimilarWordsUseCaseTest {
                 .getMaxSingleSearchResults(eq("a string that returns null"), eq(searchLimit)))
                 .thenReturn(Calls.response((List<DatamuseWord>) null)); //cast to ensure Calls uses the right overloaded method
 
-
         //Tests if(datamuseWords == null)
         List<String> testInput = new ArrayList<>(List.of("a string that returns null"));
 
@@ -141,10 +143,20 @@ public class GetSimilarWordsUseCaseTest {
         assertEquals(expectedOutput, mapOnException);
     }
 
-    @Test(expected = org.mockito.exceptions.base.MockitoException.class)
-    public void testIOException() {
-        when(mockedAPIService.getMaxSingleSearchResults("any string", searchLimit))
-                .thenThrow(new IOException("IOException occurred"));
+    @Test
+    public void testIOException() throws IOException {
+        Call<List<DatamuseWord>> mockCall = Mockito.mock(Call.class);
+
+        Mockito.when(mockedAPIService.getMaxSingleSearchResults("any string", searchLimit))
+                .thenReturn(mockCall);
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                //mocking IOException in Retrofit Call
+                throw new IOException("Mock IOException");
+            }
+        }).when(mockCall).execute();
 
         HashMap<String, List<String>> expectedOutput = new HashMap<>(); //empty HashMap
         HashMap<String, List<String>> mapOnException = similarWordsUseCase.run(new ArrayList<>(List.of("any string")));
