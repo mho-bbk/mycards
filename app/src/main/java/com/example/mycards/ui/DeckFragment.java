@@ -1,12 +1,16 @@
 package com.example.mycards.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +23,7 @@ import com.example.mycards.R;
 import com.example.mycards.data.entities.Deck;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +35,15 @@ import javax.inject.Inject;
  * Use the {@link DeckFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeckFragment extends Fragment {
+public class DeckFragment extends Fragment implements View.OnClickListener {
 
     @Inject
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
     private NavController navController;
+    private DeckAdapter deckAdapter;
 
-    List<Deck> decks = new ArrayList<>();   //TODO - should this be kept in VM to survive destroy?
+    private FloatingActionButton backToHome;
 
     public DeckFragment() {
         // Required empty public constructor
@@ -55,27 +61,46 @@ public class DeckFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        RecyclerView deckDisplay = getView().findViewById(R.id.deckItemsRecyclerView);
-
-        //Create adapter passing in data
-        DeckAdapter deckAdapter = new DeckAdapter(decks);   //decks is empty to begin with
-        //Attach adapter to the RecyclerView to populate
-        deckDisplay.setAdapter(deckAdapter);
-        //Set layout manager to position the items
-        deckDisplay.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_deck, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
-        navController = NavHostFragment.findNavController(this);
 
-        //TODO - initialise the data here bc viewModel needs to be up and running...
-        //decks = ...
+        RecyclerView deckDisplay = getView().findViewById(R.id.deckItemsRecyclerView);
+        //Set layout manager to position the items
+        deckDisplay.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //Create adapter
+        deckAdapter = new DeckAdapter();
+        //Attach adapter to the RecyclerView to populate
+        deckDisplay.setAdapter(deckAdapter);
+
+        sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+        sharedViewModel.getDecks().observe(getViewLifecycleOwner(), new Observer<List<Deck>>() {
+            @Override
+            public void onChanged(List<Deck> decks) {
+                deckAdapter.setDecks(decks);
+            }
+        });
+
+        backToHome = getView().findViewById(R.id.backToHomeFromDeckFragment);
+        backToHome.setOnClickListener(this);
+        navController = NavHostFragment.findNavController(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.backToHomeFromDeckFragment:
+                NavDirections backToHome = DeckFragmentDirections.actionDeckFragmentToMainFragment2();
+                navController.navigate(backToHome);
+                break;
+            default:
+                break;
+        }
     }
 }

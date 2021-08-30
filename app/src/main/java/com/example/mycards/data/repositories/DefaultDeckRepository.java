@@ -33,7 +33,7 @@ public class DefaultDeckRepository implements DeckRepository {
     //Use executor to try and avoid memory leak
     @Override
     public void upsert(Deck deck) {
-        deckEntityDao.upsert(deck);
+        executorService.execute(() -> deckEntityDao.upsert(deck));
     }
 
     @Override

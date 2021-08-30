@@ -9,7 +9,9 @@ import androidx.lifecycle.LiveData;
 import com.example.mycards.base.callbacks.Result;
 import com.example.mycards.base.callbacks.UseCaseCallback;
 import com.example.mycards.data.entities.Card;
+import com.example.mycards.data.entities.Deck;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
+import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
@@ -29,15 +31,18 @@ public class UseCaseManager {
     private final GetSimilarWordsUseCase getSimilarWordsUseCase;
     private final GetJpWordsUseCase getJpWordsUseCase;
     private final CreateAndGetCardUseCase createAndGetCardUseCase;
+    private final CreateDeckUseCase createDeckUseCase;
     private final ExecutorService executorService;
 
     private UseCaseManager(GetSimilarWordsUseCase getSimilarWordsUseCase,
                            GetJpWordsUseCase getJpWordsUseCase,
                            CreateAndGetCardUseCase createAndGetCardUseCase,
+                           CreateDeckUseCase createDeckUseCase,
                            ExecutorService executorService) {
         this.getSimilarWordsUseCase = getSimilarWordsUseCase;
         this.getJpWordsUseCase = getJpWordsUseCase;
         this.createAndGetCardUseCase = createAndGetCardUseCase;
+        this.createDeckUseCase = createDeckUseCase;
         this.executorService = executorService;
 
     }
@@ -46,12 +51,14 @@ public class UseCaseManager {
     public static UseCaseManager getInstance(GetSimilarWordsUseCase getSimilarWordsUseCase,
                                              GetJpWordsUseCase getJpWordsUseCase,
                                              CreateAndGetCardUseCase createAndGetCardUseCase,
+                                             CreateDeckUseCase createDeckUseCase,
                                              ExecutorService executorService) {
         //lazy instantiation
         if(INSTANCE == null) {
             INSTANCE = new UseCaseManager(getSimilarWordsUseCase,
                     getJpWordsUseCase,
                     createAndGetCardUseCase,
+                    createDeckUseCase,
                     executorService);
         }
         return INSTANCE;
@@ -137,5 +144,13 @@ public class UseCaseManager {
 
     public void deleteAllCards() {
         createAndGetCardUseCase.deleteAllCards();
+    }
+
+    public void createDeck(List<String> userInputListCopy) {
+        createDeckUseCase.run(userInputListCopy);
+    }
+
+    public LiveData<List<Deck>> getDecks() {
+        return createDeckUseCase.getAllDecks();
     }
 }

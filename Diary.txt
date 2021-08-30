@@ -234,7 +234,8 @@ MainActivity passes off from main thread to executor -> repo then also does inse
 Repo does not consistently use executors. 
 Test cases: do we need to test UseCaseManager? It calls the methods already tested in each UseCase test class. 
 Could test the callback Result/Error/Exception cases, but what we really want to test is the VM's observer code, as the VM is the client that receives the callback?
-
+TODO: precision rate per dataset
+NB: BEWARE delete all cards = delete all decks BUT delete all decks != delete all cards
 
 
 Q: how do language dictionaries prioritise which word to display first?

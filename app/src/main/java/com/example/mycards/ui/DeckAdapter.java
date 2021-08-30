@@ -6,15 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.Deck;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //Based on codepath tutorial: https://github.com/codepath/android_guides/wiki/Using-the-RecyclerView
@@ -29,7 +32,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public Button startDeckBtn;
-        public Button deleteDeckbtn;
+        public FloatingActionButton deleteDeckbtn;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -40,11 +43,12 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         }
 
     }
-    //Member variable for the decks
 
-    private List<Deck> decks;
-    public DeckAdapter(List<Deck> decks) {
-        this.decks = decks;
+    //Member variable for the decks
+    private List<Deck> decks = new ArrayList<>();
+
+    public DeckAdapter() {
+        //empty constructor
     }
 
     //inflate a layout from XML and return the holder
@@ -74,10 +78,23 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         textView.setText(deck.getDeckName());
 
         Button startDeckBtn = holder.startDeckBtn;
-        startDeckBtn.setText("START DECK");  //TODO - do we implement the button logic here?
+        startDeckBtn.setText("START DECK");
+        startDeckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO - do we implement the button logic here?
+                Toast.makeText(v.getContext(), "Start deck button pushed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        Button deleteDeckBtn = holder.deleteDeckbtn;
-        deleteDeckBtn.setText("DELETE DECK");  //TODO - do we implement the button logic here?
+        FloatingActionButton deleteDeckBtn = holder.deleteDeckbtn;
+        deleteDeckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO - do we implement the button logic here?
+                Toast.makeText(v.getContext(), "Delete deck button pushed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -88,7 +105,6 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     //Taken from Notes YT Tutorial [LINK]
     public void setDecks(List<Deck> decks) {
         this.decks = decks;
-        //TODO - who's observing? does this update the view automatically on any changes?
         notifyDataSetChanged(); //TODO - may be a better, more specific method than this
     }
 }

@@ -73,6 +73,9 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         FloatingActionButton openMaintenanceButton = getView().findViewById(R.id.openMaintenance);
         openMaintenanceButton.setOnClickListener(this);
 
+        FloatingActionButton openDeckButton = getView().findViewById(R.id.openDeckFragment);
+        openDeckButton.setOnClickListener(this);
+
     }
 
 
@@ -114,7 +117,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.openMaintenance:
                 NavDirections goToMaintenanceFragment = InputFragmentDirections.actionMainFragment2ToMaintenance();
-                NavHostFragment.findNavController(this).navigate(goToMaintenanceFragment);
+                navController.navigate(goToMaintenanceFragment);
+                break;
+            case R.id.openDeckFragment:
+                NavDirections goToDeckFragment = InputFragmentDirections.actionMainFragment2ToDeckFragment();
+                navController.navigate(goToDeckFragment);
                 break;
             default:
                 break;

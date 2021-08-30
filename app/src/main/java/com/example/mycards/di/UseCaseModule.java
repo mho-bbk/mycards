@@ -1,9 +1,11 @@
 package com.example.mycards.di;
 
 import com.example.mycards.data.repositories.CardRepository;
+import com.example.mycards.data.repositories.DeckRepository;
 import com.example.mycards.data.repositories.JMDictRepository;
 import com.example.mycards.server.datamuse.DatamuseAPIService;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
+import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
@@ -34,5 +36,11 @@ public class UseCaseModule {
     @Singleton
     public CreateAndGetCardUseCase provideCreateCardsUseCase(CardRepository cardRepository) {
         return new CreateAndGetCardUseCase(cardRepository);
+    }
+
+    @Provides
+    @Singleton
+    public CreateDeckUseCase createDeckUseCase(DeckRepository deckRepository) {
+        return new CreateDeckUseCase(deckRepository);
     }
 }

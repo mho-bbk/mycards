@@ -8,6 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,8 @@ public class NoResultFragment extends Fragment {
     public SharedViewModelFactory viewModelFactory;
     private SharedViewModel sharedViewModel;
 
+    private NavController navController;
+
     public NoResultFragment() {
         // Required empty public constructor
     }
@@ -52,13 +57,15 @@ public class NoResultFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
+        navController = NavHostFragment.findNavController(this);
 
         Button goToHome = getView().findViewById(R.id.backToHomeNoResults);
         goToHome.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
-                //TODO - go home
+                NavDirections goToHome = NoResultFragmentDirections.actionNoResultFragment2ToMainFragment2();
+                navController.navigate(goToHome);
             }
         });
 

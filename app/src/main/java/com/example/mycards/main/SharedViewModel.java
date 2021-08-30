@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mycards.base.callbacks.Result;
 import com.example.mycards.base.callbacks.UseCaseCallback;
+import com.example.mycards.data.entities.Deck;
 import com.example.mycards.usecases.UseCaseManager;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
+import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
@@ -36,8 +38,6 @@ public class SharedViewModel extends ViewModel {
 
     private UseCaseManager useCaseManager;
 
-//    private String currentDeckSeed;
-
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
     private final List<String> userInputListCopy = new ArrayList<>();
 
@@ -53,13 +53,12 @@ public class SharedViewModel extends ViewModel {
     //Possible state of the deck
     //Finished/not finished
     //Ready/not ready
+    private LiveData<List<Deck>> decks;
 
     //NEW IMPL
     private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
         @Override
         public void onChanged(List<String> input) {
-            //Set the currentDeckSeed which is owned by VM
-//            setCurrentDeckSeed(input);
             //NEW IMPL: Save copy of user inputs. This will be used to return decks.
             userInputListCopy.addAll(input);
             //Deploy use cases via the Manager Mediator and request callback when done
@@ -94,6 +93,7 @@ public class SharedViewModel extends ViewModel {
         @Override
         public void onChanged(List<Card> cards) {
             setUpDeck(cards);
+            useCaseManager.createDeck(userInputListCopy);
         }
     };
 
@@ -102,34 +102,19 @@ public class SharedViewModel extends ViewModel {
     public SharedViewModel(GetSimilarWordsUseCase similarWordsUseCase,
                            GetJpWordsUseCase jpWordsUseCase,
                            CreateAndGetCardUseCase cardUseCase,
+                           CreateDeckUseCase deckUseCase,
                            ExecutorService executorService) {
 
         useCaseManager = UseCaseManager
-                .getInstance(similarWordsUseCase, jpWordsUseCase, cardUseCase, executorService);
+                .getInstance(similarWordsUseCase, jpWordsUseCase, cardUseCase, deckUseCase, executorService);
 
         //Observe the LiveData ie user input, passing in an observer that does the logic.
         userInputs.observeForever(inputObserver);
         cardTransformation.observeForever(cardObserver);
 
+        //Instantiate decks
+        this.decks = getDecks();
     }
-
-    //Set the deckSeed within VM so it survives config changes.
-    //The 'deckSeed' is just the inputWords, separated by commas and spaces and bracketed with curly braces.
-//    private void setCurrentDeckSeed(List<String> inputList) {
-//        StringBuilder stringBuilder = new StringBuilder();
-//
-//        for (int i = 0; i < inputList.size(); i++) {
-//            if(i == 0) {
-//                stringBuilder.append("{").append(inputList.get(i)).append(", ");
-//            } else if (i == inputList.size() - 1) {
-//                stringBuilder.append(inputList.get(i)).append("}");
-//            } else {
-//                stringBuilder.append(inputList.get(i)).append(", ");
-//            }
-//        }
-//
-//        currentDeckSeed = stringBuilder.toString();
-//    }
 
     /**
      * Helper method. Sets up deckIterator and currentCard fields when observer on userAnswers gets all cards.
@@ -175,7 +160,7 @@ public class SharedViewModel extends ViewModel {
             if (deckIterator.hasNext()) {
                 currentCard = deckIterator.next();
             } else {
-                //run finished procedure: reset currentCard, trigger CardDisplayFragment to go to Finished page
+                //TODO - run finished procedure: reset currentCard, trigger CardDisplayFragment to go to Finished page
                 currentCard = new Card("Finished deck", "Finished deck");
             }
         } catch (NullPointerException e) {
@@ -208,6 +193,10 @@ public class SharedViewModel extends ViewModel {
     public boolean deleteAllCards() {
         useCaseManager.deleteAllCards();
         return true;
+    }
+
+    public LiveData<List<Deck>> getDecks() {
+        return useCaseManager.getDecks();
     }
 
     @Override
