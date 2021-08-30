@@ -45,6 +45,9 @@ public class CardDaoTest {
         database.close();
     }
 
+    //TODO - test upsert, empty card
+    //TODO - test upsert, empty card EXCEPT relatedWord -
+
     @Test
     public void testUpsert() {
         Card test = new Card("chef", "チェフ");
@@ -183,6 +186,30 @@ public class CardDaoTest {
         try {
             allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
             assertEquals(allCards.size(), 1);
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
+
+    @Test
+    public void testUpsertBlankCardsNoDuplicate() {
+        //Bc equality on a card is defined by side a & side b being the same,
+        // blank side a and side b should not be inserted twice, even when relatedWord is present/different
+        Card testCard1NoRelatedWord = new Card("", "");
+        Card testCard2NoRelatedWord = new Card("", "");
+        Card testCard1RelatedWord = new Card("", "", "teacher");
+        Card testCard2RelatedWord = new Card("", "", "art");
+
+        cardEntityDao.upsert(testCard1NoRelatedWord);
+        cardEntityDao.upsert(testCard2NoRelatedWord);
+        cardEntityDao.upsert(testCard1RelatedWord);
+        cardEntityDao.upsert(testCard2RelatedWord);
+
+        List<Card> allCards;
+        try {
+            allCards = LiveDataTestUtil.getOrAwaitValue(cardEntityDao.getAllCards());
+            assertEquals(1, allCards.size());
+            assertTrue(allCards.contains(testCard1NoRelatedWord));
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }

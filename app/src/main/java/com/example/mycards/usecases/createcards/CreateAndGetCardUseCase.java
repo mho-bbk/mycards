@@ -1,7 +1,6 @@
 package com.example.mycards.usecases.createcards;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.data.entities.Card;
@@ -9,6 +8,7 @@ import com.example.mycards.data.repositories.CardRepository;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -17,6 +17,7 @@ import javax.inject.Inject;
  *  + Takes a HashMap of inputString : relatedWordsMap(eng : jp)
  *  + Create Cards using the HashMap
  *  + Inserts Cards into the CardRepo (persists Cards)
+ *  + Returns True if Cards were inserted; False if no Cards were inserted
  *
  *  + Public gateway to the methods of the card repository
  */
@@ -37,15 +38,22 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
 
     //This is the run method of this use case really
     private boolean createCards(HashMap<String, HashMap<String, String>> map) {
-        map.entrySet().forEach( entry -> {
+        AtomicBoolean returnValue = new AtomicBoolean(false);
+
+        map.entrySet().forEach(entry -> {
             String inputWord = entry.getKey();
             HashMap<String, String> engToJpPerInputWord = entry.getValue();
-            engToJpPerInputWord.entrySet().forEach( innerEntry -> {
-                cardRepository.upsert(new Card(innerEntry.getKey(), innerEntry.getValue(), inputWord));
-            });
+            if(engToJpPerInputWord.isEmpty()) {
+                //do nothing, return value already false by default
+            } else {
+                engToJpPerInputWord.entrySet().forEach(innerEntry -> {
+                    cardRepository.upsert(new Card(innerEntry.getKey(), innerEntry.getValue(), inputWord));
+                });
+                returnValue.set(true);
+            }
         });
 
-        return true;
+        return returnValue.get();
     }
 
     //**REPOSITORY/DAO METHODS**

@@ -123,7 +123,7 @@ public class UseCaseManager {
                 executorService.submit(() -> createAndGetCardUseCase.run(engToJpMap));
         try {
             Boolean ready = cardsReady.get();
-            return new Result.Success<>(ready); //could be null? could be false? TEST - TODO
+            return new Result.Success<>(ready); //True/False but never null
         } catch (Exception e) {
             Log.d(TAG, "Exception during cardsReady.get()");
             return new Result.Error<>(e);

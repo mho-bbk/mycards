@@ -3,6 +3,7 @@ package com.example.mycards;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
+import com.example.mycards.usecases.helper.CurrentThreadExecutor;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
@@ -28,8 +29,8 @@ public class SharedViewModelTest {
     private GetJpWordsUseCase jpWordsUseCase;
     @Mock
     private CreateAndGetCardUseCase cardUseCase;
-    @Mock
-    private ExecutorService executorService;
+
+    private final ExecutorService executorService = new CurrentThreadExecutor();
 
     @Before
     public void setUp() throws IOException {

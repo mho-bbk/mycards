@@ -47,7 +47,7 @@ public class CreateAndGetCardUseCaseTest {
         Card expectedCard = new Card("teacher", "先生 (せんせい, sensei)", "teacher");
 
         Boolean resultOfRun = createAndGetCardUseCase.run(fakeInput);
-        assertEquals(true, resultOfRun);    //this is always true because the method returns true
+        assertEquals(true, resultOfRun);
         assertEquals(expectedCard, cardCaptor.getValue());
     }
 
@@ -68,12 +68,22 @@ public class CreateAndGetCardUseCaseTest {
         Card expectedCard2 = new Card("instructor", "インストラクター (insutorakuta-)", "teacher");
 
         Boolean resultOfRun = createAndGetCardUseCase.run(fakeInput);
-        assertEquals(true, resultOfRun);    //this is always true because the method returns true
+        assertEquals(true, resultOfRun);
 
         verify(mockedCardRepository, times(2)).upsert(cardCaptor.capture());
         List<Card> capturedCards = cardCaptor.getAllValues();
         assertEquals(expectedCard1, capturedCards.get(0));
         assertEquals(expectedCard2, capturedCards.get(1));
+    }
+
+    @Test
+    public void testRun_NoInnerHashMap_returnsFalse() {
+        //Eg when there are no translations found in the jmdict local db
+        HashMap<String, HashMap<String, String>> jmdictDbResults = new HashMap<>();
+        jmdictDbResults.put("nonsensical string", new HashMap<>());
+
+        Boolean resultOfRun = createAndGetCardUseCase.run(jmdictDbResults);
+        assertEquals(false, resultOfRun);
     }
 
 }

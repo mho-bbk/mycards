@@ -232,6 +232,9 @@ Writing up DB part of report + DB tests.
 30/8: May be some duplication in passing to threads during instantiation of jmdict local db. 
 MainActivity passes off from main thread to executor -> repo then also does insertAll on ANOTHER executor... 
 Repo does not consistently use executors. 
+Test cases: do we need to test UseCaseManager? It calls the methods already tested in each UseCase test class. 
+Could test the callback Result/Error/Exception cases, but what we really want to test is the VM's observer code, as the VM is the client that receives the callback?
+
 
 
 Q: how do language dictionaries prioritise which word to display first?

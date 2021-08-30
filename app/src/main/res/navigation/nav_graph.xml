@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_cardDisplayFragment2_to_finishedDeckFragment"
             app:destination="@id/finishedDeckFragment" />
+        <action
+            android:id="@+id/action_cardDisplayFragment2_to_noResultFragment2"
+            app:destination="@id/noResultFragment2" />
 
     </fragment>
     <fragment
@@ -44,6 +47,15 @@
         tools:layout="@layout/fragment_finished_deck" >
         <action
             android:id="@+id/action_finishedDeckFragment_to_mainFragment2"
+            app:destination="@id/mainFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/noResultFragment2"
+        android:name="com.example.mycards.ui.NoResultFragment"
+        android:label="fragment_no_result"
+        tools:layout="@layout/fragment_no_result" >
+        <action
+            android:id="@+id/action_noResultFragment2_to_mainFragment2"
             app:destination="@id/mainFragment2" />
     </fragment>
 

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class GetJpWordsUseCaseTest {
@@ -85,6 +87,33 @@ public class GetJpWordsUseCaseTest {
         //Run, indirectly test private methods
         HashMap<String, HashMap<String, String>> mockRunResults = getJpWordsUseCase.run(wordsForTranslation);
 
+        assertEquals(expectedOutcome, mockRunResults);;
+        assertEquals(innerHashMap, mockRunResults.get("teacher"));
+        assertEquals(2, mockRunResults.get("teacher").size());
+    }
+
+    @Test
+    public void testRun_NoJMDictEntries_ReturnsStringKeyAndEmptyInnerHashMapValue() {
+        //Set up scenario where there is no jmdict entry in the local db
+        when(mockedJmDictRepository.getFirstJMDictEntry(anyString())).thenReturn(null);
+
+        //Create fake input (nonsensical)
+        HashMap<String, List<String>> wordsForTranslation = new HashMap<>();
+        wordsForTranslation.put("nonsense input string", new ArrayList<>());
+
+        //Create expected outcome from run()
+        //NB: original input String should be in resultant HashMap
+        //NB: where there is null return, nothing is put into the Map (NPE caught and String simply skipped)
+        HashMap<String, HashMap<String, String>> expectedOutcome = new HashMap<>();
+        HashMap<String, String> innerHashMap = new HashMap<>();
+        expectedOutcome.put("nonsense input string", innerHashMap);
+
+        //Run, indirectly test private methods
+        HashMap<String, HashMap<String, String>> mockRunResults = getJpWordsUseCase.run(wordsForTranslation);
+
         assertEquals(expectedOutcome, mockRunResults);
+        assertNotNull(mockRunResults.get("nonsense input string"));
+        assertTrue(mockRunResults.get("nonsense input string").isEmpty());
+        assertEquals(innerHashMap, mockRunResults.get("nonsense input string"));
     }
 }

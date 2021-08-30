@@ -43,7 +43,7 @@ public class SharedViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> cardsInRepoReady = new MutableLiveData<>();
     public final LiveData<List<Card>> cardTransformation =
-            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(userInputListCopy));
+            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(userInputListCopy)); //only comes here when ready is true
 
     public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
 
@@ -68,13 +68,19 @@ public class SharedViewModel extends ViewModel {
                 @Override
                 public void onComplete(Result<Boolean> result) {
                     if(result instanceof Result.Success) {
-                        Boolean success = ((Result.Success<Boolean>) result).getData();
-                        mainHandler.post( () ->
-                                cardsInRepoReady.setValue(success) //Is this ever false?
-                        );
+                        Boolean success = ((Result.Success<Boolean>) result).getData(); //False if 0 cards inserted from userInput
+                        if(success) {
+                            mainHandler.post(() ->
+                                    cardsInRepoReady.setValue(true)
+                            );
+                        } else {
+                            mainHandler.post(() ->
+                                    cardsInVMReady.setValue(false)  //Same result as if there is an error
+                            );
+                        }
                     } else {
                         //show on UI that no cards could be found
-                        // send signal to waiting CardFragment to move to sep 'error' fragment?
+                        // send signal to waiting CardFragment to move to separate 'error' fragment?
                         mainHandler.post(() ->
                                 cardsInVMReady.setValue(false)
                         );
