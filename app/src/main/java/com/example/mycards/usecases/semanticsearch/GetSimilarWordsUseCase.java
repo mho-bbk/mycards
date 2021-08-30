@@ -6,13 +6,9 @@ import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.server.datamuse.DatamuseAPIService;
 import com.example.mycards.server.datamuse.pojo.DatamuseWord;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
@@ -21,10 +17,10 @@ import retrofit2.Response;
 
 /**
  * Remit:
- *  + Accept a String input from the VM - assumes String is correctly spelled, assumes one String input (no collection)
+ *  + Accept List<String> of user input from the VM. Assumes Strings are correctly spelled.
  *  + Get similar words via Remote Source (DatamuseAPI)
- *  + Convert DatamuseWord type into List of String for processing
- *  + Return those words to the client (VM)
+ *  + Converts JSON -> DatamuseWord -> String
+ *  + Returns to client HashMap where Key is the input String and Value is a List of related Strings
  */
 public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>, HashMap<String, List<String>>> {
 
@@ -54,6 +50,7 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
         return wordsAndRelatedWords; //null is captured in callService, but results can be empty
     }
 
+    //Helper method. Calls the API service with individual Strings.
     private List<String> callService(DatamuseAPIService service, String searchTerm, int searchLimit) {
         Call<List<DatamuseWord>> call = createMaxSingleSearchCall(
                 service, searchTerm, searchLimit);
@@ -77,18 +74,22 @@ public class GetSimilarWordsUseCase implements BaseUseCaseWithParam<List<String>
         return apiSearchResult;
     }
 
-    //For future feature
-    public void setSearchLimit(int n) { this.searchLimit = n; }
-
-    //Helper method to disaggregate Call from semanticSearch to make the latter testable
+    //Helper method. Decouple call creation from call execute for testability.
+    //TODO - not sure this is needed/what happens when we use more than ml search method in API
     private Call<List<DatamuseWord>> createMaxSingleSearchCall(DatamuseAPIService service,
                                                                String searchTerm, int upToThisInt) {
         return service.getMaxSingleSearchResults(searchTerm, upToThisInt);
     }
 
+    //Helper method. Gets embedded Strings from DatamuseWord class.
     private List<String> convertDatamuseWordsToStrings(List<DatamuseWord> datamuseWords) {
         List<String> strings = new ArrayList<>();
         datamuseWords.forEach(dmWord -> strings.add(dmWord.getWord()));
         return strings;
     }
+
+    //TODO - Future feature
+    //Issue? This is a global field atm, changing this would make it change for all the words input...?
+    //Would need to inject this via the run() constructor?
+    public void setSearchLimit(int n) { this.searchLimit = n; }
 }

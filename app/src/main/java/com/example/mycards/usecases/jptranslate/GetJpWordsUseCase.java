@@ -42,7 +42,7 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<HashMap<String, L
     public HashMap<String, HashMap<String, String>> run(HashMap<String, List<String>> wordsForTranslation) {
 
         wordsForTranslation.entrySet().forEach( entry  -> {
-            //the String key also needs to be translated
+            //the String key also needs to be translated so add to List
             List<String> inputStringAndRelatedWords = new ArrayList<>();
             inputStringAndRelatedWords.add(entry.getKey()); //add the original input String
             inputStringAndRelatedWords.addAll(entry.getValue());    //add all the related words
@@ -58,7 +58,7 @@ public class GetJpWordsUseCase implements BaseUseCaseWithParam<HashMap<String, L
 
         wordsForTranslation.forEach(word -> {
             try {
-                JMDictEntry result = dictRepository.getFirstJMDictEntry(word);  //NPE is currently handled by Repo
+                JMDictEntry result = dictRepository.getFirstJMDictEntry(word);  //NPE is currently handled by Repo - 27/8: is this still true?? TEST
                 engToJpMap.put(result.getInnerGloss(), formatKanjiAndKana(result));
             } catch (NullPointerException npe) {
                 //do nothing

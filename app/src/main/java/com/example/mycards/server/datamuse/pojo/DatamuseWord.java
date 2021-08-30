@@ -6,16 +6,23 @@ import java.util.Objects;
 
 public class DatamuseWord {
 
-    private String word = "";
-    private int score = 0;
+    private String word = "";   //Essential, not null
+    private int score = 0;      //Essential, not null
     private List<String> tags = new ArrayList<>();
 
     public DatamuseWord() {
         //no args constructor
     }
+
     public DatamuseWord(String word, int score) {
         this.word = word;
         this.score = score;
+    }
+
+    public DatamuseWord(String word, int score, List<String> tags) {
+        this.word = word;
+        this.score = score;
+        this.tags = tags;
     }
 
     public String getWord() {
@@ -30,6 +37,7 @@ public class DatamuseWord {
         return tags;
     }
 
+    //Tags not essential. Can set these later.
     public void setTags(List<String> tags) {
         this.tags = tags;
     }

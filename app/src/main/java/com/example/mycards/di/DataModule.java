@@ -1,7 +1,9 @@
 package com.example.mycards.di;
 
 import com.example.mycards.data.repositories.CardRepository;
+import com.example.mycards.data.repositories.DeckRepository;
 import com.example.mycards.data.repositories.DefaultCardRepository;
+import com.example.mycards.data.repositories.DefaultDeckRepository;
 import com.example.mycards.data.repositories.DefaultJMDictRepository;
 import com.example.mycards.data.repositories.JMDictRepository;
 
@@ -16,6 +18,7 @@ import dagger.Provides;
 //Returns dependencies based on data. Specifically:
 // + CardRepository/CardRepositoryImpl [DefaultCardRepository]
 // + JMDictRepository/JMDictRepositoryImpl [DefaultJMDictRepository]
+// + DeckRepository/DeckRepositoryImpl [DefaultDeckRepository]
 @Module(includes = {NetworkModule.class})
 abstract class DataModule {
 
@@ -26,4 +29,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     public abstract JMDictRepository provideJMDictRepository(DefaultJMDictRepository defaultJMDictRepository);
+
+    @Binds
+    @Singleton
+    public abstract DeckRepository provideDeckRepository(DefaultDeckRepository defaultDeckRepository);
 }

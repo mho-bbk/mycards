@@ -31,6 +31,11 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
+
+    //Android does not allow Log methods to be mocked. Insert this to enable unit testing with Log in real methods.
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

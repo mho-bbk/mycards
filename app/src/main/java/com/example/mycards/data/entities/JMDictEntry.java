@@ -53,8 +53,8 @@ public class JMDictEntry {
     }
 
     public JMDictEntry() {
-        this.innerGloss = "";
-        this.wordID = "";
+        this.innerGloss = "";   //non null
+        this.wordID = "";   //non null
         this.kana = new Kana();
         this.kanji = new Kanji();
     }
