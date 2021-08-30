@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 
 public class UseCaseManager {
 
-    private String TAG = "UseCaseManager";
+    private final String TAG = "UseCaseManager";
     private static UseCaseManager INSTANCE;
 
     private final GetSimilarWordsUseCase getSimilarWordsUseCase;

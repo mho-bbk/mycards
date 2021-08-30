@@ -14,16 +14,11 @@ import javax.inject.Inject;
 
 /**
  * Remit:
- *  + Takes a HashMap of eng:jp words
+ *  + Takes a HashMap of inputString : relatedWordsMap(eng : jp)
  *  + Create Cards using the HashMap
- *  + Inserts cards into the CardRepo for persistence
- *  + Assigns all cards represented by the hashmap with one 'deck' seed word
+ *  + Inserts Cards into the CardRepo (persists Cards)
  *
- *  + Gives public gateway to the methods of the card repository, so VM can use it for UI
- *
- *  //Possibly another usecase...
- *  + Assumption that VM can get the deckSeed from here.
- *      If not, VM must already knows deckSeed (as passed down as userinput)
+ *  + Public gateway to the methods of the card repository
  */
 public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, HashMap<String, String>>,
         Boolean> {
