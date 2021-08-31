@@ -236,7 +236,8 @@ Test cases: do we need to test UseCaseManager? It calls the methods already test
 Could test the callback Result/Error/Exception cases, but what we really want to test is the VM's observer code, as the VM is the client that receives the callback?
 TODO: precision rate per dataset
 NB: BEWARE delete all cards = delete all decks BUT delete all decks != delete all cards
-
+FOR 31/8: ~3mins in. Watching CodingWithMitch for OnClickListener for items in RecyclerView: https://www.youtube.com/watch?v=69C1ljfDvl0&ab_channel=CodingWithMitch
+We need to get the specific decks(position) to the viewModel via the View. 
 
 Q: how do language dictionaries prioritise which word to display first?
 

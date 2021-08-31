@@ -1,6 +1,7 @@
 package com.example.mycards.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,35 +21,64 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-//Based on codepath tutorial: https://github.com/codepath/android_guides/wiki/Using-the-RecyclerView
-
+/**
+ * References:
+ * + Codepath Tutorial: https://github.com/codepath/android_guides/wiki/Using-the-RecyclerView
+ * + Coding With Mitch (YT): https://www.youtube.com/watch?v=69C1ljfDvl0&ab_channel=CodingWithMitch
+ * + Coding With Mitch (GitHub): https://github.com/mitchtabian/SQLite-for-Beginners-2019/blob/master/app/src/main/java/com/codingwithmitch/notes/adapters/NotesRecyclerAdapter.java
+ */
 public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private static final String TAG = "ViewHolder";
 
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
         public Button startDeckBtn;
         public FloatingActionButton deleteDeckbtn;
+        OnDeckClickListener deckClickListener;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, OnDeckClickListener deckClickListener) {
             super(itemView);
 
             nameTextView = itemView.findViewById(R.id.deck_name);
             startDeckBtn = itemView.findViewById(R.id.start_deck_button);
             deleteDeckbtn = itemView.findViewById(R.id.delete_deck_button);
+            this.deckClickListener = deckClickListener;
+
+            startDeckBtn.setOnClickListener(this);
+            deleteDeckbtn.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()) {
+                case R.id.start_deck_button:
+                    Log.d(TAG,"onClick: Start deck button pushed");
+                    deckClickListener.onDeckClickStart(decks.get(getBindingAdapterPosition()));
+                    break;
+                case R.id.delete_deck_button:
+                    Log.d(TAG, "onClick: Delete deck button pushed");
+                    deckClickListener.onDeckClickDelete(decks.get(getBindingAdapterPosition()));
+                    break;
+                default:
+                    break;
+            }
+        }
     }
+
+    private static final String TAG = "DeckAdapter";
 
     //Member variable for the decks
     private List<Deck> decks = new ArrayList<>();
+    private OnDeckClickListener deckClickListener;
 
-    public DeckAdapter() {
-        //empty constructor
+    public DeckAdapter(OnDeckClickListener deckClickListener) {
+        this.deckClickListener = deckClickListener;
     }
 
     //inflate a layout from XML and return the holder
@@ -63,8 +93,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         View deckView = inflater.inflate(R.layout.item_deck, parent, false);
 
         //Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(deckView);
-        return viewHolder;
+        return new ViewHolder(deckView, deckClickListener);
     }
 
     //Populate data into the item through holder
@@ -77,24 +106,6 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         TextView textView = holder.nameTextView;
         textView.setText(deck.getDeckName());
 
-        Button startDeckBtn = holder.startDeckBtn;
-        startDeckBtn.setText("START DECK");
-        startDeckBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO - do we implement the button logic here?
-                Toast.makeText(v.getContext(), "Start deck button pushed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        FloatingActionButton deleteDeckBtn = holder.deleteDeckbtn;
-        deleteDeckBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO - do we implement the button logic here?
-                Toast.makeText(v.getContext(), "Delete deck button pushed", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -106,5 +117,12 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     public void setDecks(List<Deck> decks) {
         this.decks = decks;
         notifyDataSetChanged(); //TODO - may be a better, more specific method than this
+    }
+
+    //Best practice for using OnClickListener in RecyclerView item is via interface
+    public interface OnDeckClickListener {
+        void onDeckClickStart(Deck deck);
+        void onDeckClickDelete(Deck deck);
+        //could interface have a method that returns the deck in position?
     }
 }

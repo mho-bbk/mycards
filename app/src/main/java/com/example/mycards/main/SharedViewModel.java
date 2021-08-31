@@ -53,7 +53,7 @@ public class SharedViewModel extends ViewModel {
     //Possible state of the deck
     //Finished/not finished
     //Ready/not ready
-    private LiveData<List<Deck>> decks;
+    private LiveData<List<Deck>> decksVMCopy;
 
     //NEW IMPL
     private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
@@ -113,7 +113,7 @@ public class SharedViewModel extends ViewModel {
         cardTransformation.observeForever(cardObserver);
 
         //Instantiate decks
-        this.decks = getDecks();
+        this.decksVMCopy = getDecks();
     }
 
     /**
@@ -168,10 +168,6 @@ public class SharedViewModel extends ViewModel {
                     "\ngetNextCard() has thrown NPE");
         }
         return currentCard;
-    }
-
-    public Boolean isRunAllUseCasesSuccessful() {
-        return cardsInVMReady.getValue();
     }
 
 

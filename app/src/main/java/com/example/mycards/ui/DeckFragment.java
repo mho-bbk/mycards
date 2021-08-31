@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mycards.R;
 import com.example.mycards.data.entities.Deck;
@@ -35,7 +36,7 @@ import javax.inject.Inject;
  * Use the {@link DeckFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeckFragment extends Fragment implements View.OnClickListener {
+public class DeckFragment extends Fragment implements View.OnClickListener, DeckAdapter.OnDeckClickListener {
 
     @Inject
     public SharedViewModelFactory viewModelFactory;
@@ -75,7 +76,7 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
         deckDisplay.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //Create adapter
-        deckAdapter = new DeckAdapter();
+        deckAdapter = new DeckAdapter(this);
         //Attach adapter to the RecyclerView to populate
         deckDisplay.setAdapter(deckAdapter);
 
@@ -89,6 +90,7 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
 
         backToHome = getView().findViewById(R.id.backToHomeFromDeckFragment);
         backToHome.setOnClickListener(this);
+
         navController = NavHostFragment.findNavController(this);
     }
 
@@ -102,5 +104,18 @@ public class DeckFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDeckClickStart(Deck deck) {
+        //TODO eg navigate from here
+        //position can be passed to VM where there is a copy of the deck as per the adapter?
+        // Transformations.switchMap?
+        Toast.makeText(getContext(), "Start deck button pushed for " + deck.getDeckName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeckClickDelete(Deck deck) {
+        Toast.makeText(getContext(), "Delete deck button pushed for " + deck.getDeckName(), Toast.LENGTH_SHORT).show();
     }
 }

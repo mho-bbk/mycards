@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mycards.R;
 import com.example.mycards.main.SharedViewModel;
@@ -56,10 +57,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
             } else {
                 NavDirections goToNoResultFragment = CardDisplayFragmentDirections.actionCardDisplayFragment2ToNoResultFragment2();
                 navController.navigate(goToNoResultFragment);
-//                sideA.setText("An error occurred, no cards");
-//                sideB.setText("An error occurred, no cards");
-//                sideA.setVisibility(View.VISIBLE);
-//                sideB.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -95,8 +92,8 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         Button backToHome = getView().findViewById(R.id.backToHome);
         backToHome.setOnClickListener(this);
 
-//        Button repeatBtn = getView().findViewById(R.id.repeatFlashcard);
-//        repeatBtn.setOnClickListener(this);
+        Button repeatBtn = getView().findViewById(R.id.repeatFlashcard);
+        repeatBtn.setOnClickListener(this);
 
     }
 
@@ -196,12 +193,12 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
             case R.id.nextFlashcard:
                 goToNextCard();
                 break;
-//            case R.id.repeatFlashcard:
+            case R.id.repeatFlashcard:
 //                repeatCard();
-//                Toast.makeText(getActivity(),
-//                        getCurrentCardAsString() + " will repeat at end of deck",
-//                        Toast.LENGTH_SHORT).show();
-//                break;
+                Toast.makeText(getActivity(),
+                        "Future feature! Coming soon...",
+                        Toast.LENGTH_SHORT).show();
+                break;
             case R.id.backToHome:
                 //This goes back to a 'clean' home page and keeps the original InputFragment on the stack (so can continue going back)
                 //Consider removing the original InputFragment on the stack using popUpTo and popUpToInclusive on the Nav action in xml - TODO
