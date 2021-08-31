@@ -58,4 +58,9 @@ public class DefaultCardRepository implements CardRepository {
         executorService.execute(cardEntityDao::deleteAllCards);
     }
 
+    @Override
+    public boolean containsCardsFor(String relatedWord) {
+        return cardEntityDao.containsCardsFor(relatedWord);
+    }
+
 }

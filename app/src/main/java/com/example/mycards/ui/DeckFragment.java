@@ -108,10 +108,9 @@ public class DeckFragment extends Fragment implements View.OnClickListener, Deck
 
     @Override
     public void onDeckClickStart(Deck deck) {
-        //TODO eg navigate from here
-        //position can be passed to VM where there is a copy of the deck as per the adapter?
-        // Transformations.switchMap?
         Toast.makeText(getContext(), "Start deck button pushed for " + deck.getDeckName(), Toast.LENGTH_SHORT).show();
+        List<String> inputList = Deck.rebuildInputList(deck.getDeckName());
+        //TODO - pass inputList to VM/set inputList in VM
     }
 
     @Override

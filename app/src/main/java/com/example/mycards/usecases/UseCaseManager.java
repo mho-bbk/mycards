@@ -64,6 +64,19 @@ public class UseCaseManager {
         return INSTANCE;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public void checkInputListThenRun(List<String> inputList, UseCaseCallback<Boolean> callback) {
+        executorService.execute(() -> {
+            List<String> unsearchedWordsOnly = checkCardRepo(inputList);
+            if(unsearchedWordsOnly.isEmpty()) {
+                //All terms are already in card local db, give the callback
+                callback.onComplete(new Result.Success<>(true));
+            } else {
+                //At least some words are new (some could be in repo)
+                runAllUseCases(unsearchedWordsOnly, callback);
+            }
+        });
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void runAllUseCases(List<String> inputList, UseCaseCallback<Boolean> callback) {
@@ -137,15 +150,36 @@ public class UseCaseManager {
         }
     }
 
+    public List<String> checkCardRepo(List<String> inputWords) {
+        List<String> unsearchedWords = new ArrayList<>();
+
+        inputWords.forEach(word -> {
+            if(!createAndGetCardUseCase.containsCardsFor(word)) {
+                unsearchedWords.add(word);
+            }
+        });
+
+        return unsearchedWords;
+    }
+
     //Access point: VM -> this -> cardUseCase -> Repository -> Dao -> DB
     public LiveData<List<Card>> getCards(List<String> inputList) {
         return createAndGetCardUseCase.getCards(inputList);
     }
 
+    public LiveData<List<Card>> getCard(String word) {
+        return createAndGetCardUseCase.getCards(word);
+    }
+
+//    public boolean containsCardsFor(String word) {
+//        return createAndGetCardUseCase.containsCardsFor(word);
+//    }
+
     public void deleteAllCards() {
         createAndGetCardUseCase.deleteAllCards();
     }
 
+    //createDeckUseCase slightly different remit to the others... (not eseential part of core process)
     public void createDeck(List<String> userInputListCopy) {
         createDeckUseCase.run(userInputListCopy);
     }

@@ -20,4 +20,6 @@ public interface CardRepository {
 
     public void deleteAllCards();
 
+    public boolean containsCardsFor(String relatedWord);
+
 }

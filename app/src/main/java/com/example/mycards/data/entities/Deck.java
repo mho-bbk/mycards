@@ -63,7 +63,7 @@ public class Deck {
 
     //Public method to rebuild the inputList
     //This should help to search for the cards
-    public List<String> rebuildInputList(String deckName) {
+    public static List<String> rebuildInputList(String deckName) {
         String[] splitString = deckName.split(", ");
         return new ArrayList<>(Arrays.asList(splitString));
     }

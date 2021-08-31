@@ -78,4 +78,6 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     public void deleteAllCards() {
         cardRepository.deleteAllCards();
     }
+
+    public boolean containsCardsFor(String word) { return cardRepository.containsCardsFor(word); }
 }

@@ -63,7 +63,7 @@ public class SharedViewModel extends ViewModel {
             userInputListCopy.addAll(input);
             //Deploy use cases via the Manager Mediator and request callback when done
             //Should be on Main thread
-            useCaseManager.runAllUseCases(input, new UseCaseCallback<Boolean>() {
+            useCaseManager.checkInputListThenRun(input, new UseCaseCallback<Boolean>() {
                 @Override
                 public void onComplete(Result<Boolean> result) {
                     if(result instanceof Result.Success) {
@@ -94,6 +94,7 @@ public class SharedViewModel extends ViewModel {
         public void onChanged(List<Card> cards) {
             setUpDeck(cards);
             useCaseManager.createDeck(userInputListCopy);
+            userInputListCopy.clear();
         }
     };
 
@@ -160,7 +161,8 @@ public class SharedViewModel extends ViewModel {
             if (deckIterator.hasNext()) {
                 currentCard = deckIterator.next();
             } else {
-                //TODO - run finished procedure: reset currentCard, trigger CardDisplayFragment to go to Finished page
+                //TODO - run finished procedure: reset currentCard,
+                // trigger CardDisplayFragment to go to Finished page
                 currentCard = new Card("Finished deck", "Finished deck");
             }
         } catch (NullPointerException e) {

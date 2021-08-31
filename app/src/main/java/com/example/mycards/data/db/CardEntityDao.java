@@ -31,4 +31,7 @@ public interface CardEntityDao {
 
     @Query("DELETE FROM cards")
     void deleteAllCards();
+
+    @Query("SELECT COUNT(*) != 0 FROM cards WHERE related_word = :relatedWord")
+    boolean containsCardsFor(String relatedWord);
 }

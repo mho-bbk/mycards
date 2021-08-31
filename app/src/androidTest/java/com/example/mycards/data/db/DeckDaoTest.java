@@ -79,6 +79,27 @@ public class DeckDaoTest {
         }
     }
 
+    @Test
+    public void testUpsertListParam_NoDuplicates() {
+        List<String> listParam = new ArrayList<>(List.of("chef", "art", "music"));
+        List<String> listParamDuplicate = new ArrayList<>(List.of("chef", "art", "music"));
+        Deck test1 = new Deck(listParam);
+        Deck test2 = new Deck(listParamDuplicate);
+
+        deckEntityDao.upsert(test1);
+        deckEntityDao.upsert(test2);
+
+        List<Deck> allDecks;
+        try {
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(1, allDecks.size());
+            assertEquals(test1, allDecks.get(0));
+            assertEquals(test2, allDecks.get(0));
+
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
 
     @Test
     public void testMultipleUpsert_OverlappingDecks_Pass() {

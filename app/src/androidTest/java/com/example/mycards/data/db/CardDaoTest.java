@@ -1,5 +1,7 @@
 package com.example.mycards.data.db;
 
+import android.util.Log;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -44,9 +46,6 @@ public class CardDaoTest {
     public void tearDown() {
         database.close();
     }
-
-    //TODO - test upsert, empty card
-    //TODO - test upsert, empty card EXCEPT relatedWord -
 
     @Test
     public void testUpsert() {
@@ -381,5 +380,25 @@ public class CardDaoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testContainsCardForPasses() {
+        //Recreate db from previous test - with deckSeeds
+        Card testCard1 = new Card("chef", "チェフ", "chef");
+        testCard1.setId(1);
+        Card testCard2 = new Card("baker", "パン屋さん", "baker");
+        testCard2.setId(2);
+        Card testCard3 = new Card("musician", "音楽家", "musician");
+        testCard3.setId(3);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+        cardEntityDao.upsert(testCard3);
+
+        assertTrue(cardEntityDao.containsCardsFor("chef"));
+        assertTrue(cardEntityDao.containsCardsFor("baker"));
+        assertTrue(cardEntityDao.containsCardsFor("musician"));
+        assertFalse(cardEntityDao.containsCardsFor("astronaut"));
     }
 }
