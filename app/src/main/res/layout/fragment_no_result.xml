@@ -12,6 +12,7 @@
         style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/noResult"
         app:layout_constraintBottom_toTopOf="@id/backToHomeNoResults"
         app:layout_constraintTop_toTopOf="parent"

@@ -41,20 +41,20 @@
 
             <TextView
                 android:id="@+id/side_a"
+                style="@android:style/TextAppearance.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Side A"
                 android:visibility="invisible"/>
 
             <TextView
                 android:id="@+id/side_b"
+                style="@android:style/TextAppearance.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Side B"
                 android:visibility="invisible" />
 
 

@@ -11,6 +11,7 @@
         style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/finishedDeck"
         app:layout_constraintBottom_toTopOf="@id/backToHomeFinished"
         app:layout_constraintTop_toTopOf="parent"
