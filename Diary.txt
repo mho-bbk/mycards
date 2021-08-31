@@ -239,6 +239,41 @@ NB: BEWARE delete all cards = delete all decks BUT delete all decks != delete al
 FOR 31/8: ~3mins in. Watching CodingWithMitch for OnClickListener for items in RecyclerView: https://www.youtube.com/watch?v=69C1ljfDvl0&ab_channel=CodingWithMitch
 We need to get the specific decks(position) to the viewModel via the View. 
 
+31/8: Interesting exception in an unexpected place. Cannot easily recreate it. TODO - investigate further.
+
+E/AndroidRuntime: FATAL EXCEPTION: main
+    Process: com.example.mycards, PID: 26248
+    java.lang.ArrayIndexOutOfBoundsException: length=10; index=-1
+        at java.util.ArrayList.get(ArrayList.java:439)
+        at com.example.mycards.data.entities.Deck.createName(Deck.java:59) <-- HERE!!!
+        at com.example.mycards.data.entities.Deck.<init>(Deck.java:31)
+        at com.example.mycards.usecases.createdeck.CreateDeckUseCase.run(CreateDeckUseCase.java:30)
+        at com.example.mycards.usecases.UseCaseManager.createDeck(UseCaseManager.java:184)
+        at com.example.mycards.main.SharedViewModel$2.onChanged(SharedViewModel.java:96)
+        at com.example.mycards.main.SharedViewModel$2.onChanged(SharedViewModel.java:92)
+        at androidx.lifecycle.LiveData.considerNotify(LiveData.java:133)
+        at androidx.lifecycle.LiveData.dispatchingValue(LiveData.java:151)
+        at androidx.lifecycle.LiveData.setValue(LiveData.java:309)
+        at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+        at androidx.lifecycle.Transformations$2$1.onChanged(Transformations.java:155)
+        at androidx.lifecycle.MediatorLiveData$Source.onChanged(MediatorLiveData.java:152)
+        at androidx.lifecycle.LiveData.considerNotify(LiveData.java:133)
+        at androidx.lifecycle.LiveData.dispatchingValue(LiveData.java:151)
+        at androidx.lifecycle.LiveData.setValue(LiveData.java:309)
+        at androidx.lifecycle.LiveData$1.run(LiveData.java:93)
+        at android.os.Handler.handleCallback(Handler.java:938)
+        at android.os.Handler.dispatchMessage(Handler.java:99)
+        at android.os.Looper.loop(Looper.java:246)
+        at android.app.ActivityThread.main(ActivityThread.java:8595)
+        at java.lang.reflect.Method.invoke(Native Method)
+        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:602)
+        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1130)
+V/StudioTransport: Handling agent command 1200 for pid: 26248.
+I/Process: Sending signal. PID: 26248 SIG: 9
+
+
+
+
 Q: how do language dictionaries prioritise which word to display first?
 
 Q&A

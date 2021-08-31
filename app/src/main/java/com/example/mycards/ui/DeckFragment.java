@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ import javax.inject.Inject;
  * create an instance of this fragment.
  */
 public class DeckFragment extends Fragment implements View.OnClickListener, DeckAdapter.OnDeckClickListener {
+
+    private static final String TAG = "DeckFragment";
 
     @Inject
     public SharedViewModelFactory viewModelFactory;
@@ -106,11 +109,19 @@ public class DeckFragment extends Fragment implements View.OnClickListener, Deck
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onDeckClickStart(Deck deck) {
-        Toast.makeText(getContext(), "Start deck button pushed for " + deck.getDeckName(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"Start deck button pushed for " + deck.getDeckName());
         List<String> inputList = Deck.rebuildInputList(deck.getDeckName());
-        //TODO - pass inputList to VM/set inputList in VM
+        sharedViewModel.setUserInputs(inputList);
+        goToCardDisplayFragment();
+    }
+
+    private void goToCardDisplayFragment() {
+        NavDirections goToCardDisplayFragment = DeckFragmentDirections.actionDeckFragmentToCardDisplayFragment2();
+        navController.navigate(goToCardDisplayFragment);
+        Log.d(TAG, Thread.currentThread().getName() + " moving to CardDisplayFragment...");
     }
 
     @Override

@@ -123,6 +123,5 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     public interface OnDeckClickListener {
         void onDeckClickStart(Deck deck);
         void onDeckClickDelete(Deck deck);
-        //could interface have a method that returns the deck in position?
     }
 }
