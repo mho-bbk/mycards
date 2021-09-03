@@ -179,12 +179,18 @@ public class UseCaseManager {
         createAndGetCardUseCase.deleteAllCards();
     }
 
-    //createDeckUseCase slightly different remit to the others... (not eseential part of core process)
-    public void createDeck(List<String> userInputListCopy) {
-        createDeckUseCase.run(userInputListCopy);
+    //createDeckUseCase slightly different remit to the others... (not essential part of core process)
+    public boolean createDeck(List<String> userInputListCopy) {
+        return createDeckUseCase.run(userInputListCopy);
     }
 
     public LiveData<List<Deck>> getDecks() {
         return createDeckUseCase.getAllDecks();
+    }
+
+    public void deleteDeck(Deck deck) { createDeckUseCase.delete(deck); }
+
+    public void deleteAllDecks() {
+        createDeckUseCase.deleteAllDecks();
     }
 }

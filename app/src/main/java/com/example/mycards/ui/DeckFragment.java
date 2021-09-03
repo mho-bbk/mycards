@@ -124,8 +124,10 @@ public class DeckFragment extends Fragment implements View.OnClickListener, Deck
         Log.d(TAG, Thread.currentThread().getName() + " moving to CardDisplayFragment...");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onDeckClickDelete(Deck deck) {
-        Toast.makeText(getContext(), "Delete deck button pushed for " + deck.getDeckName(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Delete deck button pushed for " + deck.getDeckName());
+        sharedViewModel.deleteDeck(deck);
     }
 }

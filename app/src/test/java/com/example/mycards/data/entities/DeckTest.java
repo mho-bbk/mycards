@@ -2,6 +2,7 @@ package com.example.mycards.data.entities;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -22,9 +23,27 @@ public class DeckTest {
         List<String> inputWords = List.of("chef", "tennis", "art");
         Deck testDeck = new Deck(inputWords);
 
-        List<String> rebuiltInputList = testDeck.rebuildInputList(testDeck.getDeckName());
+        List<String> rebuiltInputList = Deck.rebuildInputList(testDeck.getDeckName());
 
         assertEquals(inputWords, rebuiltInputList);
+    }
+
+    @Test
+    public void rebuildInputList_EmptyList() {
+        Deck testDeck = new Deck("");   //Deck with empty string name
+
+        List<String> rebuiltInputList = Deck.rebuildInputList(testDeck.getDeckName());
+
+        assertEquals(new ArrayList<>(), rebuiltInputList);
+        assertNotNull(rebuiltInputList);
+    }
+
+    @Test
+    public void ifInputStringEmptyThenDeckIsNameless() {
+        List<String> inputWords = new ArrayList<>();
+        Deck testDeck = new Deck(inputWords);
+
+        assertEquals("", testDeck.getDeckName());
     }
 
     @Test

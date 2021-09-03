@@ -3,7 +3,8 @@ package com.example.mycards;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
-import com.example.mycards.usecases.helper.CurrentThreadExecutor;
+import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
+import com.example.mycards.utility.CurrentThreadExecutor;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
@@ -29,13 +30,15 @@ public class SharedViewModelTest {
     private GetJpWordsUseCase jpWordsUseCase;
     @Mock
     private CreateAndGetCardUseCase cardUseCase;
+    @Mock
+    private CreateDeckUseCase deckUseCase;
 
     private final ExecutorService executorService = new CurrentThreadExecutor();
 
     @Before
     public void setUp() throws IOException {
         //instantiate VM using usecase mocks
-        testSharedViewModel = new SharedViewModel(similarWordsUseCase, jpWordsUseCase, cardUseCase, executorService);
+        testSharedViewModel = new SharedViewModel(similarWordsUseCase, jpWordsUseCase, cardUseCase, deckUseCase, executorService);
     }
 
     //TODO - test LiveData values are setting accordingly

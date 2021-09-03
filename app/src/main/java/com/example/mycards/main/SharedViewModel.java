@@ -92,8 +92,8 @@ public class SharedViewModel extends ViewModel {
     private final Observer<List<Card>> cardObserver = new Observer<List<Card>>() {
         @Override
         public void onChanged(List<Card> cards) {
-            setUpDeck(cards);
-            useCaseManager.createDeck(userInputListCopy);
+            setUpDeckInVM(cards);
+            useCaseManager.createDeck(userInputListCopy);   //Boolean is returned here but not used
             userInputListCopy.clear();
         }
     };
@@ -121,7 +121,7 @@ public class SharedViewModel extends ViewModel {
      * Helper method. Sets up deckIterator and currentCard fields when observer on userAnswers gets all cards.
      * @param allCards List of Card based on user input
      */
-    private void setUpDeck(List<Card> allCards) {
+    private void setUpDeckInVM(List<Card> allCards) {
         try {
             deckIterator = allCards.iterator();
             if (deckIterator.hasNext()) {
@@ -195,6 +195,17 @@ public class SharedViewModel extends ViewModel {
 
     public LiveData<List<Deck>> getDecks() {
         return useCaseManager.getDecks();
+    }
+
+    public void deleteDeck(Deck deck) {
+        useCaseManager.deleteDeck(deck);
+        //call getDecks to refresh?
+        this.decksVMCopy = getDecks();
+    }
+
+    public void deleteAllDecks() {
+        useCaseManager.deleteAllDecks();
+        this.decksVMCopy = getDecks();
     }
 
     @Override

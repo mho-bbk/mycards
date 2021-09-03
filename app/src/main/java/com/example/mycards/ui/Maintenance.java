@@ -1,8 +1,8 @@
 package com.example.mycards.ui;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mycards.R;
-import com.example.mycards.main.MyCardsApplication;
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
-import com.example.mycards.data.repositories.DefaultCardRepository;
-
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -30,6 +26,8 @@ import javax.inject.Inject;
 // In this case, it can be done before or after calling super.onAttach()."
 
 public class Maintenance extends Fragment {
+
+    private static final String TAG = "Maintenance";
 
     @Inject
     public SharedViewModelFactory viewModelFactory;
@@ -52,13 +50,25 @@ public class Maintenance extends Fragment {
 
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
 
-        Button deleteAll = getView().findViewById(R.id.maintenanceDeleteAll);
-        deleteAll.setOnClickListener(new View.OnClickListener() {
+        Button deleteAllCardsBtn = getView().findViewById(R.id.maintenanceDeleteAllCards);
+        deleteAllCardsBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onClick(View v) {
                 sharedViewModel.deleteAllCards();
-                Toast.makeText(getActivity(), "Database has been cleared", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Card database has been cleared", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: Card database has been cleared");
+            }
+        });
+
+        Button deleteAllDecksBtn = getView().findViewById(R.id.maintenanceDeleteAllDecks);
+        deleteAllDecksBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.R)
+            @Override
+            public void onClick(View v) {
+                sharedViewModel.deleteAllDecks();
+                Toast.makeText(getActivity(), "Deck database has been cleared", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: Deck database has been cleared");
             }
         });
     }

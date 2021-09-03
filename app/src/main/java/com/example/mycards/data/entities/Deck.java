@@ -28,7 +28,11 @@ public class Deck {
 
     @Ignore
     public Deck(List<String> inputWords) {
-        this.deckName = createName(inputWords);
+        if(!inputWords.isEmpty()) {
+            this.deckName = createName(inputWords);
+        } else {
+            this.deckName = "";
+        }
     }
 
     public void setDeckName(String deckName) { this.deckName = deckName; }
@@ -64,8 +68,12 @@ public class Deck {
     //Public method to rebuild the inputList
     //This should help to search for the cards
     public static List<String> rebuildInputList(String deckName) {
-        String[] splitString = deckName.split(", ");
-        return new ArrayList<>(Arrays.asList(splitString));
+        if(deckName.equals("")) {
+            return new ArrayList<>();
+        } else {
+            String[] splitString = deckName.split(", ");
+            return new ArrayList<>(Arrays.asList(splitString));
+        }
     }
 
     @Override

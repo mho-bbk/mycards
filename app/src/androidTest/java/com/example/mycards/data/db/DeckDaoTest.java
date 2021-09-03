@@ -46,7 +46,7 @@ public class DeckDaoTest {
     }
 
     @Test
-    public void testUpsertStringParam() {
+    public void testUpsertValidStringParam_Passes() {
         Deck test = new Deck("new deck name");
 
         deckEntityDao.upsert(test);
@@ -55,7 +55,24 @@ public class DeckDaoTest {
         try {
             allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
             assertEquals(test, allDecks.get(0));
+        } catch(InterruptedException e) {
+            System.err.println(e.getStackTrace());
+        }
+    }
 
+    @Test
+    public void testUpsertEmptyStringParam_Passes() {
+        //NB: We don't want it to upsert but as the implementation of the Dao is delegated
+        //to room, we will have to handle this behaviour elsewhere in our code
+
+        Deck test = new Deck("");
+
+        deckEntityDao.upsert(test);
+
+        List<Deck> allDecks;
+        try {
+            allDecks = LiveDataTestUtil.getOrAwaitValue(deckEntityDao.getAllDecks());
+            assertEquals(test, allDecks.get(0));
         } catch(InterruptedException e) {
             System.err.println(e.getStackTrace());
         }

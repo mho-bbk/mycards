@@ -2,9 +2,8 @@ package com.example.mycards.usecases;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import com.example.mycards.base.callbacks.Result;
-import com.example.mycards.data.entities.Card;
-import com.example.mycards.usecases.helper.CurrentThreadExecutor;
+import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
+import com.example.mycards.utility.CurrentThreadExecutor;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
@@ -13,12 +12,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.concurrent.ExecutorService;
-
-import static org.mockito.Mockito.doNothing;
 
 public class UseCaseManagerTest {
 
@@ -27,6 +24,7 @@ public class UseCaseManagerTest {
     private GetSimilarWordsUseCase getSimilarWordsUseCase;
     private GetJpWordsUseCase getJpWordsUseCase;
     private CreateAndGetCardUseCase createAndGetCardUseCase;
+    private CreateDeckUseCase createDeckUseCase;
     private ExecutorService executorService = new CurrentThreadExecutor();
 
     @Rule
@@ -37,8 +35,10 @@ public class UseCaseManagerTest {
         getSimilarWordsUseCase = Mockito.mock(GetSimilarWordsUseCase.class);
         getJpWordsUseCase = Mockito.mock(GetJpWordsUseCase.class);
         createAndGetCardUseCase = Mockito.mock(CreateAndGetCardUseCase.class);
+        createDeckUseCase = Mockito.mock(CreateDeckUseCase.class);
 
-        useCaseManager = UseCaseManager.getInstance(getSimilarWordsUseCase, getJpWordsUseCase, createAndGetCardUseCase, executorService);
+        useCaseManager = UseCaseManager.getInstance(getSimilarWordsUseCase,
+                getJpWordsUseCase, createAndGetCardUseCase, createDeckUseCase, executorService);
     }
 
     @After

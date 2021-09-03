@@ -2,6 +2,7 @@ package com.example.mycards.usecases.createdeck;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParamWithOutReturn;
 import com.example.mycards.data.entities.Deck;
 import com.example.mycards.data.repositories.DeckRepository;
@@ -16,7 +17,7 @@ import javax.inject.Inject;
  *
  * + Provides public access to deck repository methods
  */
-public class CreateDeckUseCase implements BaseUseCaseWithParamWithOutReturn<List<String>> {
+public class CreateDeckUseCase implements BaseUseCaseWithParam<List<String>, Boolean> {
 
     private final DeckRepository deckRepository;
 
@@ -26,13 +27,29 @@ public class CreateDeckUseCase implements BaseUseCaseWithParamWithOutReturn<List
     }
 
     @Override
-    public void run(List<String> strings) {
+    public Boolean run(List<String> strings) {
         Deck deck = new Deck(strings);
-        upsert(deck);
+        if(isValid(deck)) {
+            upsert(deck);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //Helper method to implement definition of a valid deck name
+    private boolean isValid(Deck deck) {
+        if("".equals(deck.getDeckName())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     //**REPOSITORY/DAO METHODS**
-    public void upsert(Deck deck) {
+
+    //Private so you can only upsert after the use case validates the Deck
+    private void upsert(Deck deck) {
         deckRepository.upsert(deck);
     }
 

@@ -76,8 +76,11 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         sharedViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel.class);
         navController = NavHostFragment.findNavController(this);
 
-        // Observe the LiveData, passing in this fragment/activity as the LifecycleOwner and the observer.
         progressBar = getView().findViewById(R.id.inputFragmentProgressBar);
+        //Whenever we move to this Fragment, the progressBar should be visible until the Observer is activated,
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Observe the LiveData, passing in this fragment/activity as the LifecycleOwner and the observer.
         sharedViewModel.cardsInVMReady.observe(getViewLifecycleOwner(), observer);
 
         //other set-up code
@@ -107,7 +110,6 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void startDeck() {
-        //We don't do anything with the cards and instead get the card from the VM...
         showCard(sharedViewModel.getCurrentCard());
     }
 

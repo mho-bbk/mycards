@@ -83,7 +83,7 @@ public class InputFragment extends Fragment implements View.OnClickListener {
      * Passes user input as List<String> to the VM
      */
     @RequiresApi(api = Build.VERSION_CODES.R)
-    private void passOnData() {
+    private boolean passOnData() {
         String job = jobEditTxt.getText().toString();
         String hobby = hobbyEditTxt.getText().toString();
         String subject = subjectEditTxt.getText().toString();
@@ -91,13 +91,15 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         //Manual way to stop blank entries
         if(job.trim().isEmpty() || hobby.trim().isEmpty() || subject.trim().isEmpty()) {
             Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
+            return false;
         } else {
             List<String> allUserInput = new ArrayList<>();
-            allUserInput.add(job);
-            allUserInput.add(hobby);
-            allUserInput.add(subject);
+            allUserInput.add(job.trim());
+            allUserInput.add(hobby.trim());
+            allUserInput.add(subject.trim());
 
             sharedViewModel.setUserInputs(allUserInput);
+            return true;
         }
     }
 
@@ -112,8 +114,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.makeCardsBtn:
-                passOnData();
-                goToCardDisplayFragment();
+                if(passOnData()) {
+                    goToCardDisplayFragment();
+                } else {
+                    //do nothing
+                }
                 break;
             case R.id.openMaintenance:
                 NavDirections goToMaintenanceFragment = InputFragmentDirections.actionMainFragment2ToMaintenance();

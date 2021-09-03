@@ -239,7 +239,8 @@ NB: BEWARE delete all cards = delete all decks BUT delete all decks != delete al
 FOR 31/8: ~3mins in. Watching CodingWithMitch for OnClickListener for items in RecyclerView: https://www.youtube.com/watch?v=69C1ljfDvl0&ab_channel=CodingWithMitch
 We need to get the specific decks(position) to the viewModel via the View. 
 
-31/8: Interesting exception in an unexpected place. Cannot easily recreate it. TODO - investigate further.
+31/8: Resolved Listener issue with CWM (above). 
+Interesting exception in an unexpected place. Cannot easily recreate it. TODO - investigate further.
 
 E/AndroidRuntime: FATAL EXCEPTION: main
     Process: com.example.mycards, PID: 26248
@@ -271,7 +272,22 @@ E/AndroidRuntime: FATAL EXCEPTION: main
 V/StudioTransport: Handling agent command 1200 for pid: 26248.
 I/Process: Sending signal. PID: 26248 SIG: 9
 
+Weds 1/9: deleteDeck functionality impl and tested using emulator. Assumption: Deck is completely decoupled from Cards so that deleteDeck != deleteCards and vice versa.
+New deleteDecks button in Maintenance.
 
+Thurs 2/9: Tested delete button - def works. Error from 31/8 is replicable - need to follow data flow and uncover bug. Wrote more report (bg: nlp).
+
+Fri 3/9: TODO - More report writing  (look through notes, make more coherent; get to the feature section to write? Draw diagrams)
+TODO - more unit tests SharedViewModel
+TODO - fix the bug.
+
+Sat 4/9:
+Sun 5/9:
+Mon 6/9:
+Tues 7/9:
+Weds 8/9:
+Thurs 9/9:
+Fri 10/9: 
 
 
 Q: how do language dictionaries prioritise which word to display first?

@@ -1,7 +1,7 @@
 /* Copyright 2019 Google LLC.
 SPDX-License-Identifier: Apache-2.0 */
 
-package com.example.mycards.helper;
+package com.example.mycards.utility;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;

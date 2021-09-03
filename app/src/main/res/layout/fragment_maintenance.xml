@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.Maintenance">
 
     <Button
-        android:id="@+id/maintenanceDeleteAll"
+        android:id="@+id/maintenanceDeleteAllCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete All History"
-        android:layout_gravity="center_horizontal|center_vertical"/>
+        android:text="Clear All Cards from Cache"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/maintenanceDeleteAllDecks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear All Decks from Cache"
+        android:layout_below="@+id/maintenanceDeleteAllCards"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
