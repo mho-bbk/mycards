@@ -277,18 +277,20 @@ New deleteDecks button in Maintenance.
 
 Thurs 2/9: Tested delete button - def works. Error from 31/8 is replicable - need to follow data flow and uncover bug. Wrote more report (bg: nlp).
 
-Fri 3/9: TODO - More report writing  (look through notes, make more coherent; get to the feature section to write? Draw diagrams)
-TODO - more unit tests SharedViewModel
-TODO - fix the bug.
+Fri 3/9: Bug raised on 31/8 fixed. There is a minor glitch when you search again (screen 'flickers').
+May be related to state management/way observers are connected. 
 
-Sat 4/9:
+Sat 4/9: TODO - read more about state management
+TODO - More report writing  (look through notes, make more coherent; get to the feature section to write? Draw diagrams)
+TODO - more unit tests SharedViewModel
+
 Sun 5/9:
-Mon 6/9:
+Mon 6/9: TODO - if time, investigate 'screen flicker' bug raised on 3/9. 
 Tues 7/9:
 Weds 8/9:
 Thurs 9/9:
-Fri 10/9: 
 
+Fri 10/9: Last call on getting user testers...
 
 Q: how do language dictionaries prioritise which word to display first?
 

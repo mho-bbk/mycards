@@ -60,7 +60,10 @@ public class SharedViewModel extends ViewModel {
         @Override
         public void onChanged(List<String> input) {
             //NEW IMPL: Save copy of user inputs. This will be used to return decks.
+            //Clear inputList everytime this observer is activated (ie everytime new input is entered)
+            userInputListCopy.clear();
             userInputListCopy.addAll(input);
+            
             //Deploy use cases via the Manager Mediator and request callback when done
             //Should be on Main thread
             useCaseManager.checkInputListThenRun(input, new UseCaseCallback<Boolean>() {
@@ -94,7 +97,6 @@ public class SharedViewModel extends ViewModel {
         public void onChanged(List<Card> cards) {
             setUpDeckInVM(cards);
             useCaseManager.createDeck(userInputListCopy);   //Boolean is returned here but not used
-            userInputListCopy.clear();
         }
     };
 
