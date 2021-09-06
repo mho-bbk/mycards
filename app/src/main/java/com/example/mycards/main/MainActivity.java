@@ -40,44 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO - Consider splash screen at start up
         ((MyCardsApplication) getApplicationContext()).appComponent.inject(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sharedViewModel = new ViewModelProvider(this, sharedViewModelFactory).get(SharedViewModel.class);
-
-        //TODO - Issue: do not want this to run if the database has already been populated... (eg screen config change)
-        Future<?> future = activityExecutors.submit(() -> jmDictRepository
-                .insertAll(getPrePopulatedData(this)));
-        try {
-            Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
-            future.get();
-            Log.d(TAG, "jmdict db has pre-populated!");
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static synchronized List<JMDictEntry> getPrePopulatedData(Context context) {
-        int realResource = R.raw.reverse_jmdictentries_plain;
-
-        List<JMDictEntry> dictEntries = new ArrayList<>();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        try(InputStream jsonStream = context.getResources().openRawResource(realResource)) {
-            dictEntries = mapper.readValue(jsonStream,
-                    new TypeReference<List<JMDictEntry>>() {
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dictEntries;
     }
     
     @Override

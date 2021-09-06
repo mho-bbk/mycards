@@ -14,8 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +43,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
     private TextView sideA, sideB;
 
     // Create the observer
-    final Observer<Boolean> observer = new Observer<Boolean>() {
+    final Observer<Boolean> viewModelCardsObserver = new Observer<Boolean>() {
         @RequiresApi(api = Build.VERSION_CODES.R)
         @Override
         public void onChanged(Boolean cardsReady) {
@@ -77,11 +75,12 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
         navController = NavHostFragment.findNavController(this);
 
         progressBar = getView().findViewById(R.id.inputFragmentProgressBar);
-        //Whenever we move to this Fragment, the progressBar should be visible until the Observer is activated,
+        //Whenever we move to this Fragment, the progressBar should be visible until the Observer is activated.
+        // TODO: this isn't in right lifecycle callback? Try onViewStateRestored...
         progressBar.setVisibility(View.VISIBLE);
 
         // Observe the LiveData, passing in this fragment/activity as the LifecycleOwner and the observer.
-        sharedViewModel.cardsInVMReady.observe(getViewLifecycleOwner(), observer);
+        sharedViewModel.cardsInVMReady.observe(getViewLifecycleOwner(), viewModelCardsObserver);
 
         //other set-up code
         sideA = getView().findViewById(R.id.side_a);
@@ -141,48 +140,7 @@ public class CardDisplayFragment extends Fragment implements View.OnClickListene
     }
 
 //    public void repeatCard() {
-//        //set card shown flag false
-//        if(current != null) {
-//            current.setShown(false);
-//        }
-//
-//        //TODO - unexpected behaviour with placeholder - when go to 'Finish' state,
-//        // pressing repeat means 'current' card (last shown card) will reshow on screen
-//    }
-
-//    private boolean checkIfRepeatDeckIsEmpty() {
-//
-//        //initialise repeatDeck - TODO: do I need this bit?
-//        // TODO - if this is needed, consider moving to separate method; or move to VM sep meth
-//        cardDisplayViewModel.getTestDeck().forEach(card -> {
-//            if(!card.isShown()) {
-//                cardDisplayViewModel.addToRepeatDeck(card);
-//            }
-//        });
-//
-//        boolean empty = false;
-//        //**TEST IF REPEAT DECK IS EMPTY**
-//        //repeatDeck is empty if it doesn't contain any Card
-//        if(cardDisplayViewModel.getRepeatDeck().isEmpty()) {
-//            empty = true;
-//        } else {
-//            //it is also empty if all Cards in the repeatDeck have been shown
-//            //aka it is NOT EMPTY if there is any Card in the deck where isShown is FALSE
-//            for (Card c : cardDisplayViewModel.getRepeatDeck()) {
-//                if(!c.isShown()) {
-//                    empty = false;
-//                    break;
-//                } else {
-//                    empty = true;
-//                }
-//            }
-//        }
-//
-//        return empty;
-//    }
-
-//    public String getCurrentCardAsString() {
-//        return current.toString();
+        //TODO
 //    }
 
     @RequiresApi(api = Build.VERSION_CODES.R)

@@ -47,7 +47,12 @@ public class UseCaseManagerTest {
     }
 
     @Test
-    public void runAllUseCases() {
+    public void testRunAllUseCases() {
         //TODO
+    }
+
+    @Test
+    public void testCheckCardRepo() {
+
     }
 }

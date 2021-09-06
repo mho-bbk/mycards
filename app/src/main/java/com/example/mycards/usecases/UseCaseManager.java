@@ -22,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import javax.inject.Inject;
+
 
 public class UseCaseManager {
 
@@ -170,10 +172,6 @@ public class UseCaseManager {
     public LiveData<List<Card>> getCard(String word) {
         return createAndGetCardUseCase.getCards(word);
     }
-
-//    public boolean containsCardsFor(String word) {
-//        return createAndGetCardUseCase.containsCardsFor(word);
-//    }
 
     public void deleteAllCards() {
         createAndGetCardUseCase.deleteAllCards();

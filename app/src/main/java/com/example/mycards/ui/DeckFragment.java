@@ -33,9 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeckFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
  */
 public class DeckFragment extends Fragment implements View.OnClickListener, DeckAdapter.OnDeckClickListener {
 
@@ -46,8 +44,6 @@ public class DeckFragment extends Fragment implements View.OnClickListener, Deck
     private SharedViewModel sharedViewModel;
     private NavController navController;
     private DeckAdapter deckAdapter;
-
-    private FloatingActionButton backToHome;
 
     public DeckFragment() {
         // Required empty public constructor
@@ -91,7 +87,7 @@ public class DeckFragment extends Fragment implements View.OnClickListener, Deck
             }
         });
 
-        backToHome = getView().findViewById(R.id.backToHomeFromDeckFragment);
+        FloatingActionButton backToHome = getView().findViewById(R.id.backToHomeFromDeckFragment);
         backToHome.setOnClickListener(this);
 
         navController = NavHostFragment.findNavController(this);

@@ -4,6 +4,7 @@ import com.example.mycards.data.repositories.CardRepository;
 import com.example.mycards.data.repositories.DeckRepository;
 import com.example.mycards.data.repositories.JMDictRepository;
 import com.example.mycards.server.datamuse.DatamuseAPIService;
+import com.example.mycards.usecases.UseCaseManager;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
 import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;

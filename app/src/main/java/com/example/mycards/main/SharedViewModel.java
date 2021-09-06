@@ -33,7 +33,8 @@ import javax.inject.Inject;
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class SharedViewModel extends ViewModel {
 
-    private static final String TAG = "SharedViewModel";    //for use in Logcat
+    private static final String TAG = "SharedViewModel";
+
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private UseCaseManager useCaseManager;
@@ -63,7 +64,7 @@ public class SharedViewModel extends ViewModel {
             //Clear inputList everytime this observer is activated (ie everytime new input is entered)
             userInputListCopy.clear();
             userInputListCopy.addAll(input);
-            
+
             //Deploy use cases via the Manager Mediator and request callback when done
             //Should be on Main thread
             useCaseManager.checkInputListThenRun(input, new UseCaseCallback<Boolean>() {
@@ -190,9 +191,8 @@ public class SharedViewModel extends ViewModel {
 //        this.cardIterator = repeatDeck.iterator();
 //    }
 
-    public boolean deleteAllCards() {
+    public void deleteAllCards() {
         useCaseManager.deleteAllCards();
-        return true;
     }
 
     public LiveData<List<Deck>> getDecks() {
@@ -201,7 +201,7 @@ public class SharedViewModel extends ViewModel {
 
     public void deleteDeck(Deck deck) {
         useCaseManager.deleteDeck(deck);
-        //call getDecks to refresh?
+        //call getDecks to refresh? This notifies the observer in DeckAdapter?
         this.decksVMCopy = getDecks();
     }
 

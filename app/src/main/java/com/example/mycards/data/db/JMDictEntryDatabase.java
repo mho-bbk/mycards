@@ -1,6 +1,7 @@
 package com.example.mycards.data.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -18,13 +19,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//Commented out parts based on:
-// https://gist.github.com/florina-muntenescu/697e543652b03d3d2a06703f5d6b44b5
-
 @Database(entities = JMDictEntry.class, version = 1)
 @TypeConverters(value = JMDictEntryTypeConverters.class)
 public abstract class JMDictEntryDatabase extends RoomDatabase {
 
+    private static final String TAG = "JMDictEntryDatabase";
     public abstract JMDictEntryDao getJMDictEntryDao();
 
     private static volatile JMDictEntryDatabase instance;    //to make our db a singleton
@@ -40,43 +39,18 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
     }
 
     private static synchronized JMDictEntryDatabase buildDatabase(Context context) {
-        JMDictEntryDatabase db = Room.databaseBuilder(context.getApplicationContext(),
-                JMDictEntryDatabase.class, "jmdict_database")
-                //prepopulate the db after onCreate is called
-//                .addCallback(new Callback() {
-//                    @Override
-//                    public void onCreate(@NonNull @NotNull SupportSQLiteDatabase db) {
-//                        System.out.println("I'm inside the JMDictDB buildDatabase() callback...");
-//                        super.onCreate(db);
-//                        //execute it on a thread to prevent freezing main thread
-//                        jmDictDatabaseWriteExecutor.execute(
-//                                () -> getInstance(context)
-//                                        .getJMDictEntryDao()
-//                                        .insertAll(getPrePopulatedData(context))
-//                        );
-//                    }
-//                })
+//        long startTime = System.nanoTime();
+//        Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
+
+        JMDictEntryDatabase prepopDb = Room.databaseBuilder(context.getApplicationContext(),
+                JMDictEntryDatabase.class, "jmdict_prepop.db")
+                .createFromAsset("jmdict_database.db")
                 .build();
+//
+//        long endTime = System.nanoTime();
+//        long duration = (endTime - startTime) / 1_000_000;  //divide by 1000000 to get milliseconds.
+//        Log.d(TAG, "jmdict db has pre-populated in " + duration + "ms!");
 
-        return db;
-    }
-
-    private static synchronized List<JMDictEntry> getPrePopulatedData(Context context) {
-        List<JMDictEntry> dictEntries = new ArrayList<>();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        try {
-            dictEntries = mapper.readValue(context.getResources()
-                    .openRawResource(R.raw.reverse_jmdictentries_plain_sample),
-                    new TypeReference<List<JMDictEntry>>() {
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dictEntries;
+        return prepopDb;
     }
 }
