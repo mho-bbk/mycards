@@ -30,9 +30,12 @@ import com.example.mycards.main.SharedViewModelFactory;
 
 import javax.inject.Inject;
 
+/**
+ * Displays the Cards corresponding to the users' input.
+ */
 public class CardDisplayFragment extends Fragment implements View.OnClickListener {
 
-    private final String TAG = "CardDisplayFragment";
+    private static final String TAG = "CardDisplayFragment";
 
     @Inject
     public SharedViewModelFactory viewModelFactory;

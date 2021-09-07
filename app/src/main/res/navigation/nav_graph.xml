@@ -20,6 +20,7 @@
             android:id="@+id/action_mainFragment2_to_deckFragment"
             app:destination="@id/deckFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/cardDisplayFragment2"
         android:name="com.example.mycards.ui.CardDisplayFragment"
@@ -36,13 +37,14 @@
         <action
             android:id="@+id/action_cardDisplayFragment2_to_noResultFragment2"
             app:destination="@id/noResultFragment2" />
-
     </fragment>
+
     <fragment
         android:id="@+id/maintenance"
         android:name="com.example.mycards.ui.Maintenance"
         android:label="fragment_maintenance"
         tools:layout="@layout/fragment_maintenance" />
+
     <fragment
         android:id="@+id/finishedDeckFragment"
         android:name="com.example.mycards.ui.FinishedDeckFragment"
@@ -50,8 +52,11 @@
         tools:layout="@layout/fragment_finished_deck" >
         <action
             android:id="@+id/action_finishedDeckFragment_to_mainFragment2"
-            app:destination="@id/mainFragment2" />
+            app:destination="@id/mainFragment2"
+            app:popUpTo="@+id/mainFragment2"
+            app:popUpToInclusive="true"/>
     </fragment>
+
     <fragment
         android:id="@+id/noResultFragment2"
         android:name="com.example.mycards.ui.NoResultFragment"
@@ -59,8 +64,11 @@
         tools:layout="@layout/fragment_no_result" >
         <action
             android:id="@+id/action_noResultFragment2_to_mainFragment2"
-            app:destination="@id/mainFragment2" />
+            app:destination="@id/mainFragment2"
+            app:popUpTo="@+id/mainFragment2"
+            app:popUpToInclusive="true"/>
     </fragment>
+
     <fragment
         android:id="@+id/deckFragment"
         android:name="com.example.mycards.ui.DeckFragment"

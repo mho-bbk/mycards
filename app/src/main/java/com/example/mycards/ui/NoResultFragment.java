@@ -25,9 +25,7 @@ import com.example.mycards.main.SharedViewModelFactory;
 import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link NoResultFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * UI screen that displays a 'Sorry, no results' message to the user when their input returns no results.
  */
 public class NoResultFragment extends Fragment {
 

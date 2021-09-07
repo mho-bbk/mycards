@@ -16,16 +16,11 @@ import com.example.mycards.base.callbacks.Result;
 import com.example.mycards.base.callbacks.UseCaseCallback;
 import com.example.mycards.data.entities.Deck;
 import com.example.mycards.usecases.UseCaseManager;
-import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.data.entities.Card;
-import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
-import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
-import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 
@@ -51,9 +46,14 @@ public class SharedViewModel extends ViewModel {
     private Iterator<Card> deckIterator;
     private Card currentCard = new Card("", "");    //blank card to initiate
 
-    //Possible state of the deck
-    //Finished/not finished
-    //Ready/not ready
+    //TODO
+    // Possible states of readiness (and impacted workflows)
+    //cardsInRepoReady - cards in repo ready/not (so VM and UI can begin to use them)
+    //cardsInVMReady - not always necess depending on impl - so UI can use them (from the VM)
+    //cardPosition - where in the deck are we out of the ttl num of cards
+    //deckStarted - we have started a deck (not necessary?)
+    //deckFinished - we have finished a deck
+
     private LiveData<List<Deck>> decksVMCopy;
 
     //NEW IMPL
@@ -103,14 +103,9 @@ public class SharedViewModel extends ViewModel {
 
 
     @Inject
-    public SharedViewModel(GetSimilarWordsUseCase similarWordsUseCase,
-                           GetJpWordsUseCase jpWordsUseCase,
-                           CreateAndGetCardUseCase cardUseCase,
-                           CreateDeckUseCase deckUseCase,
-                           ExecutorService executorService) {
+    public SharedViewModel(UseCaseManager useCaseManager) {
 
-        useCaseManager = UseCaseManager
-                .getInstance(similarWordsUseCase, jpWordsUseCase, cardUseCase, deckUseCase, executorService);
+        this.useCaseManager = useCaseManager;
 
         //Observe the LiveData ie user input, passing in an observer that does the logic.
         userInputs.observeForever(inputObserver);

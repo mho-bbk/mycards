@@ -44,7 +44,7 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
 
         JMDictEntryDatabase prepopDb = Room.databaseBuilder(context.getApplicationContext(),
                 JMDictEntryDatabase.class, "jmdict_prepop.db")
-                .createFromAsset("jmdict_database.db")
+                .createFromAsset("jmdict_database_v0.1.db")
                 .build();
 //
 //        long endTime = System.nanoTime();

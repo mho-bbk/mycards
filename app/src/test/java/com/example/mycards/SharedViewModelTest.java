@@ -2,6 +2,7 @@ package com.example.mycards;
 
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
+import com.example.mycards.usecases.UseCaseManager;
 import com.example.mycards.usecases.createcards.CreateAndGetCardUseCase;
 import com.example.mycards.usecases.createdeck.CreateDeckUseCase;
 import com.example.mycards.utility.CurrentThreadExecutor;
@@ -26,21 +27,14 @@ public class SharedViewModelTest {
     private SharedViewModel testSharedViewModel;
 
     @Mock
-    private GetSimilarWordsUseCase similarWordsUseCase;
-    @Mock
-    private GetJpWordsUseCase jpWordsUseCase;
-    @Mock
-    private CreateAndGetCardUseCase cardUseCase;
-    @Mock
-    private CreateDeckUseCase deckUseCase;
+    public UseCaseManager useCaseManager;
 
     private final ExecutorService executorService = new CurrentThreadExecutor();
 
     @Before
     public void setUp() throws IOException {
         //instantiate VM using usecase mocks
-        testSharedViewModel = new SharedViewModel(similarWordsUseCase,
-                jpWordsUseCase, cardUseCase, deckUseCase, executorService);
+        testSharedViewModel = new SharedViewModel(useCaseManager);
     }
 
     //TODO - test LiveData values are setting accordingly

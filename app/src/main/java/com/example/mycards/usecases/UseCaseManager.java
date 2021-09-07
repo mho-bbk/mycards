@@ -23,8 +23,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-
+@Singleton
 public class UseCaseManager {
 
     private final String TAG = "UseCaseManager";
@@ -36,7 +37,8 @@ public class UseCaseManager {
     private final CreateDeckUseCase createDeckUseCase;
     private final ExecutorService executorService;
 
-    private UseCaseManager(GetSimilarWordsUseCase getSimilarWordsUseCase,
+    @Inject
+    public UseCaseManager(GetSimilarWordsUseCase getSimilarWordsUseCase,
                            GetJpWordsUseCase getJpWordsUseCase,
                            CreateAndGetCardUseCase createAndGetCardUseCase,
                            CreateDeckUseCase createDeckUseCase,
