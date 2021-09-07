@@ -40,6 +40,14 @@
             tools:context=".ui.CardDisplayFragment">
 
             <TextView
+                android:id="@+id/cardCounter"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
                 android:id="@+id/side_a"
                 style="@android:style/TextAppearance.Medium"
                 android:layout_width="match_parent"

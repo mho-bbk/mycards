@@ -30,6 +30,7 @@ public class UseCaseManager {
 
     private final String TAG = "UseCaseManager";
     private static UseCaseManager INSTANCE;
+    private List<String> inputListUCMCopy;
 
     private final GetSimilarWordsUseCase getSimilarWordsUseCase;
     private final GetJpWordsUseCase getJpWordsUseCase;
@@ -71,9 +72,13 @@ public class UseCaseManager {
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void checkInputListThenRun(List<String> inputList, UseCaseCallback<Boolean> callback) {
         executorService.execute(() -> {
+            inputListUCMCopy = inputList;
             List<String> unsearchedWordsOnly = checkCardRepo(inputList);
             if(unsearchedWordsOnly.isEmpty()) {
-                //All terms are already in card local db, give the callback
+                //All terms are already in card local db
+                // Create the deck
+                // Give the callback: success = true
+                createDeck(inputListUCMCopy);   //returns Boolean but this is never used
                 callback.onComplete(new Result.Success<>(true));
             } else {
                 //At least some words are new (some could be in repo)
@@ -147,7 +152,10 @@ public class UseCaseManager {
                 executorService.submit(() -> createAndGetCardUseCase.run(engToJpMap));
         try {
             Boolean ready = cardsReady.get();
-            return new Result.Success<>(ready); //True/False but never null
+            if(ready) {
+                createDeck(inputListUCMCopy);   //returns Boolean but this is never used
+            }
+            return new Result.Success<>(ready); //True/False but never null - TODO farm this out to method that includes deck creation eg successfulResult()
         } catch (Exception e) {
             Log.d(TAG, "Exception during cardsReady.get()");
             return new Result.Error<>(e);

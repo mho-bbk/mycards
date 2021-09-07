@@ -63,18 +63,31 @@
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/cardCounter"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_weight="0.5"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/displayToggle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guidelineLeft" />
+
     <Button
         android:id="@+id/displayToggle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintVertical_weight="0.5"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/multipleLineDisplayToggle"
 
         app:layout_constraintBottom_toTopOf="@id/backToHome"
         app:layout_constraintRight_toLeftOf="@+id/guidelineLeft"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardCounter"
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <Button

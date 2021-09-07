@@ -31,32 +31,11 @@ public class SharedViewModel extends ViewModel {
     private static final String TAG = "SharedViewModel";
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
-
     private UseCaseManager useCaseManager;
 
     private final MutableLiveData<List<String>> userInputs = new MutableLiveData<>();
-    private final List<String> userInputListCopy = new ArrayList<>();
-
-    public MutableLiveData<Boolean> cardsInRepoReady = new MutableLiveData<>();
-    public final LiveData<List<Card>> cardTransformation =
-            Transformations.switchMap(cardsInRepoReady, (ready) -> useCaseManager.getCards(userInputListCopy)); //only comes here when ready is true
-
-    public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
-
-    private Iterator<Card> deckIterator;
-    private Card currentCard = new Card("", "");    //blank card to initiate
-
-    //TODO
-    // Possible states of readiness (and impacted workflows)
-    //cardsInRepoReady - cards in repo ready/not (so VM and UI can begin to use them)
-    //cardsInVMReady - not always necess depending on impl - so UI can use them (from the VM)
-    //cardPosition - where in the deck are we out of the ttl num of cards
-    //deckStarted - we have started a deck (not necessary?)
-    //deckFinished - we have finished a deck
-
-    private LiveData<List<Deck>> decksVMCopy;
-
-    //NEW IMPL
+    private final List<String> userInputListCopy = new ArrayList<>();   //Used to return decks
+    //Observer of userInputs
     private final Observer<List<String>> inputObserver = new Observer<List<String>>() {
         @Override
         public void onChanged(List<String> input) {
@@ -93,18 +72,37 @@ public class SharedViewModel extends ViewModel {
         }
     };
 
+
+    public MutableLiveData<Boolean> cardsInRepoReady = new MutableLiveData<>();
+    public final LiveData<List<Card>> cardTransformation =
+            Transformations.switchMap(cardsInRepoReady,
+                    (ready) -> useCaseManager.getCards(userInputListCopy)); //only comes here when ready is true
+    //Observer of cardTransformation
     private final Observer<List<Card>> cardObserver = new Observer<List<Card>>() {
         @Override
         public void onChanged(List<Card> cards) {
             setUpDeckInVM(cards);
-            useCaseManager.createDeck(userInputListCopy);   //Boolean is returned here but not used
+//            useCaseManager.createDeck(userInputListCopy);   //Boolean is returned here but not used
         }
     };
 
+    public MutableLiveData<Boolean> cardsInVMReady = new MutableLiveData<>();
+
+    private Iterator<Card> deckIterator;
+    private Card currentCard = new Card("", "");    //blank card to initiate
+
+    //TODO
+    // Possible states of readiness (and impacted workflows)
+    //cardsInRepoReady - cards in repo ready/not (so VM and UI can begin to use them) <- should this be a regular old observer (not LiveData)?
+    //cardsInVMReady - not always necess depending on impl - so UI can use them (from the VM) <- not needed if NEWIMPL2?
+    //cardPosition - where in the deck are we out of the ttl num of cards <- this should be set by the CDF
+    //deckStarted - we have started a deck (not necessary?)
+    //deckFinished - we have finished a deck
+
+    private LiveData<List<Deck>> decksVMCopy;
 
     @Inject
     public SharedViewModel(UseCaseManager useCaseManager) {
-
         this.useCaseManager = useCaseManager;
 
         //Observe the LiveData ie user input, passing in an observer that does the logic.
