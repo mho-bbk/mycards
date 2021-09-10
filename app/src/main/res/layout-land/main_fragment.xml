@@ -124,6 +124,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/openMaintenance"
+        android:contentDescription="@string/settingsBtnContentDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_settings"
@@ -137,6 +138,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/openDeckFragment"
+        android:contentDescription="@string/deckBtnContentDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_bookmarks"

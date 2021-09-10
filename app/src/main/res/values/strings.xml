@@ -5,6 +5,12 @@
     <string name="finishedDeck">Finished deck!\nWell done ☺</string>
     <string name="backToHome">Back to Home</string>
 
+    <!-- Strings for View content descriptions -->
+    <string name="settingsBtnContentDescription">Open Settings</string>
+    <string name="deckBtnContentDescription">Open Deck Screen</string>
+    <string name="homeBtnContentDescription">Open Home Screen</string>
+    <string name="deleteDeckBtnContentDescription">Delete Deck</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

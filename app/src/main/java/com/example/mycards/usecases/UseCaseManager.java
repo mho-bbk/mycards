@@ -155,7 +155,7 @@ public class UseCaseManager {
             if(ready) {
                 createDeck(inputListUCMCopy);   //returns Boolean but this is never used
             }
-            return new Result.Success<>(ready); //True/False but never null - TODO farm this out to method that includes deck creation eg successfulResult()
+            return new Result.Success<>(ready); //True/False but never null
         } catch (Exception e) {
             Log.d(TAG, "Exception during cardsReady.get()");
             return new Result.Error<>(e);

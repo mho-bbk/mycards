@@ -308,26 +308,32 @@ Went to write unit tests for VM, but the data flow is messy - might help to do t
 Mon 6/9: 
 Repeated emulator tests: see if prepop db feature has improved performance (start-up time and dealing with config changes). 
 
-Tues 7/9: 
+Tues 7/9: Finished reading about state: VM Overview and Handling LAC.
+Analysed data flow and have new plan. May not have time to implement everything.
+Fixed Navigation component (tiddly bit 1).
+
+Weds 8/9: Wrote first draft of project trailer section. 
+
+Thurs 9/9: Partway through Android Architecture section.
+
+Fri 10/9: Finished first draft Android Architecture section. 'Finished' NFR draft. Moved accessibility tests to testing section.
+
+Sat 11/9: ONE DAY - TESTING, finish writing up testing section. Finish tests.
+Tests now include: accessibility/remaining NFR tests, AND
+fine-tuning the semantic search results, calculating precision/recall...
+
 Add count of cards to the code - should implement this but takes more time. Est. 0.5-1 day bc atm we use iterator 
 but needs to be positional to enable forward/back button, and to enable us to show which card the user is on…
-TODO - Finish reading about state: VM Overview and Handling LAC
-TODO - tiddly code bits!! (see report key features...)
 TODO - Continue data flow analysis and observer mapping in SharedViewModel + unit tests
 TODO - unit tests for UseCaseManager
-TODO - More report writing.
+Tiddly bits remaining: finish screen, poss migration to Hilt to enable SavedStateHandle in VM with DI...
 
-Weds 8/9: TODO - if time, investigate 'screen flicker' bug raised on 3/9. 
-Thurs 9/9:
 
-Fri 10/9: Aim to have most of the report coherently structured. Where possible good amount of txt in each section.
-**Last call on getting user testers**
-
-Sat 11/9: ONE DAY - entirely on analysing the data flow in Fragments and VM to make sure the right things are saved where (as per readings on Activity Lifecycle)
 Sun 12/9: ONE DAY - entirely on writing about DESIGN PATTERNS and how I've used them in MyCards (need revision and categorisation)
-Mon 13/9: ONE DAY - on TESTING, finishing testing and writing up testing section
+Finish Tools and Technologies section
+Mon 13/9: Summary and conclusion. Begin tidy up. Any more developing at risk.
 
-Tues 14/9: TIDY THE REPORT - incl. references and README file, licences
+Tues 14/9: TIDY THE REPORT - incl. references and README file, licences, gitignore file...
 Weds 15/9: TIDY THE REPORT - add in any last min bits based on diary entries.
 Thurs 16/9: HALF DAY ONLY (hand in day)
 

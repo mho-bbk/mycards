@@ -82,7 +82,6 @@ public class SharedViewModel extends ViewModel {
         @Override
         public void onChanged(List<Card> cards) {
             setUpDeckInVM(cards);
-//            useCaseManager.createDeck(userInputListCopy);   //Boolean is returned here but not used
         }
     };
 
@@ -169,20 +168,7 @@ public class SharedViewModel extends ViewModel {
     }
 
 
-//TODO - could you do a repeat function with resetDeck() and setUserInputs?
-//    private Queue<Card> repeatDeck = new LinkedList<>();
-//
-//    public Queue<Card> getRepeatDeck() {
-//        return repeatDeck;
-//    }
-//
-//    public void addToRepeatDeck(Card card) {
-//        this.repeatDeck.add(card);
-//    }
-//
-//    public void setCardIteratorToRepeatDeck() {
-//        this.cardIterator = repeatDeck.iterator();
-//    }
+//TODO - repeatDeck feature
 
     public void deleteAllCards() {
         useCaseManager.deleteAllCards();
