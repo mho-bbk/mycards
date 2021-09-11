@@ -316,24 +316,25 @@ Weds 8/9: Wrote first draft of project trailer section.
 
 Thurs 9/9: Partway through Android Architecture section.
 
-Fri 10/9: Finished first draft Android Architecture section. 'Finished' NFR draft. Moved accessibility tests to testing section.
+Fri 10/9: Finished first draft Android Architecture section. 'Finished' NFR draft. 
+Moved accessibility tests to testing section.
 
 Sat 11/9: ONE DAY - TESTING, finish writing up testing section. Finish tests.
 Tests now include: accessibility/remaining NFR tests, AND
-fine-tuning the semantic search results, calculating precision/recall...
+fine-tuning the semantic search results, calculating precision/recall... (go back to bg and clean up)
+
+TODO - Continue data flow analysis and observer mapping in SharedViewModel + unit tests
+TODO - unit tests for UseCaseManager
 
 Add count of cards to the code - should implement this but takes more time. Est. 0.5-1 day bc atm we use iterator 
 but needs to be positional to enable forward/back button, and to enable us to show which card the user is on…
-TODO - Continue data flow analysis and observer mapping in SharedViewModel + unit tests
-TODO - unit tests for UseCaseManager
-Tiddly bits remaining: finish screen, poss migration to Hilt to enable SavedStateHandle in VM with DI...
+Tiddly bits remaining: finish screen
 
-
-Sun 12/9: ONE DAY - entirely on writing about DESIGN PATTERNS and how I've used them in MyCards (need revision and categorisation)
+Sun 12/9: ONE DAY - revise and write about DESIGN PATTERNS and how I've used them in MyCards (need revision and categorisation)
 Finish Tools and Technologies section
-Mon 13/9: Summary and conclusion. Begin tidy up. Any more developing at risk.
+Mon 13/9: Summary and conclusion. Introduction and abstract. Begin tidy up. Any more developing is risky.
 
-Tues 14/9: TIDY THE REPORT - incl. references and README file, licences, gitignore file...
+Tues 14/9: TIDY THE REPORT - incl. references and README file, glossaries, licences, gitignore file, appendices...
 Weds 15/9: TIDY THE REPORT - add in any last min bits based on diary entries.
 Thurs 16/9: HALF DAY ONLY (hand in day)
 

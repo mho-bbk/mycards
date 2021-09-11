@@ -81,14 +81,13 @@ public class UseCaseManager {
                 createDeck(inputListUCMCopy);   //returns Boolean but this is never used
                 callback.onComplete(new Result.Success<>(true));
             } else {
-                //At least some words are new (some could be in repo)
+                //Only runAllUseCases if at least some words are new (some could be in repo)
                 runAllUseCases(unsearchedWordsOnly, callback);
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    public void runAllUseCases(List<String> inputList, UseCaseCallback<Boolean> callback) {
+    private void runAllUseCases(List<String> inputList, UseCaseCallback<Boolean> callback) {
         executorService.execute(() -> {
             try {
                 Result<Boolean> result = runAllUseCasesSynchronously(inputList);
@@ -100,7 +99,7 @@ public class UseCaseManager {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
+
     private Result<Boolean> runAllUseCasesSynchronously(List<String> inputList) {
         return runSimilarWordsUseCaseSynchronously(inputList); //could be null
 
@@ -162,7 +161,13 @@ public class UseCaseManager {
         }
     }
 
-    public List<String> checkCardRepo(List<String> inputWords) {
+    /**
+     * Helper method. Checks whether any input given by the user has been run before by looking for existing cards
+     * in the local card db.
+     * @param inputWords given by the user
+     * @return a 'clean' List containing the Strings that do not have matches in the card db.
+     */
+    private List<String> checkCardRepo(List<String> inputWords) {
         List<String> unsearchedWords = new ArrayList<>();
 
         inputWords.forEach(word -> {
@@ -179,7 +184,7 @@ public class UseCaseManager {
         return createAndGetCardUseCase.getCards(inputList);
     }
 
-    public LiveData<List<Card>> getCard(String word) {
+    public LiveData<List<Card>> getCards(String word) {
         return createAndGetCardUseCase.getCards(word);
     }
 
@@ -187,8 +192,9 @@ public class UseCaseManager {
         createAndGetCardUseCase.deleteAllCards();
     }
 
-    //createDeckUseCase slightly different remit to the others... (not essential part of core process)
-    public boolean createDeck(List<String> userInputListCopy) {
+    //Not a run() op.
+    // CreateDeckUseCase has slightly different remit to the others (not essential part of core process)
+    private boolean createDeck(List<String> userInputListCopy) {
         return createDeckUseCase.run(userInputListCopy);
     }
 

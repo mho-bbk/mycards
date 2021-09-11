@@ -1,5 +1,7 @@
 package com.example.mycards;
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule;
+
 import com.example.mycards.main.SharedViewModel;
 import com.example.mycards.main.SharedViewModelFactory;
 import com.example.mycards.usecases.UseCaseManager;
@@ -10,6 +12,7 @@ import com.example.mycards.usecases.jptranslate.GetJpWordsUseCase;
 import com.example.mycards.usecases.semanticsearch.GetSimilarWordsUseCase;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -21,6 +24,9 @@ import static org.junit.Assert.assertTrue;
 
 //Not testing getters and setters
 public class SharedViewModelTest {
+
+//    @Rule
+//    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Mock
     private SharedViewModelFactory sharedViewModelFactory;     //not used

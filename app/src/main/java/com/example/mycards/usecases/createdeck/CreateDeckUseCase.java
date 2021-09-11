@@ -39,11 +39,7 @@ public class CreateDeckUseCase implements BaseUseCaseWithParam<List<String>, Boo
 
     //Helper method to implement definition of a valid deck name
     private boolean isValid(Deck deck) {
-        if("".equals(deck.getDeckName())) {
-            return false;
-        } else {
-            return true;
-        }
+        return !"".equals(deck.getDeckName());
     }
 
     //**REPOSITORY/DAO METHODS**
