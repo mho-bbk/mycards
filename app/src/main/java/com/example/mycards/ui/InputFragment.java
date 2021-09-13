@@ -84,28 +84,31 @@ public class InputFragment extends Fragment implements View.OnClickListener {
      */
     @RequiresApi(api = Build.VERSION_CODES.R)
     private boolean passOnData() {
-        String job = jobEditTxt.getText().toString();
-        String hobby = hobbyEditTxt.getText().toString();
-        String subject = subjectEditTxt.getText().toString();
+        String job = preprocessString(jobEditTxt.getText().toString());
+        String hobby = preprocessString(hobbyEditTxt.getText().toString());
+        String subject = preprocessString(subjectEditTxt.getText().toString());
 
         //Manual way to stop blank entries
-        if(job.trim().isEmpty() || hobby.trim().isEmpty() || subject.trim().isEmpty()) {
+        if(job.isEmpty() || hobby.isEmpty() || subject.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             List<String> allUserInput = new ArrayList<>();
-            allUserInput.add(job.trim());
-            allUserInput.add(hobby.trim());
-            allUserInput.add(subject.trim());
+            allUserInput.add(job);
+            allUserInput.add(hobby);
+            allUserInput.add(subject);
 
             sharedViewModel.setUserInputs(allUserInput);
             return true;
         }
     }
 
-    private void preprocessString(String s) {
+    //TODO - consider the place for this - better in VM?
+    private String preprocessString(String s) {
         //get rid of surrounding spaces
         //decapitalise
+        //remove any punctuation (in any position) - TODO refine this
+        return s.trim().toLowerCase().replaceAll("\\p{P}", "");
     }
 
     private void goToCardDisplayFragment() {
