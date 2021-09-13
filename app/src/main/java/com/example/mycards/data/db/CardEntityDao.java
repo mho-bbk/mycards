@@ -34,4 +34,7 @@ public interface CardEntityDao {
 
     @Query("SELECT COUNT(*) != 0 FROM cards WHERE related_word = :relatedWord")
     boolean containsCardsFor(String relatedWord);
+
+    @Query("SELECT COUNT(*) != 0 FROM cards WHERE related_word IN (:relatedWords)")
+    boolean containsCardsFor(List<String> relatedWords);
 }

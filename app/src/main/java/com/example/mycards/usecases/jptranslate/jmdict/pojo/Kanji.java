@@ -2,6 +2,8 @@ package com.example.mycards.usecases.jptranslate.jmdict.pojo;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
+import java.util.Objects;
+
 public class Kanji {
 
     @JsonAlias({"text"})
@@ -28,5 +30,18 @@ public class Kanji {
         return "Kanji{" +
                 "text='" + kanjiText + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Kanji kanji = (Kanji) o;
+        return kanjiText.equals(kanji.kanjiText);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kanjiText);
     }
 }

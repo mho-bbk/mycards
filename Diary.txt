@@ -319,20 +319,20 @@ Thurs 9/9: Partway through Android Architecture section.
 Fri 10/9: Finished first draft Android Architecture section. 'Finished' NFR draft. 
 Moved accessibility tests to testing section.
 
-Sat 11/9: ONE DAY - TESTING, finish writing up testing section. Finish tests.
-Tests now include: accessibility/remaining NFR tests, AND
-fine-tuning the semantic search results, calculating precision/recall... (go back to bg and clean up)
+Sat 11/9: ONE DAY - TESTING, finish writing up testing section (incl. accessibility/remaining NFR tests). 
+'Finish' writing unit tests. Unit test for UseCaseManager. 
+No time to rearrange/troubleshoot SharedViewModel unit test (issue with MutableLiveData and observerForever in constructor).
 
-TODO - Continue data flow analysis and observer mapping in SharedViewModel + unit tests
-TODO - unit tests for UseCaseManager
+Sun 12/9: 
+Fine-tuning the semantic search results, calculating precision/recall... (go back to bg and clean up)
 
-Add count of cards to the code - should implement this but takes more time. Est. 0.5-1 day bc atm we use iterator 
-but needs to be positional to enable forward/back button, and to enable us to show which card the user is on…
-Tiddly bits remaining: finish screen
+Mon 13/9: Finished first draft of the semantic search bit - ready for edits.
+We must finish the section about translation retrieval today.
 
-Sun 12/9: ONE DAY - revise and write about DESIGN PATTERNS and how I've used them in MyCards (need revision and categorisation)
-Finish Tools and Technologies section
-Mon 13/9: Summary and conclusion. Introduction and abstract. Begin tidy up. Any more developing is risky.
+If we get there, otherwise Tuesday last day: DESIGN PATTERNS
+Tools and Technologies (boring and repetitive - do when drained) 
+Summary and conclusion (should be quick and dirty)
+Introduction and abstract (will need more energy)
 
 Tues 14/9: TIDY THE REPORT - incl. references and README file, glossaries, licences, gitignore file, appendices...
 Weds 15/9: TIDY THE REPORT - add in any last min bits based on diary entries.

@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -383,7 +384,7 @@ public class CardDaoTest {
     }
 
     @Test
-    public void testContainsCardForPasses() {
+    public void testContainsCardForString() {
         //Recreate db from previous test - with deckSeeds
         Card testCard1 = new Card("chef", "チェフ", "chef");
         testCard1.setId(1);
@@ -400,5 +401,35 @@ public class CardDaoTest {
         assertTrue(cardEntityDao.containsCardsFor("baker"));
         assertTrue(cardEntityDao.containsCardsFor("musician"));
         assertFalse(cardEntityDao.containsCardsFor("astronaut"));
+
+        //tests for case (in)sensitivity
+        assertTrue(cardEntityDao.containsCardsFor("Chef")); //TODO - this fails, can switch = to LIKE but we want to be sure LIKE doesn't have any side effects (eg retrieving more than ideal)
+    }
+
+    @Test
+    public void testContainsCardForListString() {
+        //Recreate db from previous test - with deckSeeds
+        Card testCard1 = new Card("chef", "チェフ", "chef");
+        testCard1.setId(1);
+        Card testCard2 = new Card("baker", "パン屋さん", "baker");
+        testCard2.setId(2);
+        Card testCard3 = new Card("musician", "音楽家", "musician");
+        testCard3.setId(3);
+
+        cardEntityDao.upsert(testCard1);
+        cardEntityDao.upsert(testCard2);
+        cardEntityDao.upsert(testCard3);
+
+        List<String> dummyInputPasses = new ArrayList<>(List.of("chef", "baker", "musician"));
+        List<String> dummyInputSomePasses = new ArrayList<>(List.of("astronaut", "baker", "adhdsha"));
+        List<String> dummyInputFails = new ArrayList<>(List.of("astronaut", "parent", "afdgdsj"));
+
+        assertTrue(cardEntityDao.containsCardsFor(dummyInputPasses));
+        assertTrue(cardEntityDao.containsCardsFor(dummyInputSomePasses));
+        assertFalse(cardEntityDao.containsCardsFor(dummyInputFails));
+
+        //tests for case (in)sensitivity
+        List<String> dummyInputPassesCapitalised = new ArrayList<>(List.of("Chef", "Baker", "Musician"));
+        assertTrue(cardEntityDao.containsCardsFor(dummyInputPassesCapitalised));    //TODO - test fails atm but we expect this
     }
 }

@@ -63,4 +63,9 @@ public class DefaultCardRepository implements CardRepository {
         return cardEntityDao.containsCardsFor(relatedWord);
     }
 
+    @Override
+    public boolean containsCardsFor(List<String> relatedWords) {
+        return cardEntityDao.containsCardsFor(relatedWords);
+    }
+
 }

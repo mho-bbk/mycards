@@ -73,7 +73,7 @@ public class UseCaseManager {
     public void checkInputListThenRun(List<String> inputList, UseCaseCallback<Boolean> callback) {
         executorService.execute(() -> {
             inputListUCMCopy = inputList;
-            List<String> unsearchedWordsOnly = checkCardRepo(inputList);
+            List<String> unsearchedWordsOnly = returnWordsNotInRepo(inputList);
             if(unsearchedWordsOnly.isEmpty()) {
                 //All terms are already in card local db
                 // Create the deck
@@ -161,13 +161,17 @@ public class UseCaseManager {
         }
     }
 
+    public boolean cardsSavedInDatabase(List<String> strings) {
+        return createAndGetCardUseCase.containsCardsFor(strings);
+    }
+
     /**
      * Helper method. Checks whether any input given by the user has been run before by looking for existing cards
      * in the local card db.
      * @param inputWords given by the user
      * @return a 'clean' List containing the Strings that do not have matches in the card db.
      */
-    private List<String> checkCardRepo(List<String> inputWords) {
+    private List<String> returnWordsNotInRepo(List<String> inputWords) {
         List<String> unsearchedWords = new ArrayList<>();
 
         inputWords.forEach(word -> {

@@ -106,7 +106,8 @@ public class UseCaseManagerTest {
 
         useCaseManager.checkInputListThenRun(fakeInputList, testUseCaseCallback);
 
-        //TODO - improve this - not very legible
+        //TODO - investigate 'wanted but not invoked' IOException thrown when running tests with coverage
+        //TODO - improve legibility of this
         //The private method runAllUseCases() within checkInputListThenRun calls similarWordsUseCase
         //So we capture the List<String> argument there to examine it
         verify(getSimilarWordsUseCase).run(listCaptor.capture());

@@ -21,6 +21,7 @@ import com.example.mycards.data.entities.Card;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
@@ -43,6 +44,8 @@ public class SharedViewModel extends ViewModel {
             //Clear inputList everytime this observer is activated (ie everytime new input is entered)
             userInputListCopy.clear();
             userInputListCopy.addAll(input);
+            //TEST: reset this value to trigger card display again on re-start deck?
+//            cardsInVMReady.setValue(false);
 
             //Deploy use cases via the Manager Mediator and request callback when done
             //Should be on Main thread
@@ -56,9 +59,16 @@ public class SharedViewModel extends ViewModel {
                                     cardsInRepoReady.setValue(true)
                             );
                         } else {
-                            mainHandler.post(() ->
-                                    cardsInVMReady.setValue(false)  //Same result as if there is an error
-                            );
+                            //check that 'false' result isn't bc *some* cards in the db already
+                            boolean cardsInDb = useCaseManager.cardsSavedInDatabase(userInputListCopy);
+                            if(cardsInDb) {
+                                mainHandler.post(() ->
+                                        cardsInRepoReady.setValue(true));
+                            } else {
+                                mainHandler.post(() ->
+                                        cardsInVMReady.setValue(false)  //Same result as if there is an error
+                                );
+                            }
                         }
                     } else {
                         //show on UI that no cards could be found

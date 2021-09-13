@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-//TODO - test this. Unsure correct String param for stringToX methods or the correct result from xToString
 public class JMDictEntryTypeConverters {
 
     @TypeConverter

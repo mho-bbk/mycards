@@ -103,6 +103,11 @@ public class InputFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void preprocessString(String s) {
+        //get rid of surrounding spaces
+        //decapitalise
+    }
+
     private void goToCardDisplayFragment() {
         NavDirections goToCardDisplayFragment = InputFragmentDirections.actionMainFragment2ToCardDisplayFragment2();
         navController.navigate(goToCardDisplayFragment);

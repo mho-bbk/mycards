@@ -1,5 +1,7 @@
 package com.example.mycards.usecases.createcards;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 
 import com.example.mycards.base.usecasetypes.BaseUseCaseWithParam;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<String, HashMap<String, String>>,
         Boolean> {
 
+    private static final String TAG = "CreateAndGetCardUseCase";
     private final CardRepository cardRepository;
 
     @Inject
@@ -45,6 +48,8 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
             HashMap<String, String> engToJpPerInputWord = entry.getValue();
             if(engToJpPerInputWord.isEmpty()) {
                 //do nothing, return value already false by default
+                Log.d(TAG, "No successful words found in jmdict for input " + entry.getKey()
+                        + " or its related words");
             } else {
                 engToJpPerInputWord.entrySet().forEach(innerEntry -> {
                     cardRepository.upsert(new Card(innerEntry.getKey(), innerEntry.getValue(), inputWord));
@@ -80,4 +85,6 @@ public class CreateAndGetCardUseCase implements BaseUseCaseWithParam<HashMap<Str
     }
 
     public boolean containsCardsFor(String word) { return cardRepository.containsCardsFor(word); }
+
+    public boolean containsCardsFor(List<String> words) { return cardRepository.containsCardsFor(words); }
 }

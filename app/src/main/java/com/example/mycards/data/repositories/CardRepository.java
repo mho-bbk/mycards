@@ -22,4 +22,6 @@ public interface CardRepository {
 
     public boolean containsCardsFor(String relatedWord);
 
+    public boolean containsCardsFor(List<String> relatedWords);
+
 }
