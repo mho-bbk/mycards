@@ -107,8 +107,8 @@ public class InputFragment extends Fragment implements View.OnClickListener {
     private String preprocessString(String s) {
         //get rid of surrounding spaces
         //decapitalise
-        //remove any punctuation (in any position) - TODO refine this
-        return s.trim().toLowerCase().replaceAll("\\p{P}", "");
+        //TODO - consider removing outer punctuation only (inner required for dashes and apostrophes) - .replaceAll("\\p{P}", "") won't work
+        return s.trim().toLowerCase();
     }
 
     private void goToCardDisplayFragment() {

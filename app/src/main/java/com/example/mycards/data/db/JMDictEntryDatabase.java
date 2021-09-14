@@ -43,8 +43,8 @@ public abstract class JMDictEntryDatabase extends RoomDatabase {
 //        Log.d(TAG, "Waiting for the jmdict db to pre-populate...");
 
         JMDictEntryDatabase prepopDb = Room.databaseBuilder(context.getApplicationContext(),
-                JMDictEntryDatabase.class, "jmdict_prepop.db")
-                .createFromAsset("jmdict_database_v0.1.db")
+                JMDictEntryDatabase.class, "jmdict_prepop_v0.2.db")
+                .createFromAsset("jmdict_database_v0.2.db")
                 .build();
 //
 //        long endTime = System.nanoTime();
