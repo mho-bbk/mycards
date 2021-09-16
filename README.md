@@ -1,4 +1,5 @@
 #MyCards
+
 MyCards is a flashcard application for learning Japanese. The difference from normal flashcard applications is that 
 instead of requiring that you source the words for the flashcards and make them manually yourself, the app will take 
 the words you put in, find related ones and create the cards for you. The premise is that the app will ask you for 

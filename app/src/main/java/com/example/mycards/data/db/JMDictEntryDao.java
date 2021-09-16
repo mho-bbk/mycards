@@ -23,7 +23,7 @@ public interface JMDictEntryDao {
     @Delete
     public void delete(JMDictEntry dictEntry); //YT tutorial has this in kt with 'suspend' for use w/Kotlin coroutines
 
-    @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss ORDER BY gloss_order, sense_order, gloss_count LIMIT 1")
+    @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss ORDER BY gloss_order, sense_count DESC LIMIT 1")
     public JMDictEntry getFirstJMDictEntry(String gloss);
 
     @Query("SELECT * FROM jmdict WHERE inner_gloss = :gloss")
