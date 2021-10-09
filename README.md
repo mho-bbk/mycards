@@ -47,3 +47,5 @@ relevant words that you can learn to use in a conversation about yourself with a
     to encourage users to input only those words that would have a jmdict entry.  
     
 ##Licences
+
+Testing mirror git repo
