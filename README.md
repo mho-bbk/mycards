@@ -32,10 +32,10 @@ you can press the cog icon from the home screen to access the clear all buttons.
 ![Image of the settings screen](clear-all.jpg)
 
 ## Upcoming App Features (coming soon...)
- [ ] Repeat button on the practice screen will allow users to select individual cards for repetition at the end of the deck.  
- [ ] Back button on practice screen, so users can navigate forwards and backwards within a deck.
- [ ] A count of total cards in the corner of the practice screen, so users can see the total cards in the deck.
- [ ] A bespoke finish screen with some animation.
+ - [ ] Repeat button on the practice screen will allow users to select individual cards for repetition at the end of the deck.  
+ - [ ] Back button on practice screen, so users can navigate forwards and backwards within a deck.
+ - [ ] A count of total cards in the corner of the practice screen, so users can see the total cards in the deck.
+ - [ ] A bespoke finish screen with some animation.
 
 ## Future Improvements
 
